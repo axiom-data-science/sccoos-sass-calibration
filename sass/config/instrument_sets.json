@@ -1,0 +1,42 @@
+{
+  "organization": "SCCOOS",
+  "purpose": "To document the formats of automated shore station data",
+  "sets": [
+    {
+      "name": "soi_1",
+      "start_date": null,
+      "end_date": null,
+      "station_code": "sio",
+      "raw_data_url": "https://sccoos.org/dr/data/data/",
+      "columns": "['date', 'ip', 'T', 'C', 'P', 'V0', 'V1', 'V2', 'V3', 'S', 'date2', 'sig-t', 'battery', 'pump']",
+      "calibration_locations": {
+        "sheet_name": "https://docs.google.com/spreadsheets/d/1099lNMJ3XZQIFv7oSr0Q-5i4fihx7gnvoxMaVhiUhJE/edit?usp=sharing",
+        "tab_names": {
+          "chlorophyll": "SIO"
+        },
+        "gids":{
+          "chlorophyll": "533828951"
+        }
+      }
+    },
+    {
+      "name": "nb_1",
+      "start_date": null,
+      "end_date": null,
+      "station_code": "nb",
+      "raw_data_url": "https://sccoos.org/dr/data/newport_pier/",
+      "columns": "['date', 'ip', 'T', 'C', 'P', 'V2', 'O2_phase_delay', 'O2_raw_voltage', 'S', 'date2', 'sig-t', 'battery', 'pump']",
+      "calibration_locations": {
+        "sheet_name": "https://docs.google.com/spreadsheets/d/1099lNMJ3XZQIFv7oSr0Q-5i4fihx7gnvoxMaVhiUhJE/edit?usp=sharing",
+        "tab_names": {
+          "chlorophyll": "Newport Pier",
+          "oxygen": "SBE 63 O2"
+        },
+        "gids":{
+          "chlorophyll": "264494544",
+          "oxygen": "961390164"
+        }
+      }
+    }
+  ]
+}
