@@ -7,8 +7,12 @@ This project was designed with these assumptions
 * Different calibrations coefficients will apply during different instrument deployments.
 * Calibration coefficients are currently stored in a Google Sheet, but that might changes as the system matures.
 * SCCOOS personnel should partly be responsible for maintaining the instrument configurations because they are 
-installing them in-situ.
+installing them at the sites.
 * The end goal is for this system to be running automatically in real-time.
+
+Table of Contents:
+
+[[_TOC_]]
 
 ## Classes
 
@@ -78,11 +82,11 @@ How to calibrate a station that's only had one set-up:
 
 1. Read station.json to identify the InstrumentSet (Initially there is only 1 set-up per station)
 2. Using the URL in the InstrumentSet, read the raw data
-3. For each parameter to calibrate
-    a. read the calibration coefficients from the tab on the Sheet
-    b. merge the data with the calibrations
-    c. call the calibration routine
-    d. append the calibrated data to the raw data
+3. For each parameter to calibrate\
+  a. read the calibration coefficients from the tab on the Sheet\
+  b. merge the data with the calibrations\
+  c. call the calibration routine\
+  d. append the calibrated data to the raw data
 4. Write the new data file [where = TBD]
 
 
