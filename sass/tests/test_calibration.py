@@ -1,5 +1,5 @@
 import pandas as pd
-import pytest
+import os
 from sass.chlorophyll import calibrate_chlorophyll
 from sass.sbe63 import calibrate_temperature, calibrate_oxygen
 
@@ -11,7 +11,7 @@ def test_chlorophyll():
     """
     # Mel did the calculations by hand in an Excel spreadsheet. Liz transferred those to a Google Sheet, and then
     # downloaded a tidy version as a CSV file.
-    filename = 'resources/chlorophyll/SIOpier_examplesCHL_20210817.csv'
+    filename = os.path.join(os.path.dirname(__file__), 'resources/chlorophyll/SIOpier_examplesCHL_20210817.csv')
     data = pd.read_csv(filename)
 
     data['chlor'] = calibrate_chlorophyll(data['Volt2'],
@@ -25,7 +25,7 @@ def test_sbe63_temperature():
 
     # For testing, Liz downloaded the tab "SBE 63 O2" from the SASS Inventory and Cleaning Google Sheet.
     # Removing the empty columns is needed when reading from the Sheet
-    filename = 'resources/oxygen/calibration_coefficients_20210826.csv'
+    filename = os.path.join(os.path.dirname(__file__), 'resources/oxygen/calibration_coefficients_20210826.csv')
     coefficients = pd.read_csv(filename)
     coefficients['date'] = pd.to_datetime(coefficients['START TIME'])
     # remove nonsense columns
@@ -36,7 +36,7 @@ def test_sbe63_temperature():
     # To create values to check against, values were hand copied from the PDF of the calibration sheet for
     # instrument 1069. The column names are taken from the calibration sheet. The number of decimal places is
     # limited to 3 because that is what was printed on the sheet.
-    temperature_file = 'resources/oxygen/Temperature_calibrations_1069.csv'
+    temperature_file = os.path.join(os.path.dirname(__file__), 'resources/oxygen/Temperature_calibrations_1069.csv')
     cali_check = pd.read_csv(temperature_file)
     # Add a date that corresponds to when this instrument was used in the calibration coefficient file
     cali_check['date'] = pd.to_datetime("2021-07-01T00:00:00", format='%Y-%m-%dT%H:%M:%S')
@@ -55,7 +55,7 @@ def test_sbe63_oxygen():
 
     # For testing, Liz downloaded the tab "SBE 63 O2" from the SASS Inventory and Cleaning Google Sheet.
     # Removing the empty columns is needed when reading from the Sheet
-    filename = 'resources/oxygen/calibration_coefficients_20210826.csv'
+    filename = os.path.join(os.path.dirname(__file__), 'resources/oxygen/calibration_coefficients_20210826.csv')
     coefficients = pd.read_csv(filename)
     coefficients['date'] = pd.to_datetime(coefficients['START TIME'])
     # remove nonsense columns
@@ -66,7 +66,7 @@ def test_sbe63_oxygen():
     # To create values to check against, values were hand copied from the PDF of the calibration sheet for
     # instrument 1069. The column names are taken from the calibration sheet. The number of decimal places is
     # limited to 3 because that is what was printed on the sheet.
-    oxygen_file = 'resources/oxygen/Oxygen_calibrations_1069.csv'
+    oxygen_file = os.path.join(os.path.dirname(__file__), 'resources/oxygen/Oxygen_calibrations_1069.csv')
     cali_check = pd.read_csv(oxygen_file)
     # Add a date that corresponds to when this instrument was used in the calibration coefficient file
     cali_check['date'] = pd.to_datetime("2021-07-01T00:00:00", format='%Y-%m-%dT%H:%M:%S')
