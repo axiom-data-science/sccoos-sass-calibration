@@ -74,7 +74,6 @@ def calibrate_oxygen(output, temperature, salinity=0, pressure=0,
     v = output / 39.457071
     t = temperature
     k = t + 273.15  # temperature in Kelvin
-    s = salinity
 
     atmp = A0 + A1 * t + A2 * v ** 2
     btmp = B0 + B1 * v
