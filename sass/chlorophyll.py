@@ -1,6 +1,4 @@
-
-def calibrate_chlorophyll(output, scale_factor=None, clean_water_offset=None, **kwargs):
-    """ Calculate chlorophyll from input voltage.
+"""
 
     Chlorophyll is calculated using the Volt 2 output from each SASS CTD. Calibration coefficients
     consist of the clean water offset (CWO) and scale factor (SF), which are determined during calibration
@@ -11,8 +9,18 @@ def calibrate_chlorophyll(output, scale_factor=None, clean_water_offset=None, **
     When a new fluorometer is deployed, the CWO and SF for that fluorometer is entered into the
     SASS Inventory and Cleaning google spreadsheet, along with the exact deployment time.
 
-    An example calibration sheet is included in the references folder of this project. The equation
-    specified on the sheet is:
+    An example calibration sheet is included in the references folder of this project.
+
+    ELD (Axiom)
+    8/26/2021
+
+"""
+
+
+def calibrate_chlorophyll(output, scale_factor=None, clean_water_offset=None, **kwargs):
+    """ Calculate chlorophyll from input voltage.
+
+    The equation specified on a calibration sheet is:
 
     CHL(ug/l) = Scale Factor x (Output - Clean Water Offset)
     where:
