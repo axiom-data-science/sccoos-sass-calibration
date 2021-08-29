@@ -8,7 +8,8 @@
       "end_date": null,
       "station_code": "sio",
       "raw_data_url": "https://sccoos.org/dr/data/data/",
-      "columns": "['date', 'ip', 'T', 'C', 'P', 'V0', 'V1', 'V2', 'V3', 'S', 'date2', 'sig-t', 'battery', 'pump']",
+      "columns": ["date", "ip", "temperature", "conductivity", "pressure", "V0", "V1", "V2", "V3", 
+        "salinity", "date2", "sigmat", "battery", "pump"],
       "calibration_locations": {
         "sheet_name": "https://docs.google.com/spreadsheets/d/1099lNMJ3XZQIFv7oSr0Q-5i4fihx7gnvoxMaVhiUhJE/export?format=xlsx&gid=",
         "tab_names": {
@@ -25,8 +26,10 @@
       "end_date": null,
       "station_code": "nb",
       "raw_data_url": "https://sccoos.org/dr/data/newport_pier/",
-      "columns": "['date', 'ip', 'T', 'C', 'P', 'V2', 'O2_phase_delay', 'O2_raw_voltage', 'S', 'date2', 'sig-t', 'battery', 'pump']",
-      "calibration_locations": {
+      "columns":  ["date", "ip", "temperature", "conductivity", "pressure", "V2",
+        "O2_phase_delay", "O2_raw_voltage",
+        "salinity", "date2", "sigmat", "battery", "pump"],
+     "calibration_locations": {
         "sheet_name": "https://docs.google.com/spreadsheets/d/1099lNMJ3XZQIFv7oSr0Q-5i4fihx7gnvoxMaVhiUhJE/export?format=xlsx&gid=",
         "tab_names": {
           "chlorophyll": "Newport Pier",
@@ -38,5 +41,10 @@
         }
       }
     }
-  ]
+  ],
+  "note": "column names for stations not entered yet = temporary",
+  "santa_monica_pier": ["date", "ip", "temperature", "conductivity", "pressure", "V2",
+     "salinity", "date2", "sigmat", "battery", "pump"],
+  "stearns_wharf": ["date", "ip", "temperature", "conductivity", "pressure", "V0", "V1", "V2", "V3",
+     "salinity", "date2", "sigmat", "battery", "pump"]
 }

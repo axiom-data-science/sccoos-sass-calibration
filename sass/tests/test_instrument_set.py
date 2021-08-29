@@ -4,6 +4,7 @@ from sass.instrument_set import InstrumentSet
 import pytest
 import responses
 import re
+import pandas as pd
 
 
 here = Path(__file__).parent
@@ -63,10 +64,10 @@ def test_retrieve_observations(instrumentset, mocked_responses):  # station_sio
     start = parse_datetime("2021-08-26T03:00:00Z")
     end = parse_datetime("2021-08-26T05:00:00Z")
 
-    data = instrumentset.retrieve_observations('data', start, end)
+    data = instrumentset.retrieve_observations('data', start, end)  # type: pd.DataFrame
     assert len(data) == 30
-    assert data['temperature'].iloc[0] == 19.5426
-    assert data['time'].iloc[0] == parse_datetime("2021-08-26T03:02:20")
+    assert data.iloc[0, 2] == 19.5426  # temperature
+    assert data.iloc[0, -1] == parse_datetime("2021-08-26T03:02:20")  # time was added as the las column
 
 
 def test_retrieve_corrupt_observations(instrumentset, mocked_responses):  # station_sio
@@ -86,7 +87,7 @@ def test_retrieve_corrupt_observations(instrumentset, mocked_responses):  # stat
     start = parse_datetime("2021-07-20T00:00:00Z")
     end = parse_datetime("2021-07-21T00:00:00Z")
 
-    data = instrumentset.retrieve_observations('stearns_wharf', start, end)
+    data = instrumentset.retrieve_observations('stearns_wharf', start, end)  # type: pd.DataFrame
     assert len(data) == 78  # 83 lines with 5 corrupt
     assert data['temperature'].iloc[77] == 16.2690
     assert data['time'].iloc[77] == parse_datetime("2021-07-20T07:41:05")

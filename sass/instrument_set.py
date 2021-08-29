@@ -1,3 +1,12 @@
+"""
+This is a reST style.
+
+:param param1: this is a first param
+:param param2: this is a second param
+:returns: this is a description of what is returned
+:raises keyError: raises an exception
+"""
+
 import pandas as pd
 from requests.exceptions import HTTPError
 from io import StringIO
@@ -6,6 +15,23 @@ from sass import utilities
 
 
 class InstrumentSet:
+    def __init__(self, id, associationType, foreignName, foreignUrl, agent=None, agentId=None, **kwargs):
+        self.id = id
+        self.associationType = associationType
+        self.foreignName = foreignName
+        self.foreignUrl = foreignUrl
+        self.agent = None
+        if agentId:
+            self.agent = Agent(id=agentId)
+        if agent:
+            self.agent = _model_obj(agent, Agent)
+
+    def __repr__(self):
+        return str(self)
+
+    def __str__(self):
+        return f'StationAgent{{type={self.associationType},agent={self.agent}}}'
+
     # urls are split by date at the source
     # there are no headers at the source
 
@@ -13,16 +39,8 @@ class InstrumentSet:
         self.url_base = 'https://sccoos.org/dr/data/'
         # each site has a different CSV file format - without headers!  So track them here.
         self.column_names = {
-            'data': ['date', 'ip', 'temperature', 'conductivity', 'pressure', 'V0', 'V1', 'V2', 'V3',
-                     'salinity', 'date2', 'sigmat', 'battery', 'pump'],
-            'newport_pier': ['date', 'ip', 'temperature', 'conductivity', 'pressure', 'V2',
-                             'O2_phase_delay', 'O2_raw_voltage',
-                             'salinity', 'date2', 'sigmat', 'battery', 'pump'],
-            'santa_monica_pier': ['date', 'ip', 'temperature', 'conductivity', 'pressure', 'V2',
-                                  'salinity', 'date2', 'sigmat', 'battery', 'pump'],
-            'stearns_wharf': ['date', 'ip', 'temperature', 'conductivity', 'pressure', 'V0', 'V1', 'V2', 'V3',
-                              'salinity', 'date2', 'sigmat', 'battery', 'pump']
         }
+
 
     def retrieve_observations(self, station_code, start, end) -> list:
         """Build urls for one variable at a time, then smash them together and convert to feeds."""
@@ -33,7 +51,7 @@ class InstrumentSet:
             data = self.retrieve_and_parse_observations(url, station_code, start, end)
             all_data = all_data.append(data)
 
-        return all_data
+        return all_data  # type: pd.DataFrame
 
     def retrieve_and_parse_observations(self, url, station_code, start, end) -> list:
         """Take in a list of urls and send back a one column dataframe with datetimeindex
