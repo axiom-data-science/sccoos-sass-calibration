@@ -87,4 +87,3 @@ class InstrumentSet:
             date += relativedelta(days=1)
 
         return urls
-

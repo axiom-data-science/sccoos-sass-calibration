@@ -88,5 +88,5 @@ def test_retrieve_corrupt_observations(instrumentset, mocked_responses):  # stat
 
     data = instrumentset.retrieve_observations('stearns_wharf', start, end)
     assert len(data) == 78  # 83 lines with 5 corrupt
-    assert data['temperature'].iloc[77] ==  16.2690
+    assert data['temperature'].iloc[77] == 16.2690
     assert data['time'].iloc[77] == parse_datetime("2021-07-20T07:41:05")
