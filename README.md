@@ -33,15 +33,15 @@ Windows:
 ```
 ## Using <project_name>
 
-To use <project_name>, follow these steps:
+To use SASS, follow these steps:
 
 ```
-<usage_example>
+python ./run_sass.py --start "2021-08-01T00:00:00" --end "2021-08-02T00:00:00" --station "sio"
 ```
-planned arguments include
-* station code
-* start date
-* end date
+Arguments include:
+* start date (required)
+* end date (required)
+* station code (optional - does all if not specified)
 
 <!--- 
 ## Contributing to <project_name>
