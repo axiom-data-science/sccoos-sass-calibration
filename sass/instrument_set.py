@@ -35,19 +35,13 @@ class InstrumentSet:
     def __str__(self):
         return f'InstrumentSet{{id={self.set_id},parameters={self.parameters}}}'
 
-    def retrieve_observations(self, start, end) -> list:
-        """Build urls for one variable at a time, then smash them together and convert to feeds."""
+    def retrieve_and_parse_raw_data(self, url, start, end) -> pd.DataFrame:
+        """ Read raw SASS data from URL and convert it to a DataFrame with headers
 
-        all_data = pd.DataFrame({})
-        urls = self._build_urls(start, end)
-        for url in urls:
-            data = self.retrieve_and_parse_observations(url, start, end)
-            all_data = all_data.append(data)
-
-        return all_data  # type: pd.DataFrame
-
-    def retrieve_and_parse_observations(self, url, start, end) -> list:
-        """Take in a list of urls and send back a one column dataframe with datetimeindex
+        :param url: string url to the daily data file
+        :param start: earliest datetime allowed
+        :param end: latest datetime allowed
+        :return: DataFrame of raw data
         """
 
         try:
@@ -80,8 +74,14 @@ class InstrumentSet:
 
         return data
 
-    def _build_urls(self, start, end):
-        """ Build a list of urls. Daily files, in directories by month """
+    def build_urls(self, start, end):
+        """ Build a list of urls where can access the raw data.
+        Daily files, in directories by month.
+
+        :param start: datetime of earliest date
+        :param end: datetime of latest date
+        :return: list of strings that a URLs to daily data files
+        """
 
         urls = []
 

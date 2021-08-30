@@ -4,7 +4,6 @@ from sass.run_sass import load_configs
 import pytest
 import responses
 import re
-import pandas as pd
 
 
 here = Path(__file__).parent
@@ -33,7 +32,7 @@ def test_url_builder(sio_set):
     start = parse_datetime("2021-08-26T03:00:00Z")
     end = parse_datetime("2021-08-26T09:00:00Z")
 
-    urls = sio_set._build_urls(start, end)
+    urls = sio_set.build_urls(start, end)
 
     assert "https://sccoos.org/dr/data/data/2021-08/data-20210826.dat" in urls
     assert len(urls) == 1
@@ -42,7 +41,7 @@ def test_url_builder(sio_set):
     start = parse_datetime("2021-07-27T03:00:00Z")
     end = parse_datetime("2021-08-5T09:00:00Z")
 
-    urls = sio_set._build_urls(start, end)
+    urls = sio_set.build_urls(start, end)
 
     assert "https://sccoos.org/dr/data/data/2021-07/data-20210729.dat" in urls
     assert len(urls) == 10
@@ -62,7 +61,8 @@ def test_retrieve_observations(sio_set, mocked_responses):
     start = parse_datetime("2021-08-26T03:00:00Z")
     end = parse_datetime("2021-08-26T05:00:00Z")
 
-    data = sio_set.retrieve_observations(start, end)  # type: pd.DataFrame
+    urls = sio_set.build_urls(start, end)
+    data = sio_set.retrieve_and_parse_raw_data(urls[0], start, end)
     assert len(data) == 30
     assert data.iloc[0, 2] == 19.5426  # temperature
     assert data.iloc[0, -1] == parse_datetime("2021-08-26T03:02:20")  # time was added as the las column
@@ -85,7 +85,8 @@ def test_retrieve_corrupt_observations(sio_set, mocked_responses):  # not techni
     start = parse_datetime("2021-07-20T00:00:00Z")
     end = parse_datetime("2021-07-21T00:00:00Z")
 
-    data = sio_set.retrieve_observations(start, end)  # type: pd.DataFrame
+    urls = sio_set.build_urls(start, end)
+    data = sio_set.retrieve_and_parse_raw_data(urls[0], start, end)
     assert len(data) == 78  # 83 lines with 5 corrupt
     assert data['temperature'].iloc[77] == 16.2690
     assert data['time'].iloc[77] == parse_datetime("2021-07-20T07:41:05")
