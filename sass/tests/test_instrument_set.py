@@ -1,6 +1,6 @@
 from pathlib import Path
 from sass.utilities import parse_datetime
-from sass.instrument_set import InstrumentSet
+from sass.run_sass import load_configs
 import pytest
 import responses
 import re
@@ -8,16 +8,14 @@ import pandas as pd
 
 
 here = Path(__file__).parent
+instrument_set_filename = 'config/instrument_sets.json'
 
 
 @pytest.fixture
-def instrumentset():
-    return InstrumentSet()
-
-
-# @pytest.fixture - when actually have stations, use this or something
-# def station_sio():
-#     return 'sio'
+def sio_set():
+    instrument_sets = load_configs(instrument_set_filename)
+    this_set = [s for s in instrument_sets if s.station_id == 'sio']
+    return this_set[0]
 
 
 @pytest.fixture
@@ -28,14 +26,14 @@ def mocked_responses():
         yield rsps
 
 
-def test_url_builder(instrumentset):  # , station_sio):
+def test_url_builder(sio_set):
     """Verify that the collector asks for all the urls we need."""
 
     # one url
     start = parse_datetime("2021-08-26T03:00:00Z")
     end = parse_datetime("2021-08-26T09:00:00Z")
 
-    urls = instrumentset._build_urls('data', start, end)
+    urls = sio_set._build_urls(start, end)
 
     assert "https://sccoos.org/dr/data/data/2021-08/data-20210826.dat" in urls
     assert len(urls) == 1
@@ -44,13 +42,13 @@ def test_url_builder(instrumentset):  # , station_sio):
     start = parse_datetime("2021-07-27T03:00:00Z")
     end = parse_datetime("2021-08-5T09:00:00Z")
 
-    urls = instrumentset._build_urls('data', start, end)
+    urls = sio_set._build_urls(start, end)
 
     assert "https://sccoos.org/dr/data/data/2021-07/data-20210729.dat" in urls
     assert len(urls) == 10
 
 
-def test_retrieve_observations(instrumentset, mocked_responses):  # station_sio
+def test_retrieve_observations(sio_set, mocked_responses):
     """ Verify that we're reading raw data correctly. """
 
     # instead of making GET request to the HTTP server, we are going to read a local file
@@ -64,13 +62,13 @@ def test_retrieve_observations(instrumentset, mocked_responses):  # station_sio
     start = parse_datetime("2021-08-26T03:00:00Z")
     end = parse_datetime("2021-08-26T05:00:00Z")
 
-    data = instrumentset.retrieve_observations('data', start, end)  # type: pd.DataFrame
+    data = sio_set.retrieve_observations(start, end)  # type: pd.DataFrame
     assert len(data) == 30
     assert data.iloc[0, 2] == 19.5426  # temperature
     assert data.iloc[0, -1] == parse_datetime("2021-08-26T03:02:20")  # time was added as the las column
 
 
-def test_retrieve_corrupt_observations(instrumentset, mocked_responses):  # station_sio
+def test_retrieve_corrupt_observations(sio_set, mocked_responses):  # not technically right because stearns
     """ Verify that we're reading raw data correctly even when data are corrupted.
     The corrupted file is real, but I added a empty temperature fields to duplicated another
     error I got later.  That's ",," in the temperature field that was causing the check for
@@ -87,7 +85,7 @@ def test_retrieve_corrupt_observations(instrumentset, mocked_responses):  # stat
     start = parse_datetime("2021-07-20T00:00:00Z")
     end = parse_datetime("2021-07-21T00:00:00Z")
 
-    data = instrumentset.retrieve_observations('stearns_wharf', start, end)  # type: pd.DataFrame
+    data = sio_set.retrieve_observations(start, end)  # type: pd.DataFrame
     assert len(data) == 78  # 83 lines with 5 corrupt
     assert data['temperature'].iloc[77] == 16.2690
     assert data['time'].iloc[77] == parse_datetime("2021-07-20T07:41:05")

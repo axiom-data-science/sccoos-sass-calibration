@@ -5,11 +5,11 @@ from dateutil import parser as dateparser
 from datetime import datetime, timezone
 import json
 from pathlib import Path
-
+from sass import instrument_set
 
 here = Path(__file__).parent
 stations_filename = 'config/stations.json'
-instrumentset_filename = 'config/instrument_sets.json'
+instrument_set_filename = 'config/instrument_sets.json'
 
 
 def read_config(filename):
@@ -21,6 +21,20 @@ def read_config(filename):
     with open(str(path), "r") as f:
         config = json.loads(f.read())
     return config
+
+
+def load_configs(filename):
+    """
+
+    :param filename:
+    :return:
+    """
+    config_dict = read_config(filename)
+    configs = []
+    for config in config_dict['sets']:
+        configs.append(instrument_set.InstrumentSet(**config))
+
+    return configs
 
 
 def main():
@@ -48,10 +62,8 @@ def main():
 
     print(f"{start} to {end} for station {station_id}")
 
-
-
     # then do something!
-    instrument_sets = read_config(instrumentset_filename)
+    instrument_sets = load_configs(instrument_set_filename)
     print(instrument_sets)
 
     # sass(start, end, station_id)

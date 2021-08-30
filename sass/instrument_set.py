@@ -15,45 +15,38 @@ from sass import utilities
 
 
 class InstrumentSet:
-    def __init__(self, id, associationType, foreignName, foreignUrl, agent=None, agentId=None, **kwargs):
-        self.id = id
-        self.associationType = associationType
-        self.foreignName = foreignName
-        self.foreignUrl = foreignUrl
-        self.agent = None
-        if agentId:
-            self.agent = Agent(id=agentId)
-        if agent:
-            self.agent = _model_obj(agent, Agent)
+    def __init__(self, set_id=None, start_date=None, end_date=None,
+                 station_id=None, raw_data_url='', columns=[], calibration_locations={}, **kwargs):
+        self.set_id = set_id
+        self.start_date = start_date
+        self.end_date = end_date
+        self.station_id = station_id
+        self.raw_data_url = raw_data_url
+        self.columns = columns
+        self.calibration_locations = calibration_locations
+        if 'tab_names' in calibration_locations.keys():
+            self.parameters = list(calibration_locations['tab_names'].keys())
+        else:
+            self.parameters = []
 
     def __repr__(self):
         return str(self)
 
     def __str__(self):
-        return f'StationAgent{{type={self.associationType},agent={self.agent}}}'
+        return f'InstrumentSet{{id={self.set_id},parameters={self.parameters}}}'
 
-    # urls are split by date at the source
-    # there are no headers at the source
-
-    def __init__(self):
-        self.url_base = 'https://sccoos.org/dr/data/'
-        # each site has a different CSV file format - without headers!  So track them here.
-        self.column_names = {
-        }
-
-
-    def retrieve_observations(self, station_code, start, end) -> list:
+    def retrieve_observations(self, start, end) -> list:
         """Build urls for one variable at a time, then smash them together and convert to feeds."""
 
         all_data = pd.DataFrame({})
-        urls = self._build_urls(station_code, start, end)
+        urls = self._build_urls(start, end)
         for url in urls:
-            data = self.retrieve_and_parse_observations(url, station_code, start, end)
+            data = self.retrieve_and_parse_observations(url, start, end)
             all_data = all_data.append(data)
 
         return all_data  # type: pd.DataFrame
 
-    def retrieve_and_parse_observations(self, url, station_code, start, end) -> list:
+    def retrieve_and_parse_observations(self, url, start, end) -> list:
         """Take in a list of urls and send back a one column dataframe with datetimeindex
         """
 
@@ -64,7 +57,7 @@ class InstrumentSet:
             return []
 
         # No column headers at all here
-        names = self.column_names[station_code]
+        names = self.columns
         data = pd.read_csv(StringIO(raw_dataset), names=names)
 
         # There are some corrupted lines that have only a subset of fields.
@@ -87,7 +80,7 @@ class InstrumentSet:
 
         return data
 
-    def _build_urls(self, station_code, start, end):
+    def _build_urls(self, start, end):
         """ Build a list of urls. Daily files, in directories by month """
 
         urls = []
@@ -97,10 +90,7 @@ class InstrumentSet:
             file_tag = date.strftime('%Y%m%d')
             dir_tag = date.strftime('%Y-%m')
             urls.append(
-                self.url_base +
-                f"{station_code}" + "/"
-                f"{dir_tag}" + "/"
-                f"data-{file_tag}.dat"
+                f"{self.raw_data_url}{dir_tag}/data-{file_tag}.dat"
             )
             date += relativedelta(days=1)
 
