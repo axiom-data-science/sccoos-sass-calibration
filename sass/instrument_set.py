@@ -35,6 +35,25 @@ class InstrumentSet:
     def __str__(self):
         return f'InstrumentSet{{id={self.set_id},parameters={self.parameters}}}'
 
+    def build_urls(self, start, end):
+        """ Build a list of urls where can access the raw data.
+        Daily files, in directories by month.
+
+        :param start: datetime of earliest date
+        :param end: datetime of latest date
+        :return: list of strings that a URLs to daily data files
+        """
+
+        urls = []
+        date = start
+        while date < end:
+            file_tag = date.strftime('%Y%m%d')
+            dir_tag = date.strftime('%Y-%m')
+            urls.append(f"{self.raw_data_url}{dir_tag}/data-{file_tag}.dat")
+            date += relativedelta(days=1)
+
+        return urls
+
     def retrieve_and_parse_raw_data(self, url, start, end) -> pd.DataFrame:
         """ Read raw SASS data from URL and convert it to a DataFrame with headers
 
@@ -73,25 +92,3 @@ class InstrumentSet:
         data = data[(data['time'] >= start) & (data['time'] <= end)]
 
         return data
-
-    def build_urls(self, start, end):
-        """ Build a list of urls where can access the raw data.
-        Daily files, in directories by month.
-
-        :param start: datetime of earliest date
-        :param end: datetime of latest date
-        :return: list of strings that a URLs to daily data files
-        """
-
-        urls = []
-
-        date = start
-        while date < end:
-            file_tag = date.strftime('%Y%m%d')
-            dir_tag = date.strftime('%Y-%m')
-            urls.append(
-                f"{self.raw_data_url}{dir_tag}/data-{file_tag}.dat"
-            )
-            date += relativedelta(days=1)
-
-        return urls

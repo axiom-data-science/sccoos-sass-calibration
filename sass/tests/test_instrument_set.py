@@ -1,18 +1,19 @@
 from pathlib import Path
 from sass.utilities import parse_datetime
-from sass.run_sass import load_configs
+from sass.sass import load_configs
 import pytest
 import responses
 import re
 
 
 here = Path(__file__).parent
-instrument_set_filename = 'config/instrument_sets.json'
+instrument_set_filename = '../config/instrument_sets.json'
 
 
 @pytest.fixture
 def sio_set():
-    instrument_sets = load_configs(instrument_set_filename)
+    path = here.joinpath(instrument_set_filename)
+    instrument_sets = load_configs(path)
     this_set = [s for s in instrument_sets if s.station_id == 'sio']
     return this_set[0]
 

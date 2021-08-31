@@ -1,1 +1,2 @@
-__all__ = ['utilities', 'instrument_set', 'run_sass']
+__all__ = ['utilities', 'instrument_set', 'sass']
+from .sass import SassCalibrationRunner # noqa
