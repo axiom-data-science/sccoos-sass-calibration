@@ -1,7 +1,7 @@
 import pandas as pd
 from pathlib import Path
-from sass.chlorophyll import calibrate_chlorophyll
-from sass.sbe63 import calibrate_temperature, calibrate_oxygen
+from ..chlorophyll import calibrate_chlorophyll
+from ..sbe63 import calibrate_temperature, calibrate_oxygen
 
 here = Path(__file__).parent
 

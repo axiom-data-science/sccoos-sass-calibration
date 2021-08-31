@@ -1,6 +1,6 @@
 from pathlib import Path
-from sass.utilities import parse_datetime
-from sass.sass import load_configs
+from ..utilities import parse_datetime
+from ..sass import load_configs
 import pytest
 import responses
 import re

@@ -11,7 +11,7 @@ import pandas as pd
 from requests.exceptions import HTTPError
 from io import StringIO
 from dateutil.relativedelta import relativedelta
-from sass import utilities
+from . import utilities
 
 
 class InstrumentSet:
