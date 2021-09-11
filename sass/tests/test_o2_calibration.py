@@ -1,26 +1,10 @@
 import pandas as pd
 from pathlib import Path
-from ..chlorophyll import calibrate_chlorophyll
-from ..sbe63 import calibrate_temperature, calibrate_oxygen
+from ..sbe63_o2 import calibrate_temperature, calibrate_oxygen
+from ..utilities import proper_rounding
+
 
 here = Path(__file__).parent
-
-
-def test_chlorophyll():
-    """ test chlorophyll calibration using file prepared by Mel that includes the calibration coefficients in it.
-
-    :return:
-    """
-    # Mel did the calculations by hand in an Excel spreadsheet. Liz transferred those to a Google Sheet, and then
-    # downloaded a tidy version as a CSV file.
-    filename = here.joinpath('resources/chlorophyll/SIOpier_examplesCHL_20210817.csv')
-    data = pd.read_csv(filename)
-    data.rename(columns={'Volt2': 'output',
-                         'SF': 'scale_factor',
-                         'CWO': 'clean_water_offset'}, inplace=True)
-
-    data['calculated_chlor'] = calibrate_chlorophyll(**data)
-    assert data['calculated_chlor'].round(8).equals(data['chl_[ug/l]'].round(8))
 
 
 def test_sbe63_temperature():
@@ -47,10 +31,15 @@ def test_sbe63_temperature():
     # Merge the coefficients and "data" together so that the correct coefficients are used at the right times
     cali_all = pd.merge_asof(cali_check, coefficients, on=['date'], direction='backward')
 
-    cali_check['calc_temp'] = cali_all.apply(lambda x:
+    # call the calibration on each row of the dataframe separately
+    cali_check['temp_calc'] = cali_all.apply(lambda x:
                                              calibrate_temperature(*x[['Instrument_Output_[V]',
                                                                        'TA0', 'TA1', 'TA2', 'TA3']]), axis=1)
-    assert cali_check['Instrument_Temperature_[C]'].round(3).equals(cali_check['calc_temp'].round(3))
+    # check the calculation
+    data = pd.DataFrame({})
+    data['test1'] = cali_check['Instrument_Temperature_[C]'].map(lambda x: proper_rounding(x, 5))
+    data['test2'] = cali_check['temp_calc'].map(lambda x: proper_rounding(x, 5))
+    pd.testing.assert_series_equal(data['test1'], data['test2'], check_names=False)
 
 
 def test_sbe63_oxygen():
@@ -81,12 +70,16 @@ def test_sbe63_oxygen():
                              'Instrument_Output_[usec]': 'output'}, inplace=True)
     cali_all['pressure'] = 0
 
-    cali_check['oxygen'] = cali_all.apply(lambda x: calibrate_oxygen(**x), axis=1)
+    # call the calibration on each row of the dataframe separately
+    cali_check['oxygen_calc'] = cali_all.apply(lambda x: calibrate_oxygen(**x), axis=1)
 
     # This does not give the exact same answer for a few reasons:
     #  - The values on the PDF sheet are all rounded to 3 decimal places
     #  - Instrument temperature is not given on the sheet, so this uses nominal bath temperature
     #  - Do not know if there should be a pressure correction in the calibration lab (salinity=0)
-    cali_check['diff'] = cali_check['Instrument_Oxygen_[ml/l]'] - cali_check['oxygen']
+    cali_check['diff'] = cali_check['Instrument_Oxygen_[ml/l]'] - cali_check['oxygen_calc']
     assert cali_check['diff'].abs().max() < .006
-    assert cali_check['Instrument_Oxygen_[ml/l]'].round(1).equals(cali_check['oxygen'].round(1))
+    data = pd.DataFrame({})
+    data['test1'] = cali_check['Instrument_Oxygen_[ml/l]'].map(lambda x: proper_rounding(x, 1))
+    data['test2'] = cali_check['oxygen_calc'].map(lambda x: proper_rounding(x, 1))
+    pd.testing.assert_series_equal(data['test1'], data['test2'], check_names=False)
