@@ -6,7 +6,7 @@ from ..utilities import proper_rounding
 here = Path(__file__).parent
 
 
-def test_ph_internal():
+def test_ph_raw_data():
     """ test to see if can match the internal pH that is included in the raw data file
 
     No fancy handling of calibration coefficients for this one.
@@ -47,3 +47,33 @@ def test_ph_internal():
     data['test1'] = data['ph_int'].map(lambda x: proper_rounding(x, 3))
     data['test2'] = data['test2'].map(lambda x: proper_rounding(x, 3))
     pd.testing.assert_series_equal(data['test1'], data['test2'], check_names=False)
+
+
+def test_ph_tech_note():
+    """ Can function reproduce the values in the Technical Note
+    Technical_Note_Calculating_pH_AppNote.pdf (Application Note 99 from SBE)
+    """
+
+    # from technical document
+    v_int = -1.010404  # V
+    v_ext = -.965858   # V
+    k0_int = -1.438788
+    k2_int = -1.304895e-3
+    k0_ext = -1.429278
+    k2_ext = -1.142026e-3
+    temperature = 15.8735  # C
+    salinity = 36.817      # psu
+
+    ph = calibrate_ph(voltage=v_int, temperature=temperature,
+                      external=False, k0=k0_int, k2=k2_int)
+    print('\ninternal pH is', round(ph, 4))
+    assert round(ph, 4) == 7.8310
+
+    ph = calibrate_ph(voltage=v_ext, temperature=temperature, salinity=salinity,
+                      external=True, k0=k0_ext, k2=k2_ext)
+    print('external pH is', round(ph, 4))
+    assert round(ph, 4) == 7.8454
+
+    # should be
+    # ph_int = 7.8310
+    # ph_ext = 7.8454
