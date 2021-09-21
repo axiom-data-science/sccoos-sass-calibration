@@ -33,8 +33,7 @@ def total_chloride_in_seawater(salinity):
 
     salinity is in psu
     """
-    Cl_total = (0.99889 / 35.453) \
-        * (salinity / 1.80655) \
+    Cl_total = (0.99889 / 35.453) * (salinity / 1.80655) \
         * (1000 / (1000 - 1.005 * salinity))
 
     return Cl_total

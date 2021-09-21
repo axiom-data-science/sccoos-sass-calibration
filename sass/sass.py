@@ -24,7 +24,7 @@ def load_configs(path_to_file):
 
 class SassCalibrationRunner:
 
-    def run(start=None, end=None, station_id=None):
+    def run(self, start=None, end=None, station_id=None):
 
         print(f"{start} to {end} for station {station_id}")
 

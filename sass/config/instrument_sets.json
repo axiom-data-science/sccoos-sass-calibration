@@ -40,6 +40,24 @@
           "oxygen": "961390164"
         }
       }
+    },
+    {
+      "set_id": "nb_ph_1",
+      "start_date": null,
+      "end_date": null,
+      "station_id": "nb",
+      "raw_data_url": "https://sccoos.org/dr/data/newport_pier_ph/",
+      "columns":  ["transmit_time", "ip", "serial_number", "measurement_time", "record",
+        "flags", "ph_ext", "ph_int", "v_ext", "v_int", "temperature", "rh", "temperature_int"],
+     "calibration_locations": {
+        "sheet_name": "https://docs.google.com/spreadsheets/d/1099lNMJ3XZQIFv7oSr0Q-5i4fihx7gnvoxMaVhiUhJE/export?format=xlsx&gid=",
+        "tab_names": {
+          "ph": "NB_SeaFET_Coeffs"
+        },
+        "gids":{
+          "ph": "980013806"
+        }
+      }
     }
   ],
   "note": "column names for stations not entered yet = temporary",

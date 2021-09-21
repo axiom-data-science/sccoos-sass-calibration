@@ -60,6 +60,9 @@
       "InstrumentSets": [
         {
           "name": "nb_1"
+        },
+        {
+          "name": "nb_ph_1"
         }
       ]
     },

@@ -71,7 +71,7 @@ def test_retrieve_observations(sio_set, mocked_responses):
 
 def test_retrieve_corrupt_observations(sio_set, mocked_responses):  # not technically right because stearns
     """ Verify that we're reading raw data correctly even when data are corrupted.
-    The corrupted file is real, but I added a empty temperature fields to duplicated another
+    The corrupted file is real, but I added a empty temperature fields to duplicate another
     error I got later.  That's ",," in the temperature field that was causing the check for
     "#" to balk. """
 
