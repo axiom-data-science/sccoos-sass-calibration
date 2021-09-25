@@ -91,8 +91,13 @@ Building with Docker
 To build the docker container:
 
 ```
-docker build -t sccoos-sass-calibration .
+DOCKER_BUILDKIT=1 docker build -t sccoos-sass-calibration .
 ```
+
+or have docker [BuildKit enabled by default](https://docs.docker.com/develop/develop-images/build_enhancements/).
+To do that, set docker's daemon configuration in /etc/docker/daemon.json feature to true and restart the daemon:
+> { "features": { "buildkit": true } }
+
 
 Running with Docker
 -------------------
