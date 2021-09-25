@@ -1,4 +1,8 @@
+![Pipeline](http://git.axiom/axiom/sccoos-sass-calibration/badges/master/pipeline.svg)
+
 # sccoos-sass-calibration
+
+Applies calibration coefficients to the output of SCCOOS automated shore side instruments and writes out new files.
 
 sccoos-sass-calibration is a tool written in Python that will to convert raw voltages from SCCOOS's automated shore 
 stations into oxygen, pH, and chlorophyll.
@@ -18,20 +22,34 @@ Before you begin, ensure you have met the following requirements:
 * You have read `<guide/link/documentation_related_to_project>`.
 --->
 
-## Installing <project_name>
+## Installing SASS
 
-To install <project_name>, follow these steps:
+Installation
+------------
 
-Linux and macOS:
-```
-<install_command>
-```
+This project relies on conda for installation and managing of the project dependencies.
 
-Windows:
-```
-<install_command>
-```
-## Using <project_name>
+1. [Download and install miniconda for your operating system](https://docs.conda.io/en/latest/miniconda.html).
+
+2. Clone this project with `git`.
+
+3.  Once conda is available build the environment for this project with:
+
+    ```sh
+    conda env create -f environment.yml
+    ```
+
+    The above command creates a new conda environment titled `sass_calibration` with the necessary project
+    dependencies.
+
+4. An Additional environment file is present for testing and development environments. The additional developer dependencies can be installed with
+:
+
+   ```sh
+   conda env update -f test-environment.yml
+   ```
+
+## Using SASS
 
 To use SASS, follow these steps:
 
@@ -58,6 +76,29 @@ To contribute to <project_name>, follow these steps:
 Alternatively see the GitHub documentation on [creating a pull request](https://help.github.com/en/github/collaborating-with-issues-and-pull-requests/creating-a-pull-request).
 --->
 
+Running Tests
+-------------
+
+To run the project's tests:
+
+```
+pytest -sv --integration
+```
+
+Building with Docker
+--------------------
+
+To build the docker container:
+
+```
+docker build -t sccoos-sass-calibration .
+```
+
+Running with Docker
+-------------------
+
+
+
 ## Contributors
 
 Thanks to the following people who have contributed to this project:
@@ -72,7 +113,3 @@ You might want to consider using something like the [All Contributors](https://g
 
 If you want to contact me you can reach me at <liz@axiomdatascience.com>.
 
-## License
-<!--- If you're not sure which open license to use see https://choosealicense.com/--->
-
-This project uses the following license: <!--- [<license_name>](<link>). ---> [TBD]

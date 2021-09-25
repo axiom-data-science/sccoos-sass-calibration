@@ -1,0 +1,11 @@
+0.0.1
+-----
+
+The project inception.
+
+Basic project characteristics:
+
+- docker
+- CI Builds
+- Linter
+- Unit Tests

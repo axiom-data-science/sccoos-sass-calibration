@@ -1,5 +1,7 @@
 name: sass_calibration
 channels:
+  - axiom-data-science
+  - conda-forge
   - defaults
 dependencies:
   - _libgcc_mutex=0.1=main
