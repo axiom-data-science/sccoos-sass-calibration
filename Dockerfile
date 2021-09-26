@@ -1,4 +1,4 @@
-# syntax=docker/dockerfile:1
+# syntax = docker/dockerfile:experimental
 
 FROM debian:bullseye-slim
 ENV DEBIAN_FRONTEND noninteractive
