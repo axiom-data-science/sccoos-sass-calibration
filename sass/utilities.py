@@ -3,9 +3,10 @@
 
 """Various helpful routines from packrat and other stuff."""
 
-import requests
 import math
-from dateutil import parser, tz
+
+import requests
+from dateutil import tz, parser
 
 
 def requests_get(url, timeout_seconds=20, encoding='UTF-8',

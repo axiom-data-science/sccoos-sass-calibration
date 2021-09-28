@@ -3,11 +3,12 @@
 
 """Test calibration of O2."""
 
-import pandas as pd
 from pathlib import Path
-from ..sbe63_o2 import calibrate_temperature, calibrate_oxygen
-from ..utilities import proper_rounding
 
+import pandas as pd
+
+from ..sbe63_o2 import calibrate_oxygen, calibrate_temperature
+from ..utilities import proper_rounding
 
 here = Path(__file__).parent
 

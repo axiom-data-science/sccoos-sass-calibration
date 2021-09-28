@@ -6,9 +6,10 @@
 import shutil
 import tempfile
 from pathlib import Path
-from sass.log import logger
 
 import pytest
+
+from sass.log import logger
 
 
 @pytest.fixture(scope='module')

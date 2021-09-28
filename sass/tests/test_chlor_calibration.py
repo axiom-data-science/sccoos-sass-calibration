@@ -3,11 +3,12 @@
 
 """Test calibration of chlorophyll."""
 
-import pandas as pd
 from pathlib import Path
-from ..ctd_chlorophyll import calibrate_chlorophyll
-from ..utilities import proper_rounding
 
+import pandas as pd
+
+from ..utilities import proper_rounding
+from ..ctd_chlorophyll import calibrate_chlorophyll
 
 here = Path(__file__).parent
 

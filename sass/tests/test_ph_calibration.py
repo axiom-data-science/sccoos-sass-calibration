@@ -3,10 +3,11 @@
 
 """Test calibration of pH."""
 
-import pandas as pd
 from pathlib import Path
-from ..seafet_ph import calibrate_ph
 
+import pandas as pd
+
+from ..seafet_ph import calibrate_ph
 from ..utilities import proper_rounding
 
 here = Path(__file__).parent

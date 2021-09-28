@@ -3,10 +3,12 @@
 
 """Descriptions of instrument sets."""
 
+from io import StringIO
+
 import pandas as pd
 from requests.exceptions import HTTPError
-from io import StringIO
 from dateutil.relativedelta import relativedelta
+
 from . import utilities
 
 

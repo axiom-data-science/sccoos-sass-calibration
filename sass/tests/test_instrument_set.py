@@ -3,13 +3,14 @@
 
 """Test usages of InstrumentSet class and methods."""
 
+import re
 from pathlib import Path
-from ..utilities import parse_datetime
-from ..sass import load_configs
+
 import pytest
 import responses
-import re
 
+from ..sass import load_configs
+from ..utilities import parse_datetime
 
 here = Path(__file__).parent
 instrument_set_filename = '../config/instrument_sets.json'

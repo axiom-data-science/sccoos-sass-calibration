@@ -3,8 +3,9 @@
 
 """Functions to establish the processing pathway."""
 
-from pathlib import Path
 import json
+from pathlib import Path
+
 from . import instrument_set
 
 here = Path(__file__).parent
