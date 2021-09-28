@@ -1,0 +1,8 @@
+[flake8]
+max-line-length = 100
+ignore = E265 E221 E203 E201 E124 E202 E241 E251 W293 W291 W504 W503
+docstring-convention = google
+exclude = setup.py
+per-file-ignores =
+    tests/**/*.py: F811 F401
+    tests/*.py: F811 F401

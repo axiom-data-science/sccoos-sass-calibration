@@ -8,12 +8,16 @@ here = Path(__file__).parent
 
 
 def test_chlorophyll():
-    """ test chlorophyll calibration using file prepared by Mel that includes the calibration coefficients in it.
+    """ test chlorophyll calibration
+
+    Uses the file prepared by Mel that includes the calibration coefficients in it. So
+    Don't need to get those from the Google Sheet.
 
     :return:
     """
-    # Mel did the calculations by hand in an Excel spreadsheet. Liz transferred those to a Google Sheet, and then
-    # downloaded a tidy version as a CSV file.
+    # Mel did the calculations by hand in an Excel spreadsheet. Liz transferred those to a
+    # Google Sheet, and then downloaded a tidy version as a CSV file.
+
     filename = here.joinpath('resources/chlorophyll/SIOpier_examplesCHL_20210817.csv')
     data = pd.read_csv(filename)
     data.rename(columns={'Volt2': 'output',

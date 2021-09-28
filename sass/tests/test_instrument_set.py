@@ -66,10 +66,11 @@ def test_retrieve_observations(sio_set, mocked_responses):
     data = sio_set.retrieve_and_parse_raw_data(urls[0], start, end)
     assert len(data) == 30
     assert data.iloc[0, 2] == 19.5426  # temperature
-    assert data.iloc[0, -1] == parse_datetime("2021-08-26T03:02:20")  # time was added as the las column
+    # time was added as the last column
+    assert data.iloc[0, -1] == parse_datetime("2021-08-26T03:02:20")
 
 
-def test_retrieve_corrupt_observations(sio_set, mocked_responses):  # not technically right because stearns
+def test_retrieve_corrupt_observations(sio_set, mocked_responses):
     """ Verify that we're reading raw data correctly even when data are corrupted.
     The corrupted file is real, but I added a empty temperature fields to duplicate another
     error I got later.  That's ",," in the temperature field that was causing the check for

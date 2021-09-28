@@ -1,15 +1,17 @@
 """
 
-    pH in the SASS system is measured with a SBE SeaFET instrument. There are two sensors on the SeaFET -
-    an internal sensor enclosed in gel, that is more accurate in general, and an external sensor that
-    can be more accurate when corrected with salinity. Voltages and initial values are included for
-    both these in the raw data files. The external pH was produced using an average salinity for the
+    pH in the SASS system is measured with a SBE SeaFET instrument.
+    There are 2 sensors on a SeaFET - an internal sensor enclosed in gel, that is more
+    accurate in general, and an external sensor that can be more accurate when corrected
+    with salinity. Voltages and initial values are included for both these in the raw
+    data files. The external pH was produced using an average salinity for the
     area.
 
-    The possibility of re-computing internal pH is included it for testing purposes. The meat of the routine
-    is correcting the external pH.
+    The possibility of re-computing internal pH is included it for testing purposes.
+    The meat of the routine is correcting the external pH.
 
-    From the technical note, Technical_Note_Calculating_pH_AppNote.pdf (Application Note 99 from SBE):
+    From the technical note, Technical_Note_Calculating_pH_AppNote.pdf
+    (Application Note 99 from SBE):
     "This application note provides formulas to calculate pHTotal from raw ISFET
     voltage (VFET/REF ) and CTD data. Formulas for calculating pH Internal and pH External
     from a Shallow SeaFET/SeapHOx V ... are listed below. "
@@ -19,8 +21,8 @@
     pH applications. Limnol. Oceanogr.: Methods, 8:172-184, 2010.
 
     K. S. Johnson, H. W. Jannasch, L. J. Coletti, V. A. Elrod, T. R. Martz,Y. Takeshita,
-    R. J. Carlson, and J. G. Connery. Deep-Sea DuraFET: A pressure tolerant pH sensor designed
-    for global sensor networks. Analytical Chemistry, 88:3249-3256, 2016.
+    R. J. Carlson, and J. G. Connery. Deep-Sea DuraFET: A pressure tolerant pH sensor
+    designed for global sensor networks. Analytical Chemistry, 88:3249-3256, 2016.
 """
 
 import math

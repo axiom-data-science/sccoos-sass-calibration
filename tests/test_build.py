@@ -1,5 +1,6 @@
 #!/usr/bin/env pytest
-#-*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
+
 """Tests that pytest is running."""
 
 

@@ -76,12 +76,12 @@ class InstrumentSet:
         # There are some corrupted lines that have only a subset of fields.
         # Who knows which fields remain so drop the whole line.
         # Corrupted lines all seem to be missing # - like that is where they were chopped.
-        data.dropna(axis=0, subset=['temperature'], inplace=True)  # remove completely empty so can check ...
+        data.dropna(axis=0, subset=['temperature'], inplace=True)  # remove empty so can check ...
         data = data.loc[data['temperature'].str.contains('#'), :]  # that line has a hash mark
 
         # Files have a hash mark (#) to indicate the beginning of the data after date and IP.
         start_column = names[2]
-        # So far, this is always temperature. If it isn't, I want to know.  Think about it when it happens
+        # So far, this is always temperature. If it isn't, I want to know so I can solve
         assert start_column == 'temperature'
         # Strip out that character and convert remaining to a number
         data[start_column] = data[start_column].str.replace('#', '')

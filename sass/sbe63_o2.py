@@ -1,17 +1,19 @@
 """
 
-    Oxygen in the SASS system is measured using a Sea-Bird Scientific SBE 63 Optical Dissolved Oxygen
-    Sensor. The output from  the instrument consists of 2 variables: units of phase (µsec) and
-    temperature voltage (V). First instrument temperature is calculated, and then that is used to calculate
-    oxygen in units of ml/l.
+    Oxygen in the SASS system is measured using a Sea-Bird Scientific SBE 63
+    Optical Dissolved Oxygen Sensor. The output from  the instrument consists of
+    2 variables: units of phase (µsec) and temperature voltage (V). First instrument
+    temperature is calculated, and then that is used to calculate oxygen in units
+    of ml/l.
 
-    The temperature sensor is different from the CTD's, and it is calibrated separately. The equations for
-    the temperature calibration came from an example of the calibration sheet provided by SBE. These values
-    are entered in the SASS Inventory and Cleaning google spreadsheet under the tab "SBE 63 O2".
+    The temperature sensor is different from the CTD's, and it is calibrated separately.
+    The equations for the temperature calibration came from an example of the calibration
+    sheet provided by SBE. These values are entered in the SASS Inventory and Cleaning google
+    spreadsheet under the tab "SBE 63 O2".
 
-    The equations for the oxygen calculation come from the SBE63 manual (PDF included in references). It is
-    broken into pieces for the pressure correction, the salinity correction, the Stern-Volmer constant,
-    and the penultimate calculation.
+    The equations for the oxygen calculation come from the SBE63 manual (PDF included in
+    references). It is broken into pieces for the pressure correction, the salinity correction,
+    the Stern-Volmer constant, and the penultimate calculation.
 
     ELD
     8/26/2021

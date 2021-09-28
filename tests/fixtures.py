@@ -1,6 +1,8 @@
 #!/usr/bin/env python
-#-*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
+
 """Common fixtures."""
+
 import shutil
 import tempfile
 from pathlib import Path
