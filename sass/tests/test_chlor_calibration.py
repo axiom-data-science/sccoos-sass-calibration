@@ -1,3 +1,8 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+"""Test calibration of chlorophyll."""
+
 import pandas as pd
 from pathlib import Path
 from ..ctd_chlorophyll import calibrate_chlorophyll
@@ -8,7 +13,7 @@ here = Path(__file__).parent
 
 
 def test_chlorophyll():
-    """ test chlorophyll calibration
+    """Test chlorophyll calibration.
 
     Uses the file prepared by Mel that includes the calibration coefficients in it. So
     Don't need to get those from the Google Sheet.

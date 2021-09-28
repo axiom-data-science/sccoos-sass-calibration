@@ -1,22 +1,25 @@
-"""
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
 
-    Oxygen in the SASS system is measured using a Sea-Bird Scientific SBE 63
-    Optical Dissolved Oxygen Sensor. The output from  the instrument consists of
-    2 variables: units of phase (µsec) and temperature voltage (V). First instrument
-    temperature is calculated, and then that is used to calculate oxygen in units
-    of ml/l.
+"""Define the equations that calibrate O2.
 
-    The temperature sensor is different from the CTD's, and it is calibrated separately.
-    The equations for the temperature calibration came from an example of the calibration
-    sheet provided by SBE. These values are entered in the SASS Inventory and Cleaning google
-    spreadsheet under the tab "SBE 63 O2".
+Oxygen in the SASS system is measured using a Sea-Bird Scientific SBE 63
+Optical Dissolved Oxygen Sensor. The output from  the instrument consists of
+2 variables: units of phase (µsec) and temperature voltage (V). First instrument
+temperature is calculated, and then that is used to calculate oxygen in units
+of ml/l.
 
-    The equations for the oxygen calculation come from the SBE63 manual (PDF included in
-    references). It is broken into pieces for the pressure correction, the salinity correction,
-    the Stern-Volmer constant, and the penultimate calculation.
+The temperature sensor is different from the CTD's, and it is calibrated separately.
+The equations for the temperature calibration came from an example of the calibration
+sheet provided by SBE. These values are entered in the SASS Inventory and Cleaning google
+spreadsheet under the tab "SBE 63 O2".
 
-    ELD
-    8/26/2021
+The equations for the oxygen calculation come from the SBE63 manual (PDF included in
+references). It is broken into pieces for the pressure correction, the salinity correction,
+the Stern-Volmer constant, and the penultimate calculation.
+
+ELD
+8/26/2021
 
 """
 
@@ -24,7 +27,7 @@ import math
 
 
 def calibrate_temperature(voltage, ta0, ta1, ta2, ta3, **kwargs):
-    """ Calibrate the temperature sensor of an SBE63 oxygen probe
+    """Calibrate the temperature sensor of an SBE63 oxygen probe.
 
     Note: this is sensor temperature, not water temp or sea surface temp. It can
     be discarded after oxygen is calculated.
@@ -35,7 +38,6 @@ def calibrate_temperature(voltage, ta0, ta1, ta2, ta3, **kwargs):
     L = ln (100000 * thermistor_voltage / (3.3 - thermistor_voltage))
 
     """
-
     lscale = math.log(100000 * voltage / (3.3 - voltage))
     temperature = 1 / (ta0 + ta1 * lscale
                        + ta2 * lscale ** 2
@@ -45,7 +47,8 @@ def calibrate_temperature(voltage, ta0, ta1, ta2, ta3, **kwargs):
 
 
 def stern_volmer_constant(temperature, c0, c1, c2):
-    """ Calculate the Stern-Volmer constant
+    """Calculate the Stern-Volmer constant.
+
     from SBE manual SBE_63_Dissolved_Oxygen_Sensor.pdf revision 011, page 47
 
     The Stern-Volmer constant equation is:
@@ -54,13 +57,14 @@ def stern_volmer_constant(temperature, c0, c1, c2):
     * c0, c1, c2: calibration coefficients
     * T: temperature output from SBE 63’s thermistor in °C
     """
-
     Ksv = c0 + (c1 * temperature) + (c2 * temperature ** 2)
+
     return Ksv
 
 
 def salinity_correction(salinity, temperature):
-    """ Calculate the SBE63 Salinity correction
+    """Calculate the SBE63 Salinity correction.
+
     from SBE manual SBE_63_Dissolved_Oxygen_Sensor.pdf revision 011, page 47
     The salinity correction equation is:
     SCorr = exp [S * (SolB0 + SolB1 * Ts
@@ -93,7 +97,8 @@ def salinity_correction(salinity, temperature):
 
 
 def pressure_correction(pressure, temperature, E):
-    """ Calculate the SBE63 Salinity correction
+    """Calculate the SBE63 Salinity correction.
+
     from SBE manual SBE_63_Dissolved_Oxygen_Sensor.pdf revision 011, page 47
     The pressure correction equation is:
     Pcorr = exp (E * P / K)
@@ -112,7 +117,8 @@ def pressure_correction(pressure, temperature, E):
 def calibrate_oxygen(output, temperature, salinity=0, pressure=0,
                      A0=None, A1=None, A2=None, B0=None, B1=None,
                      C0=None, C1=None, C2=None, E=None, **kwargs):
-    """ Calculate oxygen from calibration coefficients and output of the SBE63
+    """Calculate oxygen from calibration coefficients and output of the SBE63.
+
     From the manual:
     The SBE 63’s luminescence decay time decreases non-linearly with increasing
     oxygen concentration. Because the phase delay between excited and emitted
@@ -126,7 +132,6 @@ def calibrate_oxygen(output, temperature, salinity=0, pressure=0,
     output: raw measured phase delay in microseconds
     and other  corrections are as shown above.
     """
-
     vscale = output / 39.457071
     atmp = A0 + A1 * temperature + A2 * vscale ** 2
     btmp = B0 + B1 * vscale

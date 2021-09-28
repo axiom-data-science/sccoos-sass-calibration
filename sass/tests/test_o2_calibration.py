@@ -1,3 +1,8 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+"""Test calibration of O2."""
+
 import pandas as pd
 from pathlib import Path
 from ..sbe63_o2 import calibrate_temperature, calibrate_oxygen
@@ -8,11 +13,18 @@ here = Path(__file__).parent
 
 
 def test_sbe63_temperature():
-    """ SBE63 has its own temperature sensor that outputs voltage """
+    """SBE63 has its own temperature sensor that outputs voltage.
 
+    There are two local files involved:
+    1. a downloaded copy of a tab of the calibration Google Sheet
+    2. copies of values from the calibration sheet that SBE produces when the instrument is
+       calibrated.
+
+    These are merged together and the produced T is checked against SBE's values. So it is
+    testing both the concept of the merge and the calibration.
+    """
     # For testing, Liz downloaded the tab "SBE 63 O2" from the SASS Inventory and
-    # Cleaning Google Sheet.
-    # Removing the empty columns is needed when reading from the Sheet
+    # Cleaning Google Sheet. Removing the empty columns is needed when reading from the Sheet
     filename = here.joinpath('resources/oxygen/calibration_coefficients_20210826.csv')
     coefficients = pd.read_csv(filename)
     coefficients['date'] = pd.to_datetime(coefficients['START TIME'])
@@ -47,8 +59,16 @@ def test_sbe63_temperature():
 
 
 def test_sbe63_oxygen():
-    """ SBE63 has an oxygen sensor that outputs phase or something """
+    """SBE63 has an oxygen sensor that outputs phase or something.
 
+    There are two local files involved:
+    1. a downloaded copy of a tab of the calibration Google Sheet
+    2. copies of values from the calibration sheet that SBE produces when the instrument is
+       calibrated. These were essentially a hard-copy so have limited precision.
+
+    These are merged together and the produced O2 is checked against SBE's values. So it is
+    testing both the concept of the merge and the calibration.
+    """
     # For testing, Liz downloaded the tab "SBE 63 O2" from the SASS Inventory and
     # Cleaning Google Sheet. Removing the empty columns is needed when reading from the Sheet
     filename = here.joinpath('resources/oxygen/calibration_coefficients_20210826.csv')

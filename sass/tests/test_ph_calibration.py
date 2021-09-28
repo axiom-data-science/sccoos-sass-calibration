@@ -1,15 +1,22 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+"""Test calibration of pH."""
+
 import pandas as pd
 from pathlib import Path
 from ..seafet_ph import calibrate_ph
+
 from ..utilities import proper_rounding
 
 here = Path(__file__).parent
 
 
 def test_ph_raw_data():
-    """ test to see if can match the internal pH that is included in the raw data file
+    """Test to see if can match the internal pH that is included in the raw data file.
 
-    No fancy handling of calibration coefficients for this one.
+    No fancy handling of calibration coefficients for this one. Just trying to copy values
+    already included in the raw data file as a preliminary check.
     """
     # pH is complicated. Just copy coefficients from calibration sheet
     k0_int = -1.343051e0
@@ -50,10 +57,11 @@ def test_ph_raw_data():
 
 
 def test_ph_tech_note():
-    """ Can function reproduce the values in the Technical Note
-    Technical_Note_Calculating_pH_AppNote.pdf (Application Note 99 from SBE)
-    """
+    """Can function reproduce the values in the Technical Note.
 
+    Technical_Note_Calculating_pH_AppNote.pdf (Application Note 99 from SBE).
+    All the values are copied from those examples included in the Note.
+    """
     # from technical document
     v_int = -1.010404  # V
     v_ext = -.965858   # V

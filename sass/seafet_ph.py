@@ -1,39 +1,45 @@
-"""
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
 
-    pH in the SASS system is measured with a SBE SeaFET instrument.
-    There are 2 sensors on a SeaFET - an internal sensor enclosed in gel, that is more
-    accurate in general, and an external sensor that can be more accurate when corrected
-    with salinity. Voltages and initial values are included for both these in the raw
-    data files. The external pH was produced using an average salinity for the
-    area.
+"""Define the equations that calibrate pH.
 
-    The possibility of re-computing internal pH is included it for testing purposes.
-    The meat of the routine is correcting the external pH.
+pH in the SASS system is measured with a SBE SeaFET instrument.
+There are 2 sensors on a SeaFET - an internal sensor enclosed in gel, that is more
+accurate in general, and an external sensor that can be more accurate when corrected
+with salinity. Voltages and initial values are included for both these in the raw
+data files. The external pH was produced using an average salinity for the
+area.
 
-    From the technical note, Technical_Note_Calculating_pH_AppNote.pdf
-    (Application Note 99 from SBE):
-    "This application note provides formulas to calculate pHTotal from raw ISFET
-    voltage (VFET/REF ) and CTD data. Formulas for calculating pH Internal and pH External
-    from a Shallow SeaFET/SeapHOx V ... are listed below. "
-    More details can be found in:
+The possibility of re-computing internal pH is included it for testing purposes.
+The meat of the routine is correcting the external pH.
 
-    T. R. Martz, J. G. Connery, K. S. Johnson. Testing the Honeywell Durafet for seawater
-    pH applications. Limnol. Oceanogr.: Methods, 8:172-184, 2010.
+From the technical note, Technical_Note_Calculating_pH_AppNote.pdf
+(Application Note 99 from SBE):
+"This application note provides formulas to calculate pHTotal from raw ISFET
+voltage (VFET/REF ) and CTD data. Formulas for calculating pH Internal and pH External
+from a Shallow SeaFET/SeapHOx V ... are listed below. "
+More details can be found in:
 
-    K. S. Johnson, H. W. Jannasch, L. J. Coletti, V. A. Elrod, T. R. Martz,Y. Takeshita,
-    R. J. Carlson, and J. G. Connery. Deep-Sea DuraFET: A pressure tolerant pH sensor
-    designed for global sensor networks. Analytical Chemistry, 88:3249-3256, 2016.
+T. R. Martz, J. G. Connery, K. S. Johnson. Testing the Honeywell Durafet for seawater
+pH applications. Limnol. Oceanogr.: Methods, 8:172-184, 2010.
+
+K. S. Johnson, H. W. Jannasch, L. J. Coletti, V. A. Elrod, T. R. Martz,Y. Takeshita,
+R. J. Carlson, and J. G. Connery. Deep-Sea DuraFET: A pressure tolerant pH sensor
+designed for global sensor networks. Analytical Chemistry, 88:3249-3256, 2016.
 """
 
 import math
 
 
 def total_chloride_in_seawater(salinity):
-    """Calculate the Total chloride in seawater
+    """Calculate the Total chloride in seawater.
+
     as in:
     A. G. Dickson, C. L. Sabine, and J. R. Christian. IOCCP Report No. 8, 2007.
 
-    salinity is in psu
+    :param salinity: salinity is in psu
+    :return: total chloride in seawater
+
     """
     Cl_total = (0.99889 / 35.453) * (salinity / 1.80655) \
         * (1000 / (1000 - 1.005 * salinity))
@@ -42,23 +48,27 @@ def total_chloride_in_seawater(salinity):
 
 
 def sample_ionic_strength(salinity):
-    """Calculate the Sample Ionic Strength
+    """Calculate the Sample Ionic Strength.
+
     as in:
     A. G. Dickson, C. L. Sabine, and J. R. Christian. IOCCP Report No. 8, 2007.
 
-    salinity is in psu
+    :param salinity: salinity is in psu
+    :return: ionic strength
     """
     return (19.924 * salinity) / (1000 - 1.005 * salinity)
 
 
 def dubye_huckel_hci(temperature):
-    """ Calculate the Debye-Huckel constant for activity of HCl
+    """Calculate the Debye-Huckel constant for activity of HCl.
+
     as in:
     K. H. Khoo, R. W. Ramette, C. H. Culberson, and R. G. Bates. Determination of hydrogen
     ion concentrations in seawater from 5C to 40C: standard potentials at salinities 20 to 45%.
     Analytical Chemistry, 49:29-24, 1977.
 
-    temperature is in degrees Celsius
+    :param temperature: temperature in degrees Celsius
+    :return: Debye-Huckel constant
     """
     A_DH = 0.0000034286 * temperature ** 2 \
         + 0.00067524 * temperature \
@@ -67,15 +77,17 @@ def dubye_huckel_hci(temperature):
 
 
 def log_of_HCl_activity_coefficient(A_DH, ionic_strength, temperature):
-    """ Calculate the Logarithm of HCl activity coefficient as a function of temperature
+    """Calculate the Logarithm of HCl activity coefficient as a function of temperature.
+
     as in:
     K. H. Khoo, R. W. Ramette, C. H. Culberson, and R. G. Bates. Determination of hydrogen
     ion concentrations in seawater from 5C to 40C: standard potentials at salinities 20 to 45%.
     Analytical Chemistry, 49:29-24, 1977.
 
-    A_DH is the Debye-Huckel constant for activity of HCl
-    ionic-strength is the ionic strength
-    temperature is in degrees Celsius
+    :param A_DH: is the Debye-Huckel constant for activity of HCl
+    :param ionic-strength: is the ionic strength
+    :param temperature: is in degrees Celsius
+    :return: Logarithm of HCl activity coefficient
     """
     log_chi_HCl  = (-A_DH * math.sqrt(ionic_strength)) / (1 + 1.394 * math.sqrt(ionic_strength)) \
         + (0.08885 - 0.000111 * temperature) * ionic_strength
@@ -84,11 +96,13 @@ def log_of_HCl_activity_coefficient(A_DH, ionic_strength, temperature):
 
 
 def total_sulfate_in_seawater(salinity):
-    """Calculate the Total sulfate in seawater
+    """Calculate the Total sulfate in seawater.
+
     as in:
     A. G. Dickson, C. L. Sabine, and J. R. Christian. IOCCP Report No. 8, 2007.
 
-    salinity is in psu
+    :param salinity: salinity is in psu
+    :return: total sulfate in seawater
     """
     S_total = (0.1400 / 96.062) * (salinity / 1.80655)
 
@@ -96,13 +110,15 @@ def total_sulfate_in_seawater(salinity):
 
 
 def acid_dissociation_HSO4(salinity, temperature, ionic_strength):
-    """Calculate the Acid dissociation constant of HSO 4  ̄
+    """Calculate the Acid dissociation constant of HSO4.
+
     as in:
     A. G. Dickson, C. L. Sabine, and J. R. Christian. IOCCP Report No. 8, 2007.
 
-    salinity is in psu
-    temperature is in degrees Celsius (will be converted to Kelvin)
-    ionic_strength is ionic strength
+    :param salinity: salinity is in psu
+    :param temperature: is in degrees Celsius  (will be converted to Kelvin)
+    :param ionic-strength: is the ionic strength
+    :return: Acid dissociation constant of HSO4
     """
     # unit conversions
     temperature_k = temperature + 273.15  # Temperature in Kelvin
@@ -125,7 +141,8 @@ def acid_dissociation_HSO4(salinity, temperature, ionic_strength):
 
 
 def calibrate_ph(voltage, temperature, salinity=0, external=False, k0=None, k2=None, **kwargs):
-    """ A function that can calibrate either internal (for checking) or external pH
+    """A function that can calibrate either internal (for checking) or external pH.
+
     This comes from the technical note.
     The internal electrolyte gel electrochemical cell exhibits a Nernstian response to
     pH and has a negligible response to the chloride activity (Martz et al. 2010).
@@ -133,6 +150,15 @@ def calibrate_ph(voltage, temperature, salinity=0, external=False, k0=None, k2=N
     The solid state electrochemical cell exhibits a Nernstian response to pH with additional
     corrections due to it being sensitive to the chloride activity of salt water (Johnson
     et al. 2016).
+
+    :param voltage: sensor voltage
+    :param temperature: temperature is in degrees Celsius
+    :param salinity: salinity is in psu
+    :param external: Boolean if using full external equation
+    :param k0: intercept
+    :param k2: slope
+    :param kwargs: filler for extra dictionary elements
+    :return: calibrated pH
 
     """
     # Constants

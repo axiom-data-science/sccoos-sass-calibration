@@ -1,3 +1,8 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+"""Test usages of InstrumentSet class and methods."""
+
 from pathlib import Path
 from ..utilities import parse_datetime
 from ..sass import load_configs
@@ -12,6 +17,7 @@ instrument_set_filename = '../config/instrument_sets.json'
 
 @pytest.fixture
 def sio_set():
+    """Create an InstrumentSet from JSON file defined above."""
     path = here.joinpath(instrument_set_filename)
     instrument_sets = load_configs(path)
     this_set = [s for s in instrument_sets if s.station_id == 'sio']
@@ -20,15 +26,20 @@ def sio_set():
 
 @pytest.fixture
 def mocked_responses():
-    # Use to mock calls to requests library
+    """Use to mock calls to requests library.
+
     # https://github.com/getsentry/responses
+    """
     with responses.RequestsMock(assert_all_requests_are_fired=False) as rsps:
         yield rsps
 
 
 def test_url_builder(sio_set):
-    """Verify that the collector asks for all the urls we need."""
+    """Verify that the collector asks for all the urls we need.
 
+    :param sio_set: a pre-filled InstrumentSet
+    :return:
+    """
     # one url
     start = parse_datetime("2021-08-26T03:00:00Z")
     end = parse_datetime("2021-08-26T09:00:00Z")
@@ -49,8 +60,12 @@ def test_url_builder(sio_set):
 
 
 def test_retrieve_observations(sio_set, mocked_responses):
-    """ Verify that we're reading raw data correctly. """
+    """Verify reading raw data correctly.
 
+    :param sio_set: a pre-filled InstrumentSet
+    :param mocked_responses: mock Get so retrieves local file
+    :return:
+    """
     # instead of making GET request to the HTTP server, we are going to read a local file
     path = here.joinpath('resources/raw_data/sio_data-20210826.dat')
     with open(path, 'r', encoding='UTF-8') as myfile:
@@ -71,11 +86,16 @@ def test_retrieve_observations(sio_set, mocked_responses):
 
 
 def test_retrieve_corrupt_observations(sio_set, mocked_responses):
-    """ Verify that we're reading raw data correctly even when data are corrupted.
+    """Verify correct reading of raw data even when data are corrupted.
+
     The corrupted file is real, but I added a empty temperature fields to duplicate another
     error I got later.  That's ",," in the temperature field that was causing the check for
-    "#" to balk. """
+    "#" to balk.
 
+    :param sio_set: a pre-filled InstrumentSet
+    :param mocked_responses: mock Get so retrieves local file
+    :return:
+    """
     # instead of making GET request to the HTTP server, we are going to read a local file
     path = here.joinpath('resources/raw_data/stearns_data-20210720_corrupt.dat')
     with open(path, 'r', encoding='UTF-8') as myfile:
