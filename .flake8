@@ -8,4 +8,3 @@ exclude = setup.py
 per-file-ignores =
     tests/**/*.py: F811 F401
     tests/*.py: F811 F401
-    */__init__.py: D104 
