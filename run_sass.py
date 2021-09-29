@@ -3,7 +3,7 @@
 import argparse
 from dateutil import parser as dateparser
 from datetime import datetime, timezone
-from sass import SassCalibrationRunner
+from sass.sass_runner import SassCalibrationRunner
 
 
 def main():
@@ -30,7 +30,8 @@ def main():
         exit(1)
 
     # then do something!
-    SassCalibrationRunner.run(start=start, end=end, station_id=station_id)
+    runner = SassCalibrationRunner()
+    runner.run(start=start, end=end, station_id=station_id)
 
 
 if __name__ == '__main__':

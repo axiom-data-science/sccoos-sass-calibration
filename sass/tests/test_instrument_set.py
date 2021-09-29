@@ -9,7 +9,7 @@ from pathlib import Path
 import pytest
 import responses
 
-from ..sass import load_configs
+from ..sass_runner import load_configs
 from ..utilities import parse_datetime
 
 here = Path(__file__).parent

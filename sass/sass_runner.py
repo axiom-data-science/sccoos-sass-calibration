@@ -6,9 +6,7 @@
 import json
 from pathlib import Path
 
-from sass.log import logger
-
-from . import instrument_set
+from sass import logger, instrument_set
 
 here = Path(__file__).parent
 stations_filename = 'config/stations.json'
@@ -42,7 +40,6 @@ class SassCalibrationRunner:
         :return:
         """
         logger.info(f'{start} to {end} for station {station_id}')
-
         path = here.joinpath(instrument_set_filename)
         instrument_sets = load_configs(path)
-        logger.info(instrument_sets)
+        logger.debug(instrument_sets)

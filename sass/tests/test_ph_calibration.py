@@ -9,6 +9,7 @@ import pandas as pd
 
 from ..seafet_ph import calibrate_ph
 from ..utilities import proper_rounding
+from sass import logger
 
 here = Path(__file__).parent
 
@@ -75,12 +76,12 @@ def test_ph_tech_note():
 
     ph = calibrate_ph(voltage=v_int, temperature=temperature,
                       external=False, k0=k0_int, k2=k2_int)
-    print('\ninternal pH is', round(ph, 4))
+    logger.info(f'internal pH is {round(ph, 4)}')
     assert round(ph, 4) == 7.8310
 
     ph = calibrate_ph(voltage=v_ext, temperature=temperature, salinity=salinity,
                       external=True, k0=k0_ext, k2=k2_ext)
-    print('external pH is', round(ph, 4))
+    logger.info(f'external pH is {round(ph, 4)}')
     assert round(ph, 4) == 7.8454
 
     # should be

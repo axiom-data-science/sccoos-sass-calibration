@@ -54,7 +54,7 @@ RUN --mount=type=cache,id=sass_calibration,target=/opt/conda/pkgs \
     --mount=type=cache,id=sass_calibration,target=/root/.cache/pip \
     /tmp/install-project.sh && rm -rf /tmp/install-project.sh
 WORKDIR $PROJECT_ROOT/
-
+COPY run_sass.py $PROJECT_ROOT
 
 
 
