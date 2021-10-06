@@ -83,7 +83,7 @@ def test_retrieve_observations(sio_set, mocked_responses):
     assert len(data) == 30
     assert data.iloc[0, 2] == 19.5426  # temperature
     # time was added as the last column
-    assert data.iloc[0, -1] == parse_datetime("2021-08-26T03:02:20")
+    assert data.iloc[0, -1] == parse_datetime("2021-08-26T03:02:18")
 
 
 def test_retrieve_corrupt_observations(sio_set, mocked_responses):
@@ -112,4 +112,4 @@ def test_retrieve_corrupt_observations(sio_set, mocked_responses):
     data = sio_set.retrieve_and_parse_raw_data(urls[0], start, end)
     assert len(data) == 78  # 83 lines with 5 corrupt
     assert data['temperature'].iloc[77] == 16.2690
-    assert data['time'].iloc[77] == parse_datetime("2021-07-20T07:41:05")
+    assert data['time'].iloc[77] == parse_datetime("2021-07-20T07:41:04")

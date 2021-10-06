@@ -99,7 +99,7 @@ class InstrumentSet:
         data[start_column] = data[start_column].str.strip().astype(float)
 
         # ensure that the "time" column has datetime values in UTC
-        data["time"] = pd.to_datetime(data["date"])
+        data["time"] = pd.to_datetime(data["sensor_time"], utc=True)
         data = data[(data['time'] >= start) & (data['time'] <= end)]
 
         return data

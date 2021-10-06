@@ -31,15 +31,16 @@ def load_configs(path_to_file):
 class SassCalibrationRunner:
     """Run the processing pipeline."""
 
-    def run(self, start=None, end=None, station_id=None):
+    def run(self, start=None, end=None, set_id=None):
         """Run the processing.
 
         :param start: datetime for first data to be processed
         :param end: Datetime for last data to be processed
-        :param station_id: unique identifier for station to be processed
+        :param set_id: unique identifier for set of instruments to be processed
         :return:
         """
-        logger.info(f'{start} to {end} for station {station_id}')
+        logger.info(f'{start} to {end} for instrument set {set_id}')
         path = here.joinpath(instrument_set_filename)
         instrument_sets = load_configs(path)
-        logger.debug(instrument_sets)
+        this_set = [s for s in instrument_sets if s.set_id == set_id]
+        logger.debug(this_set)
