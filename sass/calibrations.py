@@ -6,20 +6,23 @@
 import pandas as pd
 
 # from .seafet_ph import calibrate_ph
-# from .ctd_chlorophyll import calibrate_chlorophyll
+from .ctd_chlorophyll import calibrate_chlorophyll
 from .sbe63_o2 import calibrate_oxygen, calibrate_temperature
 
 
 def get_chlor(data, cals):
     """Call the chlorophyll calibration with data and coefficients."""
-    cals.drop(columns=['START TIME', 'START TIME (UTC)',
-                       'SERIAL NUMBER', 'CALIBRATION DATE'], inplace=True)
+    # cals.drop(columns=['START TIME', 'START TIME\n(UTC)',
+    #                    'SERIAL\nNUMBER', 'CALIBRATION\nDATE'], inplace=True)
     data_all = pd.merge_asof(data, cals, on=['time'], direction='backward')
 
     data_all.rename(columns={'Clean Water Offset (CWO)': 'clean_water_offset',
-                             'Scale Factor': 'scale_factor'}, inplace=True)
-    # calibrate_chlorophyll(output, scale_factor=None, clean_water_offset=None, **kwargs)
-    pass
+                             'Scale Factor': 'scale_factor',
+                             'V2': 'output'}, inplace=True)
+    data_all = data_all[['output', 'scale_factor', 'clean_water_offset']]
+    data_all['chlor_calc'] = data_all.apply(lambda x: calibrate_chlorophyll(**x), axis=1)
+
+    return data_all['chlor_calc'].round(2)
 
 
 def get_o2(data, cals):

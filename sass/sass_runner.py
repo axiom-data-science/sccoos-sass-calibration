@@ -7,7 +7,7 @@ import json
 from pathlib import Path
 
 from sass import logger, instrument_set
-from .calibrations import get_o2  # ,get_chlor, get_ph
+from .calibrations import get_o2, get_chlor  # , get_ph
 
 here = Path(__file__).parent
 stations_filename = 'config/stations.json'
@@ -67,10 +67,10 @@ class SassCalibrationRunner:
 
             for parameter in this_set.parameters:
                 df_cal = cals[parameter]
+                if parameter == 'chlor':
+                    data['chlor'] = get_chlor(data, df_cal)
                 if parameter == 'o2':
                     data['o2'] = get_o2(data, df_cal)
-            #     if parameter == 'chlor':
-            #         data['chlor'] = get_chlor(data, df_cal)
 
             # write it out
             path = here.joinpath(url.replace('https://sccoos.org/dr/data', outgoing))
