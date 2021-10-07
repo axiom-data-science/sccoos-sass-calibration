@@ -48,22 +48,34 @@ class SassCalibrationRunner:
         this_set = next(s for s in instrument_sets if s.set_id == set_id)
         logger.debug(this_set)
 
+        # read and stash the calibration coeffs
+        # TODO maybe switch to reading local, pre-grabbed coeffs?
+        cals = {}
         for parameter in this_set.parameters:
-            logger.info(f'Processing {parameter}')
+            logger.info(f'Getting calibration coefficients for {parameter}')
             df_cal = this_set.get_cals(parameter)
             cal_filename = f'{incoming}/cals/{this_set.set_id}_{parameter}.csv'
             path = here.joinpath(cal_filename)
             df_cal.to_csv(path, index=False)
+            cals[parameter] = df_cal
 
-            urls = this_set.build_urls(start, end)
-            for url in urls:
-                path = here.joinpath(url.replace('https://sccoos.org/dr/data', incoming))
-                logger.debug(f'Reading {path}')
-                data = this_set.retrieve_and_parse_raw_data(path, start, end)
+        urls = this_set.build_urls(start, end)
+        for url in urls:
+            path = here.joinpath(url.replace('https://sccoos.org/dr/data', incoming))
+            logger.debug(f'Reading {path}')
+            data = this_set.retrieve_and_parse_raw_data(path, start, end)
+
+            for parameter in this_set.parameters:
+                df_cal = cals[parameter]
                 if parameter == 'o2':
                     data['o2'] = get_o2(data, df_cal)
-                #     if parameter == 'chlor':
-                #         data['chlor'] = get_chlor(data, df_cal)
-                path = here.joinpath(url.replace('https://sccoos.org/dr/data', outgoing))
-                logger.debug(f'Writing to {str(path)}')
-                data.to_csv(path, index=False, na_rep='NaN')
+            #     if parameter == 'chlor':
+            #         data['chlor'] = get_chlor(data, df_cal)
+
+            # write it out
+            path = here.joinpath(url.replace('https://sccoos.org/dr/data', outgoing))
+            logger.debug(f'Writing to {str(path)}')
+            if not path.parents[0].exists():
+                path.parents[0].mkdir(parents=True)
+            data.drop(columns=['time'], inplace=True)  # don't need this
+            data.to_csv(path, index=False, na_rep='NaN')

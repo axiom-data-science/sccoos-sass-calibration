@@ -12,6 +12,12 @@ from .sbe63_o2 import calibrate_oxygen, calibrate_temperature
 
 def get_chlor(data, cals):
     """Call the chlorophyll calibration with data and coefficients."""
+    cals.drop(columns=['START TIME', 'START TIME (UTC)',
+                       'SERIAL NUMBER', 'CALIBRATION DATE'], inplace=True)
+    data_all = pd.merge_asof(data, cals, on=['time'], direction='backward')
+
+    data_all.rename(columns={'Clean Water Offset (CWO)': 'clean_water_offset',
+                             'Scale Factor': 'scale_factor'}, inplace=True)
     # calibrate_chlorophyll(output, scale_factor=None, clean_water_offset=None, **kwargs)
     pass
 
@@ -36,7 +42,7 @@ def get_o2(data, cals):
     data_all.rename(columns={'O2_phase_delay': 'output'}, inplace=True)
     data_all['oxygen_calc'] = data_all.apply(lambda x: calibrate_oxygen(**x), axis=1)
 
-    return data_all['oxygen_calc']
+    return data_all['oxygen_calc'].round(2)
 
 
 def get_ph(data, cals):
