@@ -5,6 +5,7 @@
 
 from io import StringIO
 import datetime
+import pathlib
 
 import pandas as pd
 from requests.exceptions import HTTPError
@@ -89,20 +90,23 @@ class InstrumentSet:
     def retrieve_and_parse_raw_data(self, url, start, end) -> pd.DataFrame:
         """Read raw SASS data from URL and convert it to a DataFrame with headers.
 
-        :param url: string url to the daily data file
+        :param url: string url to the daily data file. can also be local file.
         :param start: earliest datetime allowed
         :param end: latest datetime allowed
         :return: DataFrame of raw data
         """
-        try:
-            raw_dataset = utilities.requests_get(url)
-        except HTTPError:
-            # logger.warn(f"No data found for {station.foreignId} at {url}")
-            return []
-
-        # No column headers at all here
         names = self.data_columns
-        data = pd.read_csv(StringIO(raw_dataset), names=names)
+        if type(url) is pathlib.PosixPath:
+            data = pd.read_csv(url, names=names, na_values=[-9.999, -0.999])
+        else:
+            try:
+                raw_dataset = utilities.requests_get(url)
+            except HTTPError:
+                # logger.warn(f"No data found for {station.foreignId} at {url}")
+                return []
+
+            # No column headers at all here
+            data = pd.read_csv(StringIO(raw_dataset), names=names, na_values=[-9.999, -0.999])
 
         # There are some corrupted lines that have only a subset of fields.
         # Who knows which fields remain so drop the whole line.
@@ -130,12 +134,12 @@ class InstrumentSet:
         df = pd.read_excel(url)
 
         if parameter == 'chlor':
-            df['date'] = df['START TIME (UTC)'].apply(
+            df['time'] = df['START TIME (UTC)'].apply(
                 lambda x: datetime.time.strftime(x, '%H:%M:%S'))
-            df['date'] = df['START DATE'].dt.strftime('%m/%d/%Y') + ' ' + df['date']
-            df['date'] = pd.to_datetime(df['date'], utc=True)
+            df['time'] = df['START DATE'].dt.strftime('%m/%d/%Y') + ' ' + df['time']
+            df['time'] = pd.to_datetime(df['time'], utc=True)
         elif parameter == 'o2':
-            df['date'] = pd.to_datetime(df['START TIME'], utc=True)
+            df['time'] = pd.to_datetime(df['START TIME'], utc=True)
         else:
             pass  # no times in pH calibrations
 

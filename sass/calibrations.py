@@ -5,8 +5,8 @@
 
 import pandas as pd
 
-from .seafet_ph import calibrate_ph
-from .ctd_chlorophyll import calibrate_chlorophyll
+# from .seafet_ph import calibrate_ph
+# from .ctd_chlorophyll import calibrate_chlorophyll
 from .sbe63_o2 import calibrate_oxygen, calibrate_temperature
 
 
@@ -17,7 +17,7 @@ def get_chlor(data, cals):
 
 
 def get_o2(data, cals):
-    """Call the O2 calibration with data and coefficients
+    """Call the O2 calibration with data and coefficients.
 
     calibrate_temperature(voltage, TA0=None, TA1=None, TA2=None, TA3=None, **kwargs)
     calibrate_oxygen(output, temperature, salinity=0, pressure=0,
@@ -25,8 +25,8 @@ def get_o2(data, cals):
                      C0=None, C1=None, C2=None, E=None, **kwargs)
     """
     # merge the important cali columns with the data to get right calis for dates
-    cals.drop(column=['START DATE', 'START TIME(UTC)', 'SERIAL NUMBER', 'CALIBRATION DATE'], inplace=True)
-    data_all = pd.merge_asof(data, cals, on=['date'], direction='backward')
+    cals.drop(columns=['START TIME', 'SERIAL NUMBER', 'CALIBRATION DATE'], inplace=True)
+    data_all = pd.merge_asof(data, cals, on=['time'], direction='backward')
 
     # Calculate the O2 sensor temperature (overwrites the CTD temperature)
     data_all.rename(columns={'O2_raw_voltage': 'voltage'}, inplace=True)
@@ -39,7 +39,7 @@ def get_o2(data, cals):
     return data_all['oxygen_calc']
 
 
-def get_ph(data,cals):
-
+def get_ph(data, cals):
+    """Call the pH calibration with data and coefficients."""
     # calibrate_ph(voltage, temperature, salinity=0, external=False, k0=None, k2=None, **kwargs):
     pass

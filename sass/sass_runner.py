@@ -7,12 +7,13 @@ import json
 from pathlib import Path
 
 from sass import logger, instrument_set
-from .calibrations import get_chlor, get_ph, get_o2
+from .calibrations import get_o2  # ,get_chlor, get_ph
 
 here = Path(__file__).parent
 stations_filename = 'config/stations.json'
 instrument_set_filename = 'config/instrument_sets.json'
 incoming = '../data/incoming'
+outgoing = '../data/outgoing'
 
 
 def load_configs(path_to_file):
@@ -56,14 +57,13 @@ class SassCalibrationRunner:
 
             urls = this_set.build_urls(start, end)
             for url in urls:
-                url = url.replace('https://sccoos.org/dr/data', incoming)
-                path = here.joinpath(url)
+                path = here.joinpath(url.replace('https://sccoos.org/dr/data', incoming))
                 logger.debug(f'Reading {path}')
                 data = this_set.retrieve_and_parse_raw_data(path, start, end)
                 if parameter == 'o2':
                     data['o2'] = get_o2(data, df_cal)
                 #     if parameter == 'chlor':
                 #         data['chlor'] = get_chlor(data, df_cal)
-                outfile = url.replace('incoming', 'outgoing')
-                logger.debug(f'Reading {outfile}')
-                data.to_csv(outfile, index=False)
+                path = here.joinpath(url.replace('https://sccoos.org/dr/data', outgoing))
+                logger.debug(f'Writing to {str(path)}')
+                data.to_csv(path, index=False, na_rep='NaN')
