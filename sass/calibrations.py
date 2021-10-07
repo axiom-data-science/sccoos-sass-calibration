@@ -34,7 +34,10 @@ def get_o2(data, cals):
                      C0=None, C1=None, C2=None, E=None, **kwargs)
     """
     # merge the important cali columns with the data to get right calis for dates
-    cals.drop(columns=['START TIME', 'SERIAL NUMBER', 'CALIBRATION DATE'], inplace=True)
+    try:
+        cals.drop(columns=['START TIME', 'SERIAL NUMBER', 'CALIBRATION DATE'], inplace=True)
+    except KeyError:
+        pass
     data_all = pd.merge_asof(data, cals, on=['time'], direction='backward')
 
     # Calculate the O2 sensor temperature (overwrites the CTD temperature)

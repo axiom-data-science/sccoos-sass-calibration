@@ -62,8 +62,12 @@ class SassCalibrationRunner:
         urls = this_set.build_urls(start, end)
         for url in urls:
             path = here.joinpath(url.replace('https://sccoos.org/dr/data', incoming))
+            if not path.exists():
+                continue
             logger.debug(f'Reading {path}')
             data = this_set.retrieve_and_parse_raw_data(path, start, end)
+            if len(data) == 0:
+                continue
 
             for parameter in this_set.parameters:
                 df_cal = cals[parameter]

@@ -97,13 +97,17 @@ class InstrumentSet:
         """
         names = self.data_columns
         if type(url) is pathlib.PosixPath:
-            data = pd.read_csv(url, names=names, na_values=[-9.999, -0.999])
+            try:
+                data = pd.read_csv(url, names=names, na_values=[-9.999, -0.999],
+                                   encoding="ISO-8859-1")
+            except FileNotFoundError:
+                return pd.DataFrame({})
         else:
             try:
                 raw_dataset = utilities.requests_get(url)
             except HTTPError:
                 # logger.warn(f"No data found for {station.foreignId} at {url}")
-                return []
+                return pd.DataFrame({})
 
             # No column headers at all here
             data = pd.read_csv(StringIO(raw_dataset), names=names, na_values=[-9.999, -0.999])
