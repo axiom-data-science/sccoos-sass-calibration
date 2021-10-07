@@ -20,7 +20,7 @@ class InstrumentSet:
                  station_id=None, raw_data_url='', columns=[], calibration_url='',
                  chlor_tab=None, chlor_gid=None,
                  o2_tab=None, o2_gid=None,
-                 ph_tab=None, ph_gid=None, **kwargs):
+                 ph_tab=None, ph_gid=None, ph_salinity_set=None, **kwargs):
         """Fills an InstrumentSet with information read from a JSON config file.
 
         :param set_id: unique identifier of the set (string)
@@ -36,6 +36,7 @@ class InstrumentSet:
         :param o2_gid: Google sheet id code for the Oxygen Sensor (string)
         :param ph_tab: Google sheet tab name for the SeaFET (string)
         :param ph_gid: Google sheet id code for the SeaFET (string)
+        :param ph_salinity_set: set_id of the instrument set that will provide salinity
         :param kwargs:
         """
         self.set_id = set_id
@@ -55,6 +56,7 @@ class InstrumentSet:
             'o2': o2_gid,
             'ph': ph_gid
         }
+        self.ph_salinity_set = ph_salinity_set
         self.parameters = []
         for key, value in self.cal_gids.items():
             if value:

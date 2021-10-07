@@ -7,7 +7,7 @@ import json
 from pathlib import Path
 
 from sass import logger, instrument_set
-from .calibrations import get_o2, get_chlor  # , get_ph
+from .calibrations import get_o2, get_chlor, get_ph
 
 here = Path(__file__).parent
 stations_filename = 'config/stations.json'
@@ -48,6 +48,12 @@ class SassCalibrationRunner:
         this_set = next(s for s in instrument_sets if s.set_id == set_id)
         logger.debug(this_set)
 
+        # If doing pH, then also need salinity from the CTD
+        if this_set.ph_salinity_set:
+            salinity_set = next(s for s in instrument_sets if s.set_id == this_set.ph_salinity_set)
+            logger.debug(salinity_set)
+
+
         # read and stash the calibration coeffs
         # TODO maybe switch to reading local, pre-grabbed coeffs?
         cals = {}
@@ -75,6 +81,8 @@ class SassCalibrationRunner:
                     data['chlor'] = get_chlor(data, df_cal)
                 if parameter == 'o2':
                     data['o2'] = get_o2(data, df_cal)
+                if parameter == 'ph':
+                    data['ph'] = get_ph(data, df_cal, this_set.ph_salinity_set)
 
             # write it out
             path = here.joinpath(url.replace('https://sccoos.org/dr/data', outgoing))

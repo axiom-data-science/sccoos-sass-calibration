@@ -5,7 +5,7 @@
 
 import pandas as pd
 
-# from .seafet_ph import calibrate_ph
+from .seafet_ph import calibrate_ph
 from .ctd_chlorophyll import calibrate_chlorophyll
 from .sbe63_o2 import calibrate_oxygen, calibrate_temperature
 
@@ -51,7 +51,10 @@ def get_o2(data, cals):
     return data_all['oxygen_calc'].round(2)
 
 
-def get_ph(data, cals):
-    """Call the pH calibration with data and coefficients."""
+def get_ph(data, cals, salinity_set):
+    """Call the pH calibration with data and coefficients.
+    Have to get the data for salinity too
+    """
+
     # calibrate_ph(voltage, temperature, salinity=0, external=False, k0=None, k2=None, **kwargs):
     pass

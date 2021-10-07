@@ -33,7 +33,7 @@
       "o2_tab": "SBE 63 O2",
       "o2_gid": "961390164",
       "ph_tab": null,
-      "ph_gid": null
+      "ph_gid": null,
     },
     {
       "set_id": "nb_ph_1",
@@ -49,7 +49,8 @@
       "o2_tab": null,
       "o2_gid": null,
       "ph_tab": "NB_SeaFET_Coeffs",
-      "ph_gid": "980013806"
+      "ph_gid": "980013806",
+      "ph_salinity_set": "nb_ctd_1"
     }
   ],
   "note": "column names for stations not entered yet = temporary",
