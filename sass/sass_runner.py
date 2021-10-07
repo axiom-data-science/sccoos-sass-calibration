@@ -7,6 +7,7 @@ import json
 from pathlib import Path
 
 from sass import logger, instrument_set
+from .calibrations import get_chlor, get_ph, get_o2
 
 here = Path(__file__).parent
 stations_filename = 'config/stations.json'
@@ -51,3 +52,9 @@ class SassCalibrationRunner:
             cal_filename = f'{incoming}/cals/{this_set.set_id}_{parameter}.csv'
             path = here.joinpath(cal_filename)
             df_cal.to_csv(path, index=False)
+
+            urls = this_set.build_urls(start, end)
+            for url in urls:
+                data = this_set.retrieve_and_parse_raw_data(url, start, end)
+            #     if parameter == 'chlor':
+            #         data['chlor'] = get_chlor(data, df_cal)
