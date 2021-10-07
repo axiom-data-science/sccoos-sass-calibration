@@ -4,6 +4,7 @@
 """Descriptions of instrument sets."""
 
 from io import StringIO
+import datetime
 
 import pandas as pd
 from requests.exceptions import HTTPError
@@ -15,7 +16,10 @@ from . import utilities
 class InstrumentSet:
     """Collects the information associated with a set of instrumentation installed at a site."""
     def __init__(self, set_id=None, start_date=None, end_date=None,
-                 station_id=None, raw_data_url='', columns=[], calibration_locations={}, **kwargs):
+                 station_id=None, raw_data_url='', columns=[], calibration_url='',
+                 chlor_tab=None, chlor_gid=None,
+                 o2_tab=None, o2_gid=None,
+                 ph_tab=None, ph_gid=None, **kwargs):
         """Fills an InstrumentSet with information read from a JSON config file.
 
         :param set_id: unique identifier of the set (string)
@@ -24,7 +28,13 @@ class InstrumentSet:
         :param station_id:  where the InstrumentSet was installed (string)
         :param raw_data_url: where data for the InstrumentSet is posted publicly (string)
         :param columns: the column header for the raw data (list of strings)
-        :param calibration_locations: dictionary of Google Sheet url and tab name/uid
+        :param calibration_url: dictionary of Google Sheet url and tab name/uid
+        :param chlor_tab: Google sheet tab name for the Fluorometer (string)
+        :param chlor_gid: Google sheet id code for the Fluorometer (string)
+        :param o2_tab: Google sheet tab name for the Oxygen Sensor (string)
+        :param o2_gid: Google sheet id code for the Oxygen Sensor (string)
+        :param ph_tab: Google sheet tab name for the SeaFET (string)
+        :param ph_gid: Google sheet id code for the SeaFET (string)
         :param kwargs:
         """
         self.set_id = set_id
@@ -32,12 +42,22 @@ class InstrumentSet:
         self.end_date = end_date
         self.station_id = station_id
         self.raw_data_url = raw_data_url
-        self.columns = columns
-        self.calibration_locations = calibration_locations
-        if 'tab_names' in calibration_locations.keys():
-            self.parameters = list(calibration_locations['tab_names'].keys())
-        else:
-            self.parameters = []
+        self.data_columns = columns
+        self.calibration_url = calibration_url
+        self.cal_tabs = {
+            'chlor': chlor_tab,
+            'o2': o2_tab,
+            'ph': ph_tab
+        }
+        self.cal_gids = {
+            'chlor': chlor_gid,
+            'o2': o2_gid,
+            'ph': ph_gid
+        }
+        self.parameters = []
+        for key, value in self.cal_gids.items():
+            if value:
+                self.parameters.append(key)
 
     def __repr__(self):
         """Returns a printable string."""
@@ -81,7 +101,7 @@ class InstrumentSet:
             return []
 
         # No column headers at all here
-        names = self.columns
+        names = self.data_columns
         data = pd.read_csv(StringIO(raw_dataset), names=names)
 
         # There are some corrupted lines that have only a subset of fields.
@@ -103,3 +123,20 @@ class InstrumentSet:
         data = data[(data['time'] >= start) & (data['time'] <= end)]
 
         return data
+
+    def get_cals(self, parameter):
+        """Retrieve table of calibration coefficients from Google Sheet tab."""
+        url = self.calibration_url + self.cal_gids[parameter]
+        df = pd.read_excel(url)
+
+        if parameter == 'chlor':
+            df['time'] = df['START TIME (UTC)'].apply(
+                lambda x: datetime.time.strftime(x, '%H:%M:%S'))
+            df['time'] = df['START DATE'].dt.strftime('%m/%d/%Y') + ' ' + df['time']
+            df['time'] = pd.to_datetime(df['time'], utc=True)
+        elif parameter == 'o2':
+            df['time'] = pd.to_datetime(df['START TIME'], utc=True)
+        else:
+            pass  # no times in pH calibrations
+
+        return df

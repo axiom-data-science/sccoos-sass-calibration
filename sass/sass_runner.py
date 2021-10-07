@@ -11,6 +11,7 @@ from sass import logger, instrument_set
 here = Path(__file__).parent
 stations_filename = 'config/stations.json'
 instrument_set_filename = 'config/instrument_sets.json'
+incoming = '../data/incoming'
 
 
 def load_configs(path_to_file):
@@ -42,5 +43,11 @@ class SassCalibrationRunner:
         logger.info(f'{start} to {end} for instrument set {set_id}')
         path = here.joinpath(instrument_set_filename)
         instrument_sets = load_configs(path)
-        this_set = [s for s in instrument_sets if s.set_id == set_id]
+        this_set = next(s for s in instrument_sets if s.set_id == set_id)
         logger.debug(this_set)
+
+        for parameter in this_set.parameters:
+            df_cal = this_set.get_cals(parameter)
+            cal_filename = f'{incoming}/cals/{this_set.set_id}_{parameter}.csv'
+            path = here.joinpath(cal_filename)
+            df_cal.to_csv(path, index=False)

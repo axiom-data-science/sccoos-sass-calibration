@@ -3,25 +3,23 @@
   "purpose": "To document the formats of automated shore station data",
   "sets": [
     {
-      "set_id": "sio_1",
+      "set_id": "sio_ctd_1",
       "start_date": null,
       "end_date": null,
       "station_id": "sio",
       "raw_data_url": "https://sccoos.org/dr/data/data/",
       "columns": ["server_time", "ip", "temperature", "conductivity", "pressure", "V0", "V1", "V2", "V3",
         "salinity", "sensor_time", "sigmat", "battery", "pump"],
-      "calibration_locations": {
-        "sheet_name": "https://docs.google.com/spreadsheets/d/1099lNMJ3XZQIFv7oSr0Q-5i4fihx7gnvoxMaVhiUhJE/export?format=xlsx&gid=",
-        "tab_names": {
-          "chlorophyll": "SIO"
-        },
-        "gids":{
-          "chlorophyll": "533828951"
-        }
-      }
+      "calibration_url": "https://docs.google.com/spreadsheets/d/1099lNMJ3XZQIFv7oSr0Q-5i4fihx7gnvoxMaVhiUhJE/export?format=xlsx&gid=",
+      "chlor_tab": "SIO_Fluoro",
+      "chlor_gid": "1622349468",
+      "o2_tab": null,
+      "o2_gid": null,
+      "ph_tab": null,
+      "ph_gid": null
     },
     {
-      "set_id": "nb_1",
+      "set_id": "nb_ctd_1",
       "start_date": null,
       "end_date": null,
       "station_id": "nb",
@@ -29,17 +27,13 @@
       "columns":  ["server_time", "ip", "temperature", "conductivity", "pressure", "V2",
         "O2_phase_delay", "O2_raw_voltage",
         "salinity", "sensor_time", "sigmat", "battery", "pump"],
-     "calibration_locations": {
-        "sheet_name": "https://docs.google.com/spreadsheets/d/1099lNMJ3XZQIFv7oSr0Q-5i4fihx7gnvoxMaVhiUhJE/export?format=xlsx&gid=",
-        "tab_names": {
-          "chlorophyll": "Newport Pier",
-          "oxygen": "SBE 63 O2"
-        },
-        "gids":{
-          "chlorophyll": "264494544",
-          "oxygen": "961390164"
-        }
-      }
+      "calibration_url": "https://docs.google.com/spreadsheets/d/1099lNMJ3XZQIFv7oSr0Q-5i4fihx7gnvoxMaVhiUhJE/export?format=xlsx&gid=",
+      "chlor_tab": "NB_Fluoro",
+      "chlor_gid": "1471974914",
+      "o2_tab": "SBE 63 O2",
+      "o2_gid": "961390164",
+      "ph_tab": null,
+      "ph_gid": null
     },
     {
       "set_id": "nb_ph_1",
@@ -49,15 +43,13 @@
       "raw_data_url": "https://sccoos.org/dr/data/newport_pier_ph/",
       "columns":  ["server_time", "ip", "serial_number", "sensor_time", "record",
         "flags", "ph_ext", "ph_int", "v_ext", "v_int", "temperature", "rh", "temperature_int"],
-     "calibration_locations": {
-        "sheet_name": "https://docs.google.com/spreadsheets/d/1099lNMJ3XZQIFv7oSr0Q-5i4fihx7gnvoxMaVhiUhJE/export?format=xlsx&gid=",
-        "tab_names": {
-          "ph": "NB_SeaFET_Coeffs"
-        },
-        "gids":{
-          "ph": "980013806"
-        }
-      }
+      "calibration_url": "https://docs.google.com/spreadsheets/d/1099lNMJ3XZQIFv7oSr0Q-5i4fihx7gnvoxMaVhiUhJE/export?format=xlsx&gid=",
+      "chlor_tab": null,
+      "chlor_gid": null,
+      "o2_tab": null,
+      "o2_gid": null,
+      "ph_tab": "NB_SeaFET_Coeffs",
+      "ph_gid": "980013806"
     }
   ],
   "note": "column names for stations not entered yet = temporary",
