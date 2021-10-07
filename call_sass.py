@@ -4,10 +4,9 @@
 """Organizes the input arguments and sends job to sass."""
 
 import argparse
-from dateutil import parser as dateparser
-from datetime import datetime, timezone
+
 from sass.sass_runner import SassCalibrationRunner
-from sass import logger
+from sass import logger, utilities
 
 
 def main():
@@ -17,17 +16,14 @@ def main():
                         help='Start date, UTC timestamp (e.g., 2012-02-07T13:30:00Z)')
     parser.add_argument('-t2', '--end', dest='end', required=True, type=str,
                         help='End date, UTC timestamp (e.g., 2012-02-07T13:30:00Z)')
-    parser.add_argument('-s', '--station', dest='set_id', required=False, type=str,
+    parser.add_argument('-s', '--set', dest='set_id', required=False, type=str,
                         help='Id of the set of instruments to process')
 
     args = parser.parse_args()
 
     set_id = args.set_id
-    start = dateparser.parse(args.start)
-    if args.end == 'now':
-        end = datetime.now(timezone.utc)
-    else:
-        end = dateparser.parse(args.end)
+    start = utilities.parse_datetime(args.start)
+    end = utilities.parse_datetime(args.end)
 
     if start > end:
         logger.error('Invalid dates given: Start date is after end date')

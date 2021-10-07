@@ -48,6 +48,7 @@ class SassCalibrationRunner:
         logger.debug(this_set)
 
         for parameter in this_set.parameters:
+            logger.info(f'Processing {parameter}')
             df_cal = this_set.get_cals(parameter)
             cal_filename = f'{incoming}/cals/{this_set.set_id}_{parameter}.csv'
             path = here.joinpath(cal_filename)
@@ -55,6 +56,14 @@ class SassCalibrationRunner:
 
             urls = this_set.build_urls(start, end)
             for url in urls:
-                data = this_set.retrieve_and_parse_raw_data(url, start, end)
-            #     if parameter == 'chlor':
-            #         data['chlor'] = get_chlor(data, df_cal)
+                url = url.replace('https://sccoos.org/dr/data', incoming)
+                path = here.joinpath(url)
+                logger.debug(f'Reading {path}')
+                data = this_set.retrieve_and_parse_raw_data(path, start, end)
+                if parameter == 'o2':
+                    data['o2'] = get_o2(data, df_cal)
+                #     if parameter == 'chlor':
+                #         data['chlor'] = get_chlor(data, df_cal)
+                outfile = url.replace('incoming', 'outgoing')
+                logger.debug(f'Reading {outfile}')
+                data.to_csv(outfile, index=False)

@@ -130,12 +130,12 @@ class InstrumentSet:
         df = pd.read_excel(url)
 
         if parameter == 'chlor':
-            df['time'] = df['START TIME (UTC)'].apply(
+            df['date'] = df['START TIME (UTC)'].apply(
                 lambda x: datetime.time.strftime(x, '%H:%M:%S'))
-            df['time'] = df['START DATE'].dt.strftime('%m/%d/%Y') + ' ' + df['time']
-            df['time'] = pd.to_datetime(df['time'], utc=True)
+            df['date'] = df['START DATE'].dt.strftime('%m/%d/%Y') + ' ' + df['date']
+            df['date'] = pd.to_datetime(df['date'], utc=True)
         elif parameter == 'o2':
-            df['time'] = pd.to_datetime(df['START TIME'], utc=True)
+            df['date'] = pd.to_datetime(df['START TIME'], utc=True)
         else:
             pass  # no times in pH calibrations
 

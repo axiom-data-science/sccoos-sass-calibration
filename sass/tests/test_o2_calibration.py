@@ -49,9 +49,9 @@ def test_sbe63_temperature():
     cali_all = pd.merge_asof(cali_check, coefficients, on=['date'], direction='backward')
 
     # call the calibration on each row of the dataframe separately
-    cali_check['temp_calc'] = \
-        cali_all.apply(lambda x: calibrate_temperature(*x[['Instrument_Output_[V]',
-                                                           'TA0', 'TA1', 'TA2', 'TA3']]), axis=1)
+    cali_all.rename(columns={'Instrument_Output_[V]': 'voltage'}, inplace=True)
+    cali_check['temp_calc'] = cali_all.apply(lambda x: calibrate_temperature(**x), axis=1)
+
     # check the calculation
     data = pd.DataFrame({})
     data['test1'] = cali_check['Instrument_Temperature_[C]'].map(lambda x: proper_rounding(x, 5))

@@ -26,7 +26,7 @@ ELD
 import math
 
 
-def calibrate_temperature(voltage, ta0, ta1, ta2, ta3, **kwargs):
+def calibrate_temperature(voltage, TA0=None, TA1=None, TA2=None, TA3=None, **kwargs):
     """Calibrate the temperature sensor of an SBE63 oxygen probe.
 
     Note: this is sensor temperature, not water temp or sea surface temp. It can
@@ -39,9 +39,9 @@ def calibrate_temperature(voltage, ta0, ta1, ta2, ta3, **kwargs):
 
     """
     lscale = math.log(100000 * voltage / (3.3 - voltage))
-    temperature = 1 / (ta0 + ta1 * lscale
-                       + ta2 * lscale ** 2
-                       + ta3 * lscale ** 3) - 273.15
+    temperature = 1 / (TA0 + TA1 * lscale
+                       + TA2 * lscale ** 2
+                       + TA3 * lscale ** 3) - 273.15
 
     return temperature
 
