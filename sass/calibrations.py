@@ -5,6 +5,7 @@
 
 import pandas as pd
 
+from sass import logger
 from .seafet_ph import calibrate_ph
 from .ctd_chlorophyll import calibrate_chlorophyll
 from .sbe63_o2 import calibrate_oxygen, calibrate_temperature
@@ -51,10 +52,39 @@ def get_o2(data, cals):
     return data_all['oxygen_calc'].round(2)
 
 
-def get_ph(data, cals, salinity_set):
+def get_ph(data, cals, ctd_data):
     """Call the pH calibration with data and coefficients.
+    
     Have to get the data for salinity too
+    And calibrations organized by instrument serial number instead of date
+    Sensor,Kext0,Kext2,Kint0,Kint2
+    TODO: Have them reorganize pH coeffs by date
     """
+    # Which instrument?
+    instrument = data['serial_number'].unique()  # i.e. SEAFET02145
+    if len(instrument) != 1:
+        logger.error('More than one instrument in file.  Fix code.')
+    instrument = int(instrument[0].replace('SEAFET', ''))
 
-    # calibrate_ph(voltage, temperature, salinity=0, external=False, k0=None, k2=None, **kwargs):
-    pass
+    # Prep data
+    data_all = data[['time', 'v_ext', 'temperature']].copy()
+    data_all.rename(columns={'v_ext': 'voltage'}, inplace=True)
+
+    # transfer those calibration coefficients into data
+    cal = cals.loc[cals['Sensor'].astype(int) == instrument]
+    data_all['k0'] = cal['Kext0'].values[0]
+    data_all['k2'] = cal['Kext2'].values[0]
+
+    # interpolate salinity to times with voltage
+    ctd_data = ctd_data[['time', 'salinity']]
+    data_all = data_all.merge(ctd_data, on=['time'], how='outer')
+    data_all.sort_values(by=['time'], inplace=True)
+    data_all.set_index('time', inplace=True)
+    data_all['salinity'] = data_all['salinity'].interpolate()
+    data_all['salinity'] = data_all['salinity'].fillna(method="ffill")
+    data_all['salinity'] = data_all['salinity'].fillna(method="bfill")
+    data_all.dropna(subset=['voltage'], inplace=True)
+    data_all.reset_index(drop=False, inplace=True)
+
+    data_all['calc_ph'] = data_all.apply(lambda x: calibrate_ph(**x, external=True), axis=1)
+    return data_all['calc_ph'].round(2)

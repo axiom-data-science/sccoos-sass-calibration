@@ -11,6 +11,7 @@ import pandas as pd
 from requests.exceptions import HTTPError
 from dateutil.relativedelta import relativedelta
 
+from sass import logger
 from . import utilities
 
 
@@ -114,19 +115,26 @@ class InstrumentSet:
             # No column headers at all here
             data = pd.read_csv(StringIO(raw_dataset), names=names, na_values=[-9.999, -0.999])
 
-        # There are some corrupted lines that have only a subset of fields.
-        # Who knows which fields remain so drop the whole line.
-        # Corrupted lines all seem to be missing # - like that is where they were chopped.
-        data.dropna(axis=0, subset=['temperature'], inplace=True)  # remove empty so can check ...
-        data = data.loc[data['temperature'].str.contains('#'), :]  # that line has a hash mark
-
-        # Files have a hash mark (#) to indicate the beginning of the data after date and IP.
         start_column = names[2]
-        # So far, this is always temperature. If it isn't, I want to know so I can solve
-        assert start_column == 'temperature'
-        # Strip out that character and convert remaining to a number
-        data[start_column] = data[start_column].str.replace('#', '')
-        data[start_column] = data[start_column].str.strip().astype(float)
+        if start_column == 'temperature':  # I think CTD files always start with temperature
+            # There are some corrupted lines that have only a subset of fields.
+            # Who knows which fields remain so drop the whole line.
+            # Corrupted lines all seem to be missing # - like that is where they were chopped.
+            # remove completely empty lines so can check ...
+            data.dropna(axis=0, subset=['temperature'], inplace=True)
+            # that the other lines have a hash mark
+            data = data.loc[data['temperature'].str.contains('#'), :]
+
+            # CTD files have a hash mark (#) to server time and IP from data.
+            # So far, this is always in the temperature field.
+            # Strip out that character and convert remaining to a number
+            data[start_column] = data[start_column].str.replace('#', '')
+            data[start_column] = data[start_column].str.strip().astype(float)
+        elif start_column == 'serial_number':  # These are pH files
+            # No examples of bad files yet.
+            pass
+        else:
+            logger.error('New format for file. Add instructions on how to read.')
 
         # ensure that the "time" column has datetime values in UTC
         data["time"] = pd.to_datetime(data["sensor_time"], utc=True)

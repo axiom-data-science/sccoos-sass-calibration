@@ -186,6 +186,6 @@ def calibrate_ph(voltage, temperature, salinity=0, external=False, k0=None, k2=N
             + math.log10(Cl_total) \
             + 2 * log_chi_HCl \
             - math.log10(1 + S_total / Ks) \
-            - math.log10((1000 - 1.005 * salinity) / 1000 )
+            - math.log10((1000 - 1.005 * salinity) / 1000)
 
     return ph

@@ -47,12 +47,13 @@ class SassCalibrationRunner:
         instrument_sets = load_configs(path)
         this_set = next(s for s in instrument_sets if s.set_id == set_id)
         logger.debug(this_set)
+        urls = this_set.build_urls(start, end)
 
         # If doing pH, then also need salinity from the CTD
-        if this_set.ph_salinity_set:
+        salinity_set = instrument_set.InstrumentSet(set_id='Empty')
+        if 'ph' in this_set.parameters:
             salinity_set = next(s for s in instrument_sets if s.set_id == this_set.ph_salinity_set)
             logger.debug(salinity_set)
-
 
         # read and stash the calibration coeffs
         # TODO maybe switch to reading local, pre-grabbed coeffs?
@@ -65,7 +66,6 @@ class SassCalibrationRunner:
             df_cal.to_csv(path, index=False)
             cals[parameter] = df_cal
 
-        urls = this_set.build_urls(start, end)
         for url in urls:
             path = here.joinpath(url.replace('https://sccoos.org/dr/data', incoming))
             if not path.exists():
@@ -82,7 +82,19 @@ class SassCalibrationRunner:
                 if parameter == 'o2':
                     data['o2'] = get_o2(data, df_cal)
                 if parameter == 'ph':
-                    data['ph'] = get_ph(data, df_cal, this_set.ph_salinity_set)
+                    # also read the accompanying CTD file for salinity
+                    ctd_url = url.replace(this_set.raw_data_url, salinity_set.raw_data_url)
+                    ctd_path = here.joinpath(ctd_url.replace('https://sccoos.org/dr/data',
+                                                             incoming))
+                    if not ctd_path.exists():
+                        continue
+                    logger.debug(f'Reading {ctd_path}')
+                    ctd_data = salinity_set.retrieve_and_parse_raw_data(ctd_path, start, end)
+                    if len(ctd_data) == 0:
+                        continue
+
+                    data.dropna(subset=['v_ext'], inplace=True)
+                    data['corrected_ph'] = get_ph(data, df_cal, ctd_data)
 
             # write it out
             path = here.joinpath(url.replace('https://sccoos.org/dr/data', outgoing))
