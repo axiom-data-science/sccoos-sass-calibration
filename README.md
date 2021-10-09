@@ -11,17 +11,6 @@ The raw data are posted online by Scripps. The equations for the calibrations ar
 sensors. The calibration coefficients are posted by SCCOOS in a Google Sheet. After calibration, the data will be
 posted [at a location hosted by Axiom TBD] for ingestion into the Axiom's sensor system and posting on ERDDAP.
 
-## Prerequisites
-
-Before you begin, ensure you have met the following requirements:
-
-* Conda environment [TBD]
-<!--- These are just example requirements. Add, duplicate or remove as required
-* You have installed the latest version of `<coding_language/dependency/requirement_1>`
-* You have a `<Windows/Linux/Mac>` machine. State which OS is supported/which is not.
-* You have read `<guide/link/documentation_related_to_project>`.
---->
-
 ## Installing SASS
 
 Installation
@@ -39,7 +28,7 @@ This project relies on conda for installation and managing of the project depend
     conda env create -f environment.yml
     ```
 
-    The above command creates a new conda environment titled `sass_calibration` with the necessary project
+    The above command creates a new conda environment titled `sass_env` with the necessary project
     dependencies.
 
 4. An Additional environment file is present for testing and development environments. The additional developer dependencies can be installed with

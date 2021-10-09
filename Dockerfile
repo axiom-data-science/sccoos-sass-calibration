@@ -30,7 +30,7 @@ ENTRYPOINT ["/entrypoint.sh"]
 # Setting environment variables
 ENV PROJECT_NAME=sccoos-sass-calibration
 ENV PROJECT_ROOT=/opt/sccoos-sass-calibration
-ENV CONDA_ENV=sass_calibration
+ENV CONDA_ENV=sass_env
 
 # prepping to run installation of conda packages
 COPY docker/main/entrypoint.sh /entrypoint.sh
@@ -39,8 +39,8 @@ COPY *environment.yml /tmp/envs/
 
 # install the conda packages with an Axiom script
 COPY docker/scripts/install-dependencies.sh /tmp/install-dependencies.sh
-RUN --mount=type=cache,id=sass_calibration,target=/opt/conda/pkgs \
-    --mount=type=cache,id=sass_calibration,target=/root/.cache/pip \
+RUN --mount=type=cache,id=sass_env,target=/opt/conda/pkgs \
+    --mount=type=cache,id=sass_env,target=/root/.cache/pip \
     /tmp/install-dependencies.sh && rm -rf /tmp/envs /tmp/install-dependencies.sh
 
 # copy the python code into the image (but not extraneous stuff like references and docs)
@@ -50,8 +50,8 @@ COPY conftest.py setup.py README.md requirements.txt dev-requirements.txt $PROJE
 
 # activate the conda env and install package with pip -e using an Axiom script
 COPY docker/scripts/install-project.sh /tmp/install-project.sh
-RUN --mount=type=cache,id=sass_calibration,target=/opt/conda/pkgs \
-    --mount=type=cache,id=sass_calibration,target=/root/.cache/pip \
+RUN --mount=type=cache,id=sass_env,target=/opt/conda/pkgs \
+    --mount=type=cache,id=sass_env,target=/root/.cache/pip \
     /tmp/install-project.sh && rm -rf /tmp/install-project.sh
 WORKDIR $PROJECT_ROOT/
 COPY call_sass.py $PROJECT_ROOT

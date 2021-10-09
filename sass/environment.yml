@@ -1,4 +1,4 @@
-name: sass_calibration
+name: sass_env
 channels:
   - defaults
 dependencies:
@@ -61,5 +61,5 @@ dependencies:
   - xz=5.2.5=h7b6447c_0
   - zipp=3.5.0=pyhd3eb1b0_0
   - zlib=1.2.11=h7b6447c_3
-prefix: /home/liz/anaconda3/envs/sass_calibration
+prefix: /home/liz/anaconda3/envs/sass_env
 
