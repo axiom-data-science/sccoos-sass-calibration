@@ -41,10 +41,15 @@ class SassCalibrationRunner:
         :param set_id: unique identifier for set of instruments to be processed
         :return:
         """
-        logger.info(f'{start} to {end} for instrument set {set_id}')
+        logger.info(f'{start.date()} to {end.date()} for instrument set {set_id}')
         path = here.joinpath(instrument_set_filename)
         instrument_sets = load_configs(path)
-        this_set = next(s for s in instrument_sets if s.set_id == set_id)
+        try:
+            this_set = next(s for s in instrument_sets if s.set_id == set_id)
+        except StopIteration:
+            logger.error(f'****  {set_id} is not defined in instrument_set.json ****')
+            raise
+
         logger.debug(this_set)
         files = this_set.build_file_list(start, end)
 
@@ -72,6 +77,7 @@ class SassCalibrationRunner:
             logger.debug(f'Reading {path}')
             data = this_set.retrieve_and_parse_raw_data(path, start, end)
             if len(data) == 0:
+                logger.debug("no data")
                 continue
 
             for parameter in this_set.parameters:

@@ -29,9 +29,9 @@ def test_file_list(sio_set):
     :param sio_set: a pre-filled InstrumentSet
     :return:
     """
-    # one url
-    start = parse_datetime("2021-08-26T03:00:00Z")
-    end = parse_datetime("2021-08-26T09:00:00Z")
+    # one file - no partial days
+    start = parse_datetime("2021-08-26T00:00:00Z")
+    end = parse_datetime("2021-08-26T00:00:00Z")
 
     files = sio_set.build_file_list(start, end)
 
@@ -39,8 +39,8 @@ def test_file_list(sio_set):
     assert len(files) == 1
 
     # 10 files
-    start = parse_datetime("2021-07-27T03:00:00Z")
-    end = parse_datetime("2021-08-5T09:00:00Z")
+    start = parse_datetime("2021-07-27T00:00:00Z")
+    end = parse_datetime("2021-08-05T00:00:00Z")
 
     files = sio_set.build_file_list(start, end)
 
@@ -62,6 +62,7 @@ def test_retrieve_observations(sio_set):
     end = parse_datetime("2021-08-26T05:00:00Z")
 
     data = sio_set.retrieve_and_parse_raw_data(path, start, end)
+    data = data[(data['time'] >= start) & (data['time'] <= end)]  # check that time makes sense
     assert len(data) == 30
     assert data.iloc[0, 2] == 19.5426  # temperature
     # time was added as the last column

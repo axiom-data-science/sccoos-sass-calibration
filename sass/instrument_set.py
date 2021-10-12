@@ -4,7 +4,6 @@
 """Descriptions of instrument sets."""
 
 from io import StringIO
-import datetime
 import pathlib
 
 import pandas as pd
@@ -72,17 +71,15 @@ class InstrumentSet:
         return f'InstrumentSet{{id={self.set_id},parameters={self.parameters}}}'
 
     def build_file_list(self, start, end):
-        """Build a list of file paths where can access the raw data.
-
-        The urls are a list of daily files, in directories by month.
+        """Build a list of daily files in directories by month.
 
         :param start: datetime of earliest date
         :param end: datetime of latest date
-        :return: list of strings of daily data filenames
+        :return: list of strings of daily data file names
         """
         files = []
-        date = start
-        while date < end:
+        date = start.date()
+        while date <= end.date():
             file_tag = date.strftime('%Y%m%d')
             dir_tag = date.strftime('%Y-%m')
             files.append(f"{self.raw_data_tag}/{dir_tag}/data-{file_tag}.dat")
@@ -138,7 +135,6 @@ class InstrumentSet:
 
         # ensure that the "time" column has datetime values in UTC
         data["time"] = pd.to_datetime(data["sensor_time"], utc=True)
-        data = data[(data['time'] >= start) & (data['time'] <= end)]
 
         return data
 
