@@ -10,10 +10,9 @@ from sass import logger, instrument_set
 from .calibrations import get_o2, get_chlor, get_ph
 
 here = Path(__file__).parent
-stations_filename = 'config/stations.json'
 instrument_set_filename = 'config/instrument_sets.json'
-incoming = '../data/incoming'
-outgoing = '../data/outgoing'
+incoming = '../data/incoming/'
+outgoing = '../data/outgoing/'
 
 
 def load_configs(path_to_file):
@@ -47,7 +46,7 @@ class SassCalibrationRunner:
         instrument_sets = load_configs(path)
         this_set = next(s for s in instrument_sets if s.set_id == set_id)
         logger.debug(this_set)
-        urls = this_set.build_urls(start, end)
+        files = this_set.build_file_list(start, end)
 
         # If doing pH, then also need salinity from the CTD
         salinity_set = instrument_set.InstrumentSet(set_id='Empty')
@@ -61,13 +60,13 @@ class SassCalibrationRunner:
         for parameter in this_set.parameters:
             logger.info(f'Getting calibration coefficients for {parameter}')
             df_cal = this_set.get_cals(parameter)
-            cal_filename = f'{incoming}/cals/{this_set.set_id}_{parameter}.csv'
+            cal_filename = f'{incoming}cals/{this_set.set_id}_{parameter}.csv'
             path = here.joinpath(cal_filename)
             df_cal.to_csv(path, index=False)
             cals[parameter] = df_cal
 
-        for url in urls:
-            path = here.joinpath(url.replace('https://sccoos.org/dr/data', incoming))
+        for file in files:
+            path = here.joinpath(incoming + file)
             if not path.exists():
                 continue
             logger.debug(f'Reading {path}')
@@ -83,9 +82,8 @@ class SassCalibrationRunner:
                     data['o2'] = get_o2(data, df_cal)
                 if parameter == 'ph':
                     # also read the accompanying CTD file for salinity
-                    ctd_url = url.replace(this_set.raw_data_url, salinity_set.raw_data_url)
-                    ctd_path = here.joinpath(ctd_url.replace('https://sccoos.org/dr/data',
-                                                             incoming))
+                    ctd_file = file.replace(this_set.raw_data_tag, salinity_set.raw_data_tag)
+                    ctd_path = here.joinpath(incoming + ctd_file)
                     if not ctd_path.exists():
                         continue
                     logger.debug(f'Reading {ctd_path}')
@@ -97,7 +95,7 @@ class SassCalibrationRunner:
                     data['corrected_ph'] = get_ph(data, df_cal, ctd_data)
 
             # write it out
-            path = here.joinpath(url.replace('https://sccoos.org/dr/data', outgoing))
+            path = here.joinpath(outgoing + file)
             logger.debug(f'Writing to {str(path)}')
             if not path.parents[0].exists():
                 path.parents[0].mkdir(parents=True)

@@ -46,8 +46,6 @@ def parse_datetime(datestr, tzoffsethrs=0):
     """
     if datestr is None:
         return None
-    # TODO: tests
-    # TODO: is there a better way to do this?
     tzoffset_str = ('+' if tzoffsethrs >= 0 else '-') + str(abs(tzoffsethrs))
     return parser.parse(f'{datestr} {tzoffset_str}').astimezone(tz.tzutc())
 

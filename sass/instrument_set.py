@@ -18,7 +18,7 @@ from . import utilities
 class InstrumentSet:
     """Collects the information associated with a set of instrumentation installed at a site."""
     def __init__(self, set_id=None, start_date=None, end_date=None,
-                 station_id=None, raw_data_url='', columns=[], calibration_url='',
+                 station_name=None, raw_data_tag=None, columns=[], calibration_url='',
                  chlor_tab=None, chlor_gid=None,
                  o2_tab=None, o2_gid=None,
                  ph_tab=None, ph_gid=None, ph_salinity_set=None, **kwargs):
@@ -28,7 +28,7 @@ class InstrumentSet:
         :param start_date: when the instrumentation was installed (ISO string)
         :param end_date: when the instrumentation was removed (ISO string)
         :param station_id:  where the InstrumentSet was installed (string)
-        :param raw_data_url: where data for the InstrumentSet is posted publicly (string)
+        :param raw_data_tag: indentifier of where data for the InstrumentSet is stored (string)
         :param columns: the column header for the raw data (list of strings)
         :param calibration_url: dictionary of Google Sheet url and tab name/uid
         :param chlor_tab: Google sheet tab name for the Fluorometer (string)
@@ -43,8 +43,8 @@ class InstrumentSet:
         self.set_id = set_id
         self.start_date = start_date
         self.end_date = end_date
-        self.station_id = station_id
-        self.raw_data_url = raw_data_url
+        self.station_name = station_name
+        self.raw_data_tag = raw_data_tag
         self.data_columns = columns
         self.calibration_url = calibration_url
         self.cal_tabs = {
@@ -71,29 +71,29 @@ class InstrumentSet:
         """Returns a summary of the InstrumentSet."""
         return f'InstrumentSet{{id={self.set_id},parameters={self.parameters}}}'
 
-    def build_urls(self, start, end):
-        """Build a list of urls where can access the raw data.
+    def build_file_list(self, start, end):
+        """Build a list of file paths where can access the raw data.
 
         The urls are a list of daily files, in directories by month.
 
         :param start: datetime of earliest date
         :param end: datetime of latest date
-        :return: list of strings that a URLs to daily data files
+        :return: list of strings of daily data filenames
         """
-        urls = []
+        files = []
         date = start
         while date < end:
             file_tag = date.strftime('%Y%m%d')
             dir_tag = date.strftime('%Y-%m')
-            urls.append(f"{self.raw_data_url}{dir_tag}/data-{file_tag}.dat")
+            files.append(f"{self.raw_data_tag}/{dir_tag}/data-{file_tag}.dat")
             date += relativedelta(days=1)
 
-        return urls
+        return files
 
     def retrieve_and_parse_raw_data(self, url, start, end) -> pd.DataFrame:
         """Read raw SASS data from URL and convert it to a DataFrame with headers.
 
-        :param url: string url to the daily data file. can also be local file.
+        :param url: name of a file to process. Was once a URL also.
         :param start: earliest datetime allowed
         :param end: latest datetime allowed
         :return: DataFrame of raw data
