@@ -127,6 +127,13 @@ class InstrumentSet:
             # Strip out that character and convert remaining to a number
             data[start_column] = data[start_column].str.replace('#', '')
             data[start_column] = data[start_column].str.strip().astype(float)
+
+            # It's important that these columns are floats
+            cols = ['temperature', 'salinity', 'O2_raw_voltage', 'O2_phase_delay', 'V2']
+            cols = list(set(cols) & set(data.columns))
+            for col in cols:
+                data[col] = data[col].astype(float)
+
         elif start_column == 'serial_number':  # These are pH files
             # No examples of bad files yet.
             pass
