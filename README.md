@@ -41,29 +41,18 @@ This project relies on conda for installation and managing of the project depend
 ## Using SASS
 
 To use SASS, follow these steps:
+1. Configure the instrument set in `sass/config/instrument_set.json`
+2. Put the data to process in `sass/data/incoming`.  Note this can be a link to another directory. 
+Also `data/outgoing` should exist
+3.
 
 ```
-python ./run_sass.py --start "2021-08-01T00:00:00" --end "2021-08-02T00:00:00" --station "sio"
+./run_sass.py --start 2021-08-01 --end 2021-08-02 --set "np-ctd-2021"
 ```
 Arguments include:
-* start date (required)
-* end date (required)
-* station code (optional - does all if not specified)
-
-<!--- 
-## Contributing to <project_name>
-If your README is long or you have some specific process or steps you want contributors to follow, 
-consider creating a separate CONTRIBUTING.md file
-To contribute to <project_name>, follow these steps:
-
-1. Fork this repository.
-2. Create a branch: `git checkout -b <branch_name>`.
-3. Make your changes and commit them: `git commit -m '<commit_message>'`
-4. Push to the original branch: `git push origin <project_name>/<location>`
-5. Create the pull request.
-
-Alternatively see the GitHub documentation on [creating a pull request](https://help.github.com/en/github/collaborating-with-issues-and-pull-requests/creating-a-pull-request).
---->
+* start date (optional. If omitted, do the most recent 5 days)
+* end date (optional.  If omitted, do a single day determined by start)
+* set code (required.  Must match an entry in `instrument_set.json`)
 
 Running Tests
 -------------
@@ -91,7 +80,9 @@ To do that, set docker's daemon configuration in /etc/docker/daemon.json feature
 Running with Docker
 -------------------
 
-
+```
+docker run --mount type=bind,source=/mnt/store/data/sensors/import/sccoos/sass,destination=/opt/sccoos-sass-calibration/data sccoos-sass-calibration ./call_sass.py --set np-ctd-2021
+```
 
 ## Contributors
 

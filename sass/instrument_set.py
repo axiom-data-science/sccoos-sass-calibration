@@ -155,7 +155,10 @@ class InstrumentSet:
             #     lambda x: datetime.time.strftime(x, '%H:%M:%S'))
             # df['time'] = df['START DATE'].dt.strftime('%m/%d/%Y') + ' ' + df['time']
             # df['time'] = pd.to_datetime(df['time'], utc=True)
-            df['time'] = pd.to_datetime(df['START TIME'], utc=True)
+            try:
+                df['time'] = pd.to_datetime(df['START TIME'], utc=True)
+            except KeyError:
+                df['time'] = pd.to_datetime(df['START TIME UTC'], utc=True)
         elif parameter == 'o2':
             df['time'] = pd.to_datetime(df['START TIME'], utc=True)
         else:
