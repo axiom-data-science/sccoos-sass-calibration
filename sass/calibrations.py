@@ -19,7 +19,7 @@ def get_chlor(data, cals):
 
     data_all.rename(columns={'Clean Water Offset (CWO)': 'clean_water_offset',
                              'Scale Factor': 'scale_factor',
-                             'V2': 'output'}, inplace=True)
+                             'fluorometer_v': 'output'}, inplace=True)
     data_all = data_all[['output', 'scale_factor', 'clean_water_offset']]
     data_all['chlor_calc'] = data_all.apply(lambda x: calibrate_chlorophyll(**x), axis=1)
 
