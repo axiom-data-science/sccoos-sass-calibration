@@ -19,6 +19,7 @@ RUN apt-get update && apt-get install -y \
 
 ENV MINICONDA_VERSION py38_4.8.2
 ENV MINICONDA_SHA256 5bbb193fd201ebe25f4aeb3c58ba83feced6a25982ef4afa86d5506c3656c142
+ENV PYTHONDONTWRITEBYTECODE=true
 # Installs Conda and sets up the conda bash profile
 COPY docker/scripts/install-conda.sh /tmp/install-conda.sh
 RUN /tmp/install-conda.sh && rm -f /tmp/install-conda.sh
