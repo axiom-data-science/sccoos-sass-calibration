@@ -112,7 +112,10 @@ class InstrumentSet:
             # No column headers at all here
             data = pd.read_csv(StringIO(raw_dataset), names=names, na_values=[-9.999, -0.999])
 
-        start_column = names[2]
+        # superbad = not even the ip address is right. remove those right away.
+        data = data.loc[data['ip'] != '0.0.0.0']
+
+        start_column = names[2]  # skipping fields server time and ip
         if start_column == 'temperature':  # I think CTD files always start with temperature
             # There are some corrupted lines that have only a subset of fields.
             # Who knows which fields remain so drop the whole line.

@@ -90,3 +90,23 @@ def test_retrieve_corrupt_observations(sio_set):
     assert len(data) == 78  # 83 lines with 5 corrupt
     assert data['temperature'].iloc[77] == 16.2690
     assert data['time'].iloc[77] == parse_datetime("2021-07-20T07:41:04")
+
+
+def test_retrieve_superbad_observations(sio_set):
+    """Verify correct reading of raw data even when data are corrupted.
+
+    This corrupted file is real - no alterations.  Just super gross.
+
+    :param sio_set: a pre-filled InstrumentSet
+    :param mocked_responses: mock Get so retrieves local file
+    :return:
+    """
+    # instead of making GET request to the HTTP server, we are going to read a local file
+    path = here.joinpath('resources/raw_data/stearns_data-20211014_superbad.dat')
+
+    start = parse_datetime("2021-10-14T00:00:00Z")
+    end = parse_datetime("2021-10-15T00:00:00Z")
+
+    data = sio_set.retrieve_and_parse_raw_data(path, start, end)
+    # this file started with 323 lines but one 90 are good.  Told you it was appalling.
+    assert len(data) == 90

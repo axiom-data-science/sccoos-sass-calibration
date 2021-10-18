@@ -50,7 +50,7 @@ class SassCalibrationRunner:
             logger.error(f'****  {set_id} is not defined in instrument_set.json ****')
             raise
 
-        logger.debug(this_set)
+        logger.info(this_set)
         files = this_set.build_file_list(start, end)
 
         # If doing pH, then also need salinity from the CTD
