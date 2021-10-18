@@ -41,13 +41,16 @@ def main():
         start = utilities.parse_datetime(args.start + "T00:00:00Z")
         end = start
     else:  # do most recent 5 days
-        end = datetime.utcnow()
+        end = datetime.now()
+        end = end.replace(hour=0, minute=0, second=0, microsecond=0)
+        end = utilities.parse_datetime(end)
         start = end - relativedelta(days=4)
 
     if start > end:
         logger.error('Invalid dates given: Start date is after end date')
         exit(1)
 
+    print(start)
     # then do something!
     runner = SassCalibrationRunner()
     if set_id != 'all':

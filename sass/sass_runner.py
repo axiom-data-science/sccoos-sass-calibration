@@ -12,7 +12,7 @@ from .calibrations import get_o2, get_chlor, get_ph
 here = Path(__file__).parent
 instrument_set_filename = 'config/instrument_sets.json'
 incoming = '../data/incoming/'
-outgoing = '../data/outgoing/'
+outgoing = '../data/calibrated/'
 
 
 def load_configs(path_to_file):
@@ -48,7 +48,21 @@ class SassCalibrationRunner:
             this_set = next(s for s in instrument_sets if s.set_id == set_id)
         except StopIteration:
             logger.error(f'****  {set_id} is not defined in instrument_set.json ****')
-            raise
+            logger.error(f'Job failed.')
+            return
+
+        # check those dates
+        if not this_set.start_date:
+            logger.error(f'{this_set.set_id} is not active yet. Set start_date in instrument_set.json and try again.')
+            logger.error(f'Job failed.')
+            return
+        if end < this_set.start_date or start > this_set.end_date:
+            logger.error(f'{this_set.set_id} is not active during the time you requested.')
+            logger.error(f'Job failed.')
+            return
+        start = max(start, this_set.start_date)
+        end = min(end, this_set.end_date)
+        logger.info(f'Adjusted {start.date()} to {end.date()} for instrument set {set_id}')
 
         logger.info(this_set)
         files = this_set.build_file_list(start, end)
@@ -56,8 +70,14 @@ class SassCalibrationRunner:
         # If doing pH, then also need salinity from the CTD
         salinity_set = instrument_set.InstrumentSet(set_id='Empty')
         if 'ph' in this_set.parameters:
-            salinity_set = next(s for s in instrument_sets if s.set_id == this_set.ph_salinity_set)
-            logger.debug(salinity_set)
+            if this_set.ph_salinity_set:
+                salinity_set = next(s for s in instrument_sets if s.set_id == this_set.ph_salinity_set)
+                logger.debug(salinity_set)
+            else:
+                logger.error('For pH, must include where to get salinity. Set ph_salinity_set in '
+                             ' instrument_set.json and try again.')
+                # go ahead and copy files (i.e. don't bomb), but don't attempt the pH adjustments
+                this_set.parameters.remove('ph')
 
         # read and stash the calibration coeffs
         # TODO maybe switch to reading local, pre-grabbed coeffs?
@@ -76,7 +96,7 @@ class SassCalibrationRunner:
                 logger.debug(f"No {file}. Skipping...")
                 continue
             logger.debug(f'Reading {path}')
-            data = this_set.retrieve_and_parse_raw_data(path, start, end)
+            data = this_set.retrieve_and_parse_raw_data(path)
             if len(data) == 0:
                 logger.debug("no data")
                 continue
@@ -94,7 +114,7 @@ class SassCalibrationRunner:
                     if not ctd_path.exists():
                         continue
                     logger.debug(f'Reading {ctd_path}')
-                    ctd_data = salinity_set.retrieve_and_parse_raw_data(ctd_path, start, end)
+                    ctd_data = salinity_set.retrieve_and_parse_raw_data(ctd_path)
                     if len(ctd_data) == 0:
                         continue
 
@@ -108,3 +128,5 @@ class SassCalibrationRunner:
                 path.parents[0].mkdir(parents=True)
             data.drop(columns=['time'], inplace=True)  # don't need this
             data.to_csv(path, index=False, na_rep='NaN')
+
+        logger.info("All done!")
