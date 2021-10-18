@@ -73,6 +73,7 @@ class SassCalibrationRunner:
         for file in files:
             path = here.joinpath(incoming + file)
             if not path.exists():
+                logger.debug(f"No {file}. Skipping...")
                 continue
             logger.debug(f'Reading {path}')
             data = this_set.retrieve_and_parse_raw_data(path, start, end)

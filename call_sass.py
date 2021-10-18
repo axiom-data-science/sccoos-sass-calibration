@@ -4,12 +4,16 @@
 """Organizes the input arguments and sends job to sass."""
 
 import argparse
+from pathlib import Path
 
 from dateutil.relativedelta import relativedelta
 from datetime import datetime
 
-from sass.sass_runner import SassCalibrationRunner
+from sass.sass_runner import SassCalibrationRunner, load_configs
 from sass import logger, utilities
+
+here = Path(__file__).parent
+instrument_set_filename = 'sass/config/instrument_sets.json'
 
 
 def main():
@@ -25,7 +29,7 @@ def main():
                              'that is determined by START')
     parser.add_argument('-s', '--set', dest='set_id', required=True, type=str,
                         help='Id of the set of instruments to process. '
-                             'Must be defined in instrument_sets.json')
+                             'Must be defined in instrument_sets.json or be "all" to do all active instrument sets.')
 
     args = parser.parse_args()
 
@@ -46,7 +50,13 @@ def main():
 
     # then do something!
     runner = SassCalibrationRunner()
-    runner.run(start=start, end=end, set_id=set_id)
+    if set_id != 'all':
+        runner.run(start=start, end=end, set_id=set_id)
+    else:
+        path = here.joinpath(instrument_set_filename)
+        instrument_sets = load_configs(path)
+        for s in instrument_sets:
+            runner.run(start=start, end=end, set_id=s.set_id)
 
 
 if __name__ == '__main__':

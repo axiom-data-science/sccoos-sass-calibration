@@ -9,7 +9,7 @@ stations into oxygen, pH, and chlorophyll.
 
 The raw data are posted online by Scripps. The equations for the calibrations are provided by the manufacturers of the
 sensors. The calibration coefficients are posted by SCCOOS in a Google Sheet. After calibration, the data will be
-posted [at a location hosted by Axiom TBD] for ingestion into the Axiom's sensor system and posting on ERDDAP.
+posted `/mnt/store/data/sensors/import/sccoos/sass/calibrated/` for ingestion into the Axiom's sensor system and posting on ERDDAP.
 
 ## Installing SASS
 
@@ -43,16 +43,17 @@ This project relies on conda for installation and managing of the project depend
 To use SASS, follow these steps:
 1. Configure the instrument set in `sass/config/instrument_set.json`
 2. Put the data to process in `sass/data/incoming`.  Note this can be a link to another directory. 
-Also `data/outgoing` should exist
+ The directories `data/calibrated` and `data/incoming/cals` should already exist, because they are referenced
+ in the code by not created by it.
 3.
 
 ```
-./run_sass.py --start 2021-08-01 --end 2021-08-02 --set "np-ctd-2021"
+./call_sass.py --start 2021-08-01 --end 2021-08-02 --set np-ctd-2021
 ```
 Arguments include:
 * start date (optional. If omitted, do the most recent 5 days)
 * end date (optional.  If omitted, do a single day determined by start)
-* set code (required.  Must match an entry in `instrument_set.json`)
+* set code (required.  Must match an entry in `instrument_set.json` or be "all" to do all active instrument sets.)
 
 Running Tests
 -------------
