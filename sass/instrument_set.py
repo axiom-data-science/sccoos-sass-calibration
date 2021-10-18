@@ -44,10 +44,12 @@ class InstrumentSet:
         if start_date:
             self.start_date = utilities.parse_datetime(start_date)
         else:
-            self.start_date = None  # triggers don't do because the instrument set hasn't started yet
+            # if instrument set hasn't started yet, use this to trigger "don't do"
+            self.start_date = None
         if end_date:
             self.end_date = utilities.parse_datetime(end_date)
         else:
+            # if instrument set hasn't ended, it's going right now
             self.end_date = utilities.parse_datetime(datetime.datetime.now())
 
         self.station_name = station_name
@@ -132,7 +134,8 @@ class InstrumentSet:
             # that the other lines have a hash mark
             data = data.loc[data['temperature'].str.contains('#'), :]
             # The only take the numbers in that column - no hash, no gibberish
-            data[start_column].replace(regex=True, inplace=True, to_replace=r'[^0-9.\-]', value=r'')
+            data[start_column].replace(regex=True, inplace=True,
+                                       to_replace=r'[^0-9.\-]', value=r'')
 
             # It's important that these columns are floats
             cols = ['temperature', 'salinity', 'O2_raw_voltage', 'O2_phase_delay', 'V2']

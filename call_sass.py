@@ -29,7 +29,8 @@ def main():
                              'that is determined by START')
     parser.add_argument('-s', '--set', dest='set_id', required=True, type=str,
                         help='Id of the set of instruments to process. '
-                             'Must be defined in instrument_sets.json or be "all" to do all active instrument sets.')
+                             'Must be defined in instrument_sets.json or be '
+                             '"all" to do all active instrument sets.')
 
     args = parser.parse_args()
 
@@ -50,7 +51,6 @@ def main():
         logger.error('Invalid dates given: Start date is after end date')
         exit(1)
 
-    print(start)
     # then do something!
     runner = SassCalibrationRunner()
     if set_id != 'all':

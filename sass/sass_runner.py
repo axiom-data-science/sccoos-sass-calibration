@@ -48,17 +48,18 @@ class SassCalibrationRunner:
             this_set = next(s for s in instrument_sets if s.set_id == set_id)
         except StopIteration:
             logger.error(f'****  {set_id} is not defined in instrument_set.json ****')
-            logger.error(f'Job failed.')
+            logger.error('Job failed.')
             return
 
         # check those dates
         if not this_set.start_date:
-            logger.error(f'{this_set.set_id} is not active yet. Set start_date in instrument_set.json and try again.')
-            logger.error(f'Job failed.')
+            logger.error(f'{this_set.set_id} is not active yet. '
+                         'Set start_date in instrument_set.json and try again.')
+            logger.error('Job failed.')
             return
         if end < this_set.start_date or start > this_set.end_date:
             logger.error(f'{this_set.set_id} is not active during the time you requested.')
-            logger.error(f'Job failed.')
+            logger.error('Job failed.')
             return
         start = max(start, this_set.start_date)
         end = min(end, this_set.end_date)
@@ -71,7 +72,8 @@ class SassCalibrationRunner:
         salinity_set = instrument_set.InstrumentSet(set_id='Empty')
         if 'ph' in this_set.parameters:
             if this_set.ph_salinity_set:
-                salinity_set = next(s for s in instrument_sets if s.set_id == this_set.ph_salinity_set)
+                salinity_set = next(s for s in instrument_sets
+                                    if s.set_id == this_set.ph_salinity_set)
                 logger.debug(salinity_set)
             else:
                 logger.error('For pH, must include where to get salinity. Set ph_salinity_set in '

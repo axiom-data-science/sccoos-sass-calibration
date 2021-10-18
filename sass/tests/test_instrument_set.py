@@ -98,7 +98,6 @@ def test_retrieve_superbad_observations(sio_set):
     :param mocked_responses: mock Get so retrieves local file
     :return:
     """
-
     # instead of making GET request to the HTTP server, we are going to read a local file
     path = here.joinpath('resources/raw_data/stearns_data-20211014_superbad.dat')
 
