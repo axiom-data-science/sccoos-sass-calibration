@@ -151,6 +151,9 @@ class InstrumentSet:
 
         # ensure that the "time" column has datetime values in UTC
         data["time"] = pd.to_datetime(data["sensor_time"], utc=True)
+        # for the merge with calibration coefficients, make sure data are sorted by time
+        data = data.sort_values(by=['time'])
+        data.reset_index(drop=True, inplace=True)
 
         return data
 
@@ -172,5 +175,9 @@ class InstrumentSet:
             df['time'] = pd.to_datetime(df['START TIME'], utc=True)
         else:
             pass  # no times in pH calibrations
+
+        # for the merge with data, make sure they are sorted by time
+        df = df.sort_values(by=['time'])
+        df.reset_index(drop=True, inplace=True)
 
         return df
