@@ -159,6 +159,7 @@ class InstrumentSet:
 
     def get_cals(self, parameter):
         """Retrieve table of calibration coefficients from Google Sheet tab.
+
         For the merge with data, make sure they are sorted by time
         """
         url = self.calibration_url + self.cal_gids[parameter]
@@ -173,13 +174,13 @@ class InstrumentSet:
                 df['time'] = pd.to_datetime(df['START TIME'], utc=True)
             except KeyError:
                 df['time'] = pd.to_datetime(df['START TIME UTC'], utc=True)
-            df = df.sort_values(by=['time'])
-            df.reset_index(drop=True, inplace=True)
         elif parameter == 'o2':
             df['time'] = pd.to_datetime(df['START TIME'], utc=True)
-            df = df.sort_values(by=['time'])
-            df.reset_index(drop=True, inplace=True)
         else:
             pass  # no times in pH calibrations
+
+        if 'time' in df.columns:
+            df = df.sort_values(by=['time'])
+            df.reset_index(drop=True, inplace=True)
 
         return df
