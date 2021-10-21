@@ -23,6 +23,15 @@ def sio_set():
     return this_set[0]
 
 
+@pytest.fixture
+def np_set():
+    """Create an InstrumentSet from JSON file defined above."""
+    path = here.joinpath(instrument_set_filename)
+    instrument_sets = load_configs(path)
+    this_set = [s for s in instrument_sets if s.set_id == 'np-ctd-2021']
+    return this_set[0]
+
+
 def test_file_list(sio_set):
     """Verify that the collector asks for all the files we need.
 
@@ -111,3 +120,20 @@ def test_retrieve_superbad_observations(sio_set):
     data = sio_set.retrieve_and_parse_raw_data(path)
     # this file started with 358 lines but only 43 are good.
     assert len(data) == 43
+
+
+def test_retrieve_superbad_withhash(np_set):
+    """Verify correct reading of raw data even when data are corrupted.
+
+    This corrupted file is real - no alterations.  Just super gross.
+
+    :param np_set: a pre-filled InstrumentSet
+    :param mocked_responses: mock Get so retrieves local file
+    :return:
+    """
+    # This one had a hash sign in amongst the gibberish
+    path = here.joinpath('resources/raw_data/newport_data-20210226_badwhash.dat')
+
+    data = np_set.retrieve_and_parse_raw_data(path)
+    # again very few have useable data.
+    assert len(data) == 5

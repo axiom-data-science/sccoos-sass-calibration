@@ -137,6 +137,9 @@ class InstrumentSet:
             data[start_column].replace(regex=True, inplace=True,
                                        to_replace=r'[^0-9.\-]', value=r'')
 
+            # It's important there is a value for time
+            data = data.loc[data['sensor_time'].notna()]
+
             # It's important that these columns are floats
             cols = ['temperature', 'salinity', 'O2_raw_voltage', 'O2_phase_delay', 'V2']
             cols = list(set(cols) & set(data.columns))
