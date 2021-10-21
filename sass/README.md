@@ -19,6 +19,8 @@ There are a million ways this perfection can be corrupted. Here are a few ...
 2021-10-10T23:02:20Z,166.148.81.45, 18.3912,  4.44245,    2.924, 0.2435, 0.0000, 0.0002, 0.0001,  33.4219, 10 Oct 2021 23:02:13,  23.9676, 13.8, 189.9
 ```
 
+Also, times can be missing or out of order.
+
 ## The solution
 
 The wide variation in contaminated lines means that it is hard to parse the good from the bad.  For instance,
@@ -31,7 +33,9 @@ So I had to make some choices and assumptions:
 0. Avoid ingesting bad data even at the risks of losing a few points.
 1. If the IP is obviously bad, the data is also bad: remove the line
 2. If there is no `#`, the beginning of the data cannot be determined: remove the line
-3. If there is a gibberish character in the temperature field (bad line 4 above): filter to just digits and keep the line
+3. If there is a gibberish character in the temperature field (bad line 4 above): filter to just digits and keep the line.
+4. Sort data by time before merge with calibration coefficients.
+
 
 Caveats
 

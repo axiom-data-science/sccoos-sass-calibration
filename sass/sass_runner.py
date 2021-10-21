@@ -15,11 +15,12 @@ incoming = '../data/incoming/'
 outgoing = '../data/calibrated/'
 
 
-def load_configs(path_to_file):
-    """Read a configuration file into a dictionary then built InstrumentSets.
+def load_configs(path_to_file, set=None):
+    """Read a configuration file into a dictionary then build InstrumentSets.
 
     :param path_to_file: Posix path to JSON configuration file
-    :return:
+    :param set: optional set_id to match
+    :return: a list of instruments sets. Either all or just the one that matches
     """
     with open(str(path_to_file), "r") as f:
         config_dict = json.loads(f.read())
@@ -27,6 +28,13 @@ def load_configs(path_to_file):
     for config in config_dict['sets']:
         configs.append(instrument_set.InstrumentSet(**config))
 
+    if set:  # take a subset
+        try:
+            configs = [s for s in configs if s.set_id == set]
+        except StopIteration:
+            logger.error(f'****  {set} is not defined in instrument_set.json ****')
+            logger.error('Job failed.')
+            return [None]
     return configs
 
 
@@ -42,43 +50,46 @@ class SassCalibrationRunner:
         :return:
         """
         logger.info(f'{start.date()} to {end.date()} for instrument set {set_id}')
+        # Get the instrument configuration
         path = here.joinpath(instrument_set_filename)
-        instrument_sets = load_configs(path)
-        try:
-            this_set = next(s for s in instrument_sets if s.set_id == set_id)
-        except StopIteration:
-            logger.error(f'****  {set_id} is not defined in instrument_set.json ****')
-            logger.error('Job failed.')
-            return
+        configs = load_configs(path, set=set_id)
+        if len(configs) == 0:
+            return 1
+        else:
+            this_set = configs[0]
 
-        # check those dates
+        # check those dates and build the list of files
         if not this_set.start_date:
             logger.error(f'{this_set.set_id} is not active yet. '
                          'Set start_date in instrument_set.json and try again.')
             logger.error('Job failed.')
-            return
+            return 1
         if end < this_set.start_date or start > this_set.end_date:
             logger.error(f'{this_set.set_id} is not active during the time you requested.')
             logger.error('Job failed.')
-            return
+            return 1
         start = max(start, this_set.start_date)
         end = min(end, this_set.end_date)
-        logger.info(f'Adjusted {start.date()} to {end.date()} for instrument set {set_id}')
-
+        logger.info(f'Adjusted: {start.date()} to {end.date()} for instrument set {set_id}')
         logger.info(this_set)
         files = this_set.build_file_list(start, end)
 
-        # If doing pH, then also need salinity from the CTD
+        # If doing pH, then also need salinity from the CTD. Don't do it if can't find it.
         salinity_set = instrument_set.InstrumentSet(set_id='Empty')
         if 'ph' in this_set.parameters:
             if this_set.ph_salinity_set:
-                salinity_set = next(s for s in instrument_sets
-                                    if s.set_id == this_set.ph_salinity_set)
+                configs = load_configs(path, set=this_set.ph_salinity_set)
+                if len(configs) == 0:
+                    logger.error('For pH, must include where to get salinity. But can not find '
+                                 f'the {this_set.ph_salinity_set}. Just copying files without '
+                                 'pH adjustment.')
+                    this_set.parameters.remove('ph')
+                else:
+                    salinity_set = configs[0]
                 logger.debug(salinity_set)
             else:
                 logger.error('For pH, must include where to get salinity. Set ph_salinity_set in '
-                             ' instrument_set.json and try again.')
-                # go ahead and copy files (i.e. don't bomb), but don't attempt the pH adjustments
+                             'instrument_set.json. Just copying files without pH adjustment.')
                 this_set.parameters.remove('ph')
 
         # read and stash the calibration coeffs
@@ -132,3 +143,4 @@ class SassCalibrationRunner:
             data.to_csv(path, index=False, na_rep='NaN')
 
         logger.info("All done!")
+        return None
