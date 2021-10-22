@@ -18,7 +18,7 @@ There are a million ways this perfection can be corrupted. Here are a few ...
 2021-10-10T22:58:20Z,166.148.81.45,�# 18.2001,  4.42358,    2.926, 0.2752, 0.0000, 0.0001, 0.0002,  33.4184, 10 Oct 2021 22:58:13,  24.0121, 13.8, 189.3
 2021-10-10T23:02:20Z,166.148.81.45, 18.3912,  4.44245,    2.924, 0.2435, 0.0000, 0.0002, 0.0001,  33.4219, 10 Oct 2021 23:02:13,  23.9676, 13.8, 189.9
 2021-02-26T19:49:20Z,166.140.102.113,�#�L�邢�b�r�ʢ��b�r���b�r����b��r���b�r������b��r����b��2���2021 19:49:12,  24.8468, 12.6, 215.7
-
+2021-02-27T09:17:20Z,166.140.102.113,�#�.��927,  4.12167,    2.557, 0.0000, 17.345, 0.754782,  33.4586, 27 Feb 2021 09:17:12,  24.7854, 12.6, 220.5
 ```
 
 Also, times can be missing or out of order.
@@ -33,9 +33,9 @@ Even worse, I can't be sure I've seen every bad permutation possible.
 
 So I had to make some choices and assumptions:
 0. Avoid ingesting bad data even at the risks of losing a few points.
-1. If the IP is obviously bad, the data is also bad: remove the line
-2. If there is no `#`, the beginning of the data cannot be determined: remove the line
-3. If there is a gibberish character in the temperature field (bad line 4 above): filter to just digits and keep the line.
+1. If the IP is obviously bad, the data is also bad: remove the line.
+2. If there is any gibberish at all, remove the line,
+3. If there is no `#`, the beginning of the data cannot be determined: remove the line
 4. Sort data by time before merge with calibration coefficients.
 
 
@@ -45,7 +45,12 @@ Caveats
   * What if a digit was also dropped in addition to `#`?  In that (so far hypothetical) case, 5.0345 might look right, but it's really supposed to be 15.0345.    
 * In some cases, it looks like some fields might be OK. 
   * Oh, but which ones?
-* In bad line 6 above there is a `#` within the gibberish! But that left the line short so check for NaN in time.
+* For awhile, if there was a gibberish character in the temperature field (bad line 4 above) I would try
+ and filter to just digits in order to keep the line.
+  * But then I came across lines 6 and 7 in newport_pier data with `#` and gibberish mixed together
+  * If line 7 is saved then the temperature data is corrupted.
+  * Just remove any line with gibberish = simple solution.
+* Some of the tests might not be needed, but I'm paranoid something will slip through.
 
 
 ## Converting to float

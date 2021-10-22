@@ -118,14 +118,15 @@ def test_retrieve_superbad_observations(sio_set):
     path = here.joinpath('resources/raw_data/stearns_data-20211010_superbad.dat')
 
     data = sio_set.retrieve_and_parse_raw_data(path)
-    # this file started with 358 lines but only 43 are good.
-    assert len(data) == 43
+    # this file started with 358 lines but only 43 are good. One more removed because I
+    # can't be sure temperature in a corrupted filed is good.
+    assert len(data) == 42
 
 
 def test_retrieve_superbad_withhash(np_set):
     """Verify correct reading of raw data even when data are corrupted.
 
-    This corrupted file is real - no alterations.  Just super gross.
+    These corrupted files are real - no alterations.  Just super gross.
 
     :param np_set: a pre-filled InstrumentSet
     :param mocked_responses: mock Get so retrieves local file
@@ -137,3 +138,10 @@ def test_retrieve_superbad_withhash(np_set):
     data = np_set.retrieve_and_parse_raw_data(path)
     # again very few have useable data.
     assert len(data) == 5
+
+    # This one is all gibberish
+    path = here.joinpath('resources/raw_data/newport_data-20210227_worst.dat')
+
+    data = np_set.retrieve_and_parse_raw_data(path)
+    # again very few have useable data.
+    assert len(data) == 1

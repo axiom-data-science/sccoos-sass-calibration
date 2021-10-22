@@ -6,6 +6,7 @@
 from io import StringIO
 import pathlib
 import datetime
+import string
 
 import pandas as pd
 from requests.exceptions import HTTPError
@@ -126,6 +127,10 @@ class InstrumentSet:
 
         # superbad = not even the ip address is right. remove those right away.
         data = data.loc[data['ip'] != '0.0.0.0']
+        # bad data is non-ascii characters. These are what might reasonably be in a line
+        normal = string.digits + string.ascii_letters + string.punctuation + string.whitespace
+        # remove those, and if there is anything left, it's gibberish and a bad line so drop it.
+        data = data.loc[~data.iloc[:, 2].str.strip(normal).astype(bool)]
 
         start_column = names[2]  # skipping fields server time and ip
         if start_column == 'temperature':  # I think CTD files always start with temperature
@@ -139,6 +144,7 @@ class InstrumentSet:
 
             # It's important there is a value for time
             data = data.loc[data['sensor_time'].notna()]
+            data = data.loc[data['sensor_time'].str.contains(':')]  # not a float, something like a time
 
             # It's important that these columns are floats
             cols = ['temperature', 'salinity', 'O2_raw_voltage', 'O2_phase_delay', 'V2']
