@@ -147,7 +147,8 @@ class InstrumentSet:
             data = data.loc[data['sensor_time'].str.contains(':')]
 
             # It's important that these columns are floats
-            cols = ['temperature', 'salinity', 'O2_raw_voltage', 'O2_phase_delay', 'fluorometer_v']
+            cols = ['temperature', 'salinity', 'pressure',
+                    'O2_raw_voltage', 'O2_phase_delay', 'fluorometer_v']
             cols = list(set(cols) & set(data.columns))
             for col in cols:
                 data[col] = data[col].astype(float)
