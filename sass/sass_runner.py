@@ -125,6 +125,7 @@ class SassCalibrationRunner:
                     ctd_file = file.replace(this_set.raw_data_tag, salinity_set.raw_data_tag)
                     ctd_path = here.joinpath(incoming + ctd_file)
                     if not ctd_path.exists():
+                        logger.debug(f"No {ctd_file}. Cannot calibrate pH ...")
                         continue
                     logger.debug(f'Reading {ctd_path}')
                     ctd_data = salinity_set.retrieve_and_parse_raw_data(ctd_path)
@@ -134,7 +135,7 @@ class SassCalibrationRunner:
                     data.dropna(subset=['v_ext'], inplace=True)
                     data['corrected_ph'] = get_ph(data, df_cal, ctd_data)
 
-            # write it out
+            # write it out - whether successfully created calibrated values or not
             path = here.joinpath(outgoing + file)
             logger.debug(f'Writing to {str(path)}')
             if not path.parents[0].exists():

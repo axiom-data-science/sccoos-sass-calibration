@@ -109,17 +109,19 @@ class InstrumentSet:
         :return: DataFrame of raw data
         """
         names = self.data_columns
+        start_column = names[2]  # skipping fields server time and ip
         if type(url) is pathlib.PosixPath:
             try:
                 data = pd.read_csv(url, names=names, na_values=[-9.999, -0.999],
                                    encoding="ISO-8859-1")
             except FileNotFoundError:
+                logger.warn(f"No data found at {url}")  # hopefully runner will catch before this
                 return pd.DataFrame({})
         else:
             try:
                 raw_dataset = utilities.requests_get(url)
             except HTTPError:
-                # logger.warn(f"No data found for {station.foreignId} at {url}")
+                logger.warn(f"No data found at {url}")
                 return pd.DataFrame({})
 
             # No column headers at all here
@@ -131,35 +133,28 @@ class InstrumentSet:
         normal = string.digits + string.ascii_letters + string.punctuation + string.whitespace
         # remove those, and if there is anything left, it's gibberish and a bad line so drop it.
         data = data.loc[~data.iloc[:, 2].str.strip(normal).astype(bool)]
+        # remove completely empty lines
+        data.dropna(axis=0, subset=['temperature'], inplace=True)
 
-        start_column = names[2]  # skipping fields server time and ip
         if start_column == 'temperature':  # I think CTD files always start with temperature
-            # remove completely empty lines so can check ...
-            data.dropna(axis=0, subset=['temperature'], inplace=True)
-            # that the other lines have a hash mark
+            # all remaining lines should have a hash mark
             data = data.loc[data['temperature'].str.contains('#'), :]
             # The only take the numbers in that column - no hash, no gibberish
             data[start_column].replace(regex=True, inplace=True,
                                        to_replace=r'[^0-9.\-]', value=r'')
 
-            # It's important there is a value for time and that it look like time
-            data = data.loc[data['sensor_time'].notna()]
-            data = data.loc[data['sensor_time'].str.contains(':')]
+        # It's important there is a value for time and that it look like time
+        data = data.loc[data['sensor_time'].notna()]
+        data = data.loc[data['sensor_time'].str.contains(':')]
 
-            # It's important that these columns are floats
-            cols = ['temperature', 'salinity', 'pressure',
-                    'O2_raw_voltage', 'O2_phase_delay', 'fluorometer_v']
-            cols = list(set(cols) & set(data.columns))
-            for col in cols:
-                data[col] = data[col].astype(float)
+        # It's important that these columns are floats
+        cols = ['temperature', 'salinity', 'pressure',
+                'O2_raw_voltage', 'O2_phase_delay', 'fluorometer_v',
+                'ph_ext', 'ph_int', 'v_ext', 'v_int']
+        cols = list(set(cols) & set(data.columns))
+        for col in cols:
+            data[col] = data[col].astype(float)
 
-        elif start_column == 'serial_number':  # These are pH files
-            # No examples of bad files yet.
-            pass
-        else:
-            logger.error('New format for file. Add instructions on how to read.')
-
-        # ensure that the "time" column has datetime values in UTC
         data["time"] = pd.to_datetime(data["sensor_time"], utc=True)
         # for the merge with calibration coefficients, make sure data are sorted by time
         data = data.sort_values(by=['time'])
