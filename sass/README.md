@@ -64,3 +64,23 @@ but then a Stearn's Whard file showed up with Issue #3. Instead, I had to brutal
 data[start_column].replace(regex=True, inplace=True, to_replace=r'[^0-9.\-]', value=r'')
 ```
 
+
+## Undocumented change in instrument set
+
+There's a file for SIO where the date/time format changes in the middle of a file!
+
+```
+2016-03-03T00:07:40Z,172.16.117.233,time out
+2016-03-03T00:08:12Z,166.241.139.252,# 18.4374,  4.44665,    3.088, 0.0010, 0.0060, 0.0556, 0.0103,  33.4196, 03 Mar 2016, 00:09:25,  23.9544, 11.8, 597.7
+2016-03-03T00:10:11Z,166.241.139.252,# 18.4341,  4.44690,    3.062, 0.0008, 0.0068, 0.0570, 0.0104,  33.4244, 03 Mar 2016, 00:11:25,  23.9589, 11.8, 507.7
+2016-03-03T00:10:55Z,166.148.81.45,# 17.2690,  4.33962,    2.854, 4.7664, 0.0012, 0.0002, 0.0003,  33.4671, 03 Mar 2016 00:10:40,  24.2744, 14.1, 135.2
+2016-03-03T00:11:20Z,172.16.117.233,# 17.9473,  4.41324,    3.584, 0.0002, 0.0002, 0.2938, 0.0001,  33.5375, 03 Mar 2016 00:11:13,  24.1650, 11.9, 171.0
+2016-03-03T00:11:20Z,172.16.117.233,error --> alarm time not far enough in the future, resetting alarm to 5 sec from now
+2016-03-03T00:11:21Z,172.16.117.233,SBE 16plus
+```
+
+Prior: date and time are in separate columns, and afterwards, they are in the same column. 
+(Also there are lots of junky lines but without gibberish)
+
+Having the number of columns change is unacceptable, so drop that day. Otherwise, need 2 different instrument 
+sets for SIO to adjust to that.

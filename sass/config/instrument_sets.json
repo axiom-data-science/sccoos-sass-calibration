@@ -5,7 +5,7 @@
   "sets": [
     {
       "set_id": "sio-ctd-2021",
-      "start_date": "2013-01-01T00:00:00Z",
+      "start_date": "2016-03-04T00:00:00Z",
       "end_date": null,
       "station_name": "Scripps Pier",
       "raw_data_tag": "scripps_pier",
@@ -82,6 +82,23 @@
       "calibration_url": "https://docs.google.com/spreadsheets/d/1099lNMJ3XZQIFv7oSr0Q-5i4fihx7gnvoxMaVhiUhJE/export?format=xlsx&gid=",
       "chlor_tab": null,
       "chlor_gid": null,
+      "o2_tab": null,
+      "o2_gid": null,
+      "ph_tab": null,
+      "ph_gid": null,
+      "ph_salinity_set": null
+    },
+    {
+      "set_id": "sio-ctd-2013",
+      "start_date": "2013-01-01T00:00:00Z",
+      "end_date": "2016-03-02T00:00:00Z",
+      "station_name": "Scripps Pier",
+      "raw_data_tag": "scripps_pier",
+      "columns": ["server_time", "ip", "temperature", "conductivity", "pressure", "V0", "V1",
+        "fluorometer_v", "V3", "salinity", "sensor_date", "sensor_time", "sigmat", "battery", "pump"],
+      "calibration_url": "https://docs.google.com/spreadsheets/d/1099lNMJ3XZQIFv7oSr0Q-5i4fihx7gnvoxMaVhiUhJE/export?format=xlsx&gid=",
+      "chlor_tab": "SIO_Fluoro",
+      "chlor_gid": "1622349468",
       "o2_tab": null,
       "o2_gid": null,
       "ph_tab": null,

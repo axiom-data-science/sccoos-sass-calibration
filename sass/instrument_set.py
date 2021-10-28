@@ -143,6 +143,11 @@ class InstrumentSet:
             data[start_column].replace(regex=True, inplace=True,
                                        to_replace=r'[^0-9.\-]', value=r'')
 
+        # a variation might be to have date and time in separate columns
+        if 'sensor_date' in data.columns and 'sensor_time' in data.columns:
+            data['sensor_time'] = data['sensor_date'] + data['sensor_time']
+            data.drop(columns=['sensor_date'], inplace=True)
+
         # It's important there is a value for time and that it look like time
         data = data.loc[data['sensor_time'].notna()]
         data = data.loc[data['sensor_time'].str.contains(':')]
