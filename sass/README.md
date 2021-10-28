@@ -84,3 +84,28 @@ Prior: date and time are in separate columns, and afterwards, they are in the sa
 
 Having the number of columns change is unacceptable, so drop that day. Otherwise, need 2 different instrument 
 sets for SIO to adjust to that.
+
+Then, or course, there is [SIO 10/19/2015](https://sccoos.org/dr/data/data/2015-10/data-20151019.dat) that has
+a single line of the single file in a file full of date, time.  So need a special catch for that too.
+
+
+## Data from 2 different servers
+
+From SIO again:
+
+```
+2015-10-19T00:00:15Z,166.241.139.252,# 22.0211,  4.64235,    2.919, 0.0000, 0.0000, 0.1106, 0.0010,  32.2161, 19 Oct 2015, 00:00:52,  22.0982, 12.3, 242.0
+2015-10-19T00:02:15Z,166.241.139.252,# 22.0417,  4.64570,    2.895, 0.0000, 0.0000, 0.1149, 0.0002,  32.2269, 19 Oct 2015, 00:02:52,  22.1007, 12.4, 213.0
+2015-10-19T00:02:51Z,172.16.117.233,# 22.5955,  4.83420,    3.384, 0.0000, 0.0000, 5.0000, 0.0014,  33.2691, 19 Oct 2015, 00:01:56,  22.7363, 11.8, 228.3
+2015-10-19T00:02:52Z,172.16.117.233,SeacatPlus
+2015-10-19T00:03:52Z,0.0.0.0,S>
+2015-10-19T00:04:15Z,166.241.139.252,# 22.0591,  4.64740,    2.903, 0.0000, 0.0000, 0.1202, 0.0002,  32.2271, 19 Oct 2015, 00:04:52,  22.0961, 12.3, 223.8
+2015-10-19T00:06:16Z,166.241.139.252,# 22.0783,  4.64930,    2.906, 0.0000, 0.0000, 0.1232, 0.0000,  32.2276, 19 Oct 2015, 00:06:52,  22.0911, 12.3, 233.5
+2015-10-19T00:08:15Z,166.241.139.252,# 22.0894,  4.65019,    2.877, 0.0000, 0.0000, 0.1244, 0.0002,  32.2263, 19 Oct 2015, 00:08:52,  22.0870, 12.3, 254.5
+2015-10-19T00:08:52Z,172.16.117.233,# 22.6756,  4.84232,    3.285, 0.0000, 0.0000, 5.0000, 0.0013,  33.2708, 19 Oct 2015, 00:07:57,  22.7150, 11.8, 194.8
+2015-10-19T00:08:53Z,172.16.117.233,SeacatPlus
+2015-10-19T00:09:53Z,0.0.0.0,S>
+
+```
+
+Only lines from server 172.16.117.233 are in [the ERDDAP server](https://erddap.sccoos.org/erddap/tabledap/autoss.htmlTable?station%2Ctime%2Ctemperature&station=%22scripps_pier%22&time%3E=2015-10-19T00%3A00%3A00Z&time%3C=2015-10-19T23%3A59%3A00Z)

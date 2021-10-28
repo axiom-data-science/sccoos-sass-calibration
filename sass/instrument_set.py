@@ -145,6 +145,9 @@ class InstrumentSet:
 
         # a variation might be to have date and time in separate columns
         if 'sensor_date' in data.columns and 'sensor_time' in data.columns:
+            # but if it is, it had better not have times in the date column
+            # like SIO "19 Oct 2015 21:50:40"
+            data = data.loc[~data['sensor_date'].str.contains(':')]
             data['sensor_time'] = data['sensor_date'] + data['sensor_time']
             data.drop(columns=['sensor_date'], inplace=True)
 
