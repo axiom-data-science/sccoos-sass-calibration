@@ -1,8 +1,8 @@
-# Notes about Corrupted Data Files
+# Notes About Missing Data
 
-## The problem
+## Corrupted data files
 
-Perfect lines in these data files have a hash-mark `#` that separates the server info (time and IP) from the data.
+Perfect lines in the CTD data files have a hash-mark `#` that separates the server info (time and IP) from the data.
 A good line will look like:
 
 ```
@@ -23,7 +23,7 @@ There are a million ways this perfection can be corrupted. Here are a few ...
 
 Also, times can be missing or out of order.
 
-## The solution
+### The solution
 
 The wide variation in contaminated lines means that it is hard to parse the good from the bad.  For instance,
 some lines look OK except that they are just missing the `#`. But other lines are total goners. There
@@ -53,21 +53,21 @@ Caveats
 * Some of the tests might not be needed, but I'm paranoid something will slip through.
 
 
-## Converting to float
+### Converting to float
  
 To convert temperature to a float, the `#` must be removed. Originally, I use this:
 ```      
 data[start_column] = data[start_column].str.replace('#', '')
 ```
-but then a Stearn's Whard file showed up with Issue #3. Instead, I had to brutally restrict to just digits:
+but then a Stearn's Wharf file showed up with Issue #3. Instead, I had to brutally restrict to just digits:
 ```
 data[start_column].replace(regex=True, inplace=True, to_replace=r'[^0-9.\-]', value=r'')
 ```
 
 
-## Undocumented change in instrument set
+## Undocumented change in time format
 
-There's a file for SIO where the date/time format changes in the middle of a file!
+The date/time format of these data changes in the middle of the file!
 
 ```
 2016-03-03T00:07:40Z,172.16.117.233,time out
@@ -79,33 +79,51 @@ There's a file for SIO where the date/time format changes in the middle of a fil
 2016-03-03T00:11:21Z,172.16.117.233,SBE 16plus
 ```
 
-Prior: date and time are in separate columns, and afterwards, they are in the same column. 
-(Also there are lots of junky lines but without gibberish)
+Before: date and time are in different columns separated by a comma. After: they are in the same column, 
+separated by a space. It takes ~15 minutes at the beginning of this file for all instruments to switch over.
 
-Having the number of columns change is unacceptable, so drop that day. Otherwise, need 2 different instrument 
-sets for SIO to adjust to that.
+Having the number of columns change makes it hard to parse the data, so that whole day is dropped. Also,
+the changing number of columns requires separate instrument_sets for files before and after.
 
 Then, or course, there is [SIO 10/19/2015](https://sccoos.org/dr/data/data/2015-10/data-20151019.dat) that has
-a single line of the single file in a file full of date, time.  So need a special catch for that too.
+a single line of space separated date and time in a file from before the transition. To avoid having another 
+special case, that line is dropped too.
 
 
-## Data from 2 different servers
+## Data from separate sites in the same files
 
-From SIO again:
+For the first few years, data from all deployed instruments were written to the same file. That file
+was in the subdirectory `data/` (what we started calling`scripps_pier`). Different sites are identified 
+by their IP addresses.
 
+Here's an example:
 ```
-2015-10-19T00:00:15Z,166.241.139.252,# 22.0211,  4.64235,    2.919, 0.0000, 0.0000, 0.1106, 0.0010,  32.2161, 19 Oct 2015, 00:00:52,  22.0982, 12.3, 242.0
-2015-10-19T00:02:15Z,166.241.139.252,# 22.0417,  4.64570,    2.895, 0.0000, 0.0000, 0.1149, 0.0002,  32.2269, 19 Oct 2015, 00:02:52,  22.1007, 12.4, 213.0
-2015-10-19T00:02:51Z,172.16.117.233,# 22.5955,  4.83420,    3.384, 0.0000, 0.0000, 5.0000, 0.0014,  33.2691, 19 Oct 2015, 00:01:56,  22.7363, 11.8, 228.3
-2015-10-19T00:02:52Z,172.16.117.233,SeacatPlus
-2015-10-19T00:03:52Z,0.0.0.0,S>
-2015-10-19T00:04:15Z,166.241.139.252,# 22.0591,  4.64740,    2.903, 0.0000, 0.0000, 0.1202, 0.0002,  32.2271, 19 Oct 2015, 00:04:52,  22.0961, 12.3, 223.8
-2015-10-19T00:06:16Z,166.241.139.252,# 22.0783,  4.64930,    2.906, 0.0000, 0.0000, 0.1232, 0.0000,  32.2276, 19 Oct 2015, 00:06:52,  22.0911, 12.3, 233.5
-2015-10-19T00:08:15Z,166.241.139.252,# 22.0894,  4.65019,    2.877, 0.0000, 0.0000, 0.1244, 0.0002,  32.2263, 19 Oct 2015, 00:08:52,  22.0870, 12.3, 254.5
-2015-10-19T00:08:52Z,172.16.117.233,# 22.6756,  4.84232,    3.285, 0.0000, 0.0000, 5.0000, 0.0013,  33.2708, 19 Oct 2015, 00:07:57,  22.7150, 11.8, 194.8
-2015-10-19T00:08:53Z,172.16.117.233,SeacatPlus
-2015-10-19T00:09:53Z,0.0.0.0,S>
-
+2013-11-15T00:02:00Z,166.241.139.252,# 18.3637,  4.45391,    2.645, 0.3939, 0.0002, 0.1783, 0.0001,  33.5409, 15 Nov 2013, 00:01:29,  24.0654, 12.6, 172.9
+2013-11-15T00:02:07Z,166.148.81.45,# 16.7047,  4.29693,    2.474, 0.0003, 0.0006, 0.0682, 0.0000,  33.5668, 15 Nov 2013, 00:02:03,  24.4835, 14.0, 191.6
+2013-11-15T00:02:32Z,166.241.175.135,# 17.8930,  4.39277,    2.395, 0.0001, 0.0001, 4.9288, 0.0001,  33.4083, 15 Nov 2013, 00:02:06,  24.0795, 12.5, 210.1
+2013-11-15T00:05:59Z,166.241.139.252,# 18.2029,  4.43817,    2.649, 0.3824, 0.0001, 0.1741, 0.0001,  33.5395, 15 Nov 2013, 00:05:29,  24.1041, 12.6, 168.6
+2013-11-15T00:06:07Z,166.148.81.45,# 16.7012,  4.29662,    2.503, 0.0001, 0.0005, 0.0660, 0.0000,  33.5671, 15 Nov 2013, 00:06:03,  24.4846, 14.0, 190.1
 ```
 
-Only lines from server 172.16.117.233 are in [the ERDDAP server](https://erddap.sccoos.org/erddap/tabledap/autoss.htmlTable?station%2Ctime%2Ctemperature&station=%22scripps_pier%22&time%3E=2015-10-19T00%3A00%3A00Z&time%3C=2015-10-19T23%3A59%3A00Z)
+One by one, the sites were transferred to their own subdirectories:
+* Newport Pier on 2016-20-11 into `newport_pier/` (after a gap of a few hours)
+* Stearns Wharf on 2018-02-26 into `stearns_wharf/` (after a gap of several days)
+* Santa Monica on 2018-10-03 into `santa_monica_pier/` (after a gap of several years)
+
+Luckily, once this transfer happens, that IP never appears in the `scripps_pier/` files again, so before and after this
+transition can be described by separate instrument_sets.
+
+However, during Newport's transition, data from the same instrument is written into both 
+`scripps_pier/2016-03/data_20162011.dat` and  `newport_pier/2016-10/data-20161011.dat`. Since this code works 
+with entire files, I have to choose which file to process (it can'tdo both and merge the results). I did that 
+by setting the start of the new instrument_set to the next day (10/12/2016)
+
+
+## The IP address changes for a single site
+
+For those early years, this code identifies data from a site by the IP address. This address changed for 2 sites:
+
+* Newport Pier from 166.241.139.252 to 166.140.102.113 (after a gap of a few months)
+* Scripps Pier from 132.239.117.226 to 172.16.117.233 (after a gap of ~1 day)
+
+These changes don't result in missing data.  Just thought I'd mention it.

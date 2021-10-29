@@ -1,10 +1,39 @@
 {
   "organization": "SCCOOS",
   "purpose": "To document the formats of automated shore station data",
-  "raw_data_url": "https://sccoos.org/dr/data/",
+  "raw_data_url": "https://sccoos.org/dr/data/ data originally posted here",
   "sets": [
     {
-      "set_id": "sio-ctd-2021",
+      "set_id": "sio-ctd-2013",
+      "description": "Scripps is the first instrument deployed",
+      "start_date": "2013-01-01T00:00:00Z",
+      "end_date": "2014-10-20T23:59:59Z",
+      "station_name": "Scripps Pier",
+      "raw_data_tag": "scripps_pier",
+      "columns": ["server_time", "ip", "temperature", "conductivity", "pressure", "V0", "V1",
+        "fluorometer_v", "V3", "salinity", "sensor_date", "sensor_time", "sigmat", "battery", "pump"],
+      "calibration_url": "https://docs.google.com/spreadsheets/d/1099lNMJ3XZQIFv7oSr0Q-5i4fihx7gnvoxMaVhiUhJE/export?format=xlsx&gid=",
+      "chlor_tab": "SIO_Fluoro",
+      "chlor_gid": "1622349468",
+      "ip": "132.239.117.226"
+    },
+    {
+      "set_id": "sio-ctd-2014",
+      "description": "the IP address changed from the original one",
+      "start_date": "2014-10-21T00:00:00Z",
+      "end_date": "2016-03-02T23:59:59Z",
+      "station_name": "Scripps Pier",
+      "raw_data_tag": "scripps_pier",
+      "columns": ["server_time", "ip", "temperature", "conductivity", "pressure", "V0", "V1",
+        "fluorometer_v", "V3", "salinity", "sensor_date", "sensor_time", "sigmat", "battery", "pump"],
+      "calibration_url": "https://docs.google.com/spreadsheets/d/1099lNMJ3XZQIFv7oSr0Q-5i4fihx7gnvoxMaVhiUhJE/export?format=xlsx&gid=",
+      "chlor_tab": "SIO_Fluoro",
+      "chlor_gid": "1622349468",
+      "ip": "172.16.117.233"
+    },
+    {
+      "set_id": "sio-ctd-2016",
+      "description": "changed from data and time as separate columns to combined into single column",
       "start_date": "2016-03-04T00:00:00Z",
       "end_date": null,
       "station_name": "Scripps Pier",
@@ -14,15 +43,40 @@
       "calibration_url": "https://docs.google.com/spreadsheets/d/1099lNMJ3XZQIFv7oSr0Q-5i4fihx7gnvoxMaVhiUhJE/export?format=xlsx&gid=",
       "chlor_tab": "SIO_Fluoro",
       "chlor_gid": "1622349468",
-      "o2_tab": null,
-      "o2_gid": null,
-      "ph_tab": null,
-      "ph_gid": null,
-      "ph_salinity_set": null
+      "ip": "172.16.117.233"
     },
     {
-      "set_id": "np-ctd-2021",
-      "start_date": "2016-10-11T00:00:00Z",
+      "set_id": "np-ctd-2013",
+      "description": "Newport Pier original deployment written to files with other stations",
+      "start_date": "2013-01-23T00:00:00Z",
+      "end_date": "2016-03-02T23:59:59Z",
+      "station_name": "Newport Pier",
+      "raw_data_tag": "scripps_pier",
+      "columns": ["date", "ip", "temperature", "conductivity", "pressure", "V1", "V3",
+        "fluorometer_v", "V4", "salinity", "sensor_date", "sensor_time", "sigmat", "battery", "pump"],
+      "calibration_url": "https://docs.google.com/spreadsheets/d/1099lNMJ3XZQIFv7oSr0Q-5i4fihx7gnvoxMaVhiUhJE/export?format=xlsx&gid=",
+      "chlor_tab": "NB_Fluoro",
+      "chlor_gid": "1471974914",
+      "ip": "166.241.139.252"
+    },
+    {
+      "set_id": "np-ctd-2016a",
+      "description": "changed from data and time as separate columns to combined into single column and new IP",
+      "start_date": "2016-05-12T00:00:00Z",
+      "end_date": "2016-03-02T23:59:59Z",
+      "station_name": "Newport Pier",
+      "raw_data_tag": "scripps_pier",
+      "columns": ["date", "ip", "temperature", "conductivity", "pressure", "V1", "V3",
+        "fluorometer_v", "V4", "salinity", "sensor_time", "sigmat", "battery", "pump"],
+      "calibration_url": "https://docs.google.com/spreadsheets/d/1099lNMJ3XZQIFv7oSr0Q-5i4fihx7gnvoxMaVhiUhJE/export?format=xlsx&gid=",
+      "chlor_tab": "NB_Fluoro",
+      "chlor_gid": "1471974914",
+      "ip": "166.140.102.113"
+    },
+    {
+      "set_id": "np-ctd-2016b",
+      "description": "Newport Pier has Oxygen sensor and is now writing to its own directory",
+      "start_date": "2016-10-12T00:00:00Z",
       "end_date": null,
       "station_name": "Newport Pier",
       "raw_data_tag": "newport_pier",
@@ -33,9 +87,7 @@
       "chlor_gid": "1471974914",
       "o2_tab": "SBE 63 O2",
       "o2_gid": "961390164",
-      "ph_tab": null,
-      "ph_gid": null,
-      "ph_salinity_set": null
+      "ip": "166.140.102.113"
     },
     {
       "set_id": "np-ph-2021",
@@ -46,17 +98,28 @@
       "columns":  ["server_time", "ip", "serial_number", "sensor_time", "record",
         "flags", "ph_ext", "ph_int", "v_ext", "v_int", "temperature", "rh", "temperature_int"],
       "calibration_url": "https://docs.google.com/spreadsheets/d/1099lNMJ3XZQIFv7oSr0Q-5i4fihx7gnvoxMaVhiUhJE/export?format=xlsx&gid=",
-      "chlor_tab": null,
-      "chlor_gid": null,
-      "o2_tab": null,
-      "o2_gid": null,
       "ph_tab": "NB_SeaFET_Coeffs",
       "ph_gid": "980013806",
       "ph_salinity_set": "np-ctd-2021"
     },
     {
-      "set_id": "sm-ctd-2021",
-      "start_date": "2013-01-01T00:00:00Z",
+      "set_id": "sm-ctd-2013",
+      "description": "Santa Monica original deployment written to files with other stations",
+      "start_date": "2013-01-24T00:00:00Z",
+      "end_date": "2015-07-14T00:00:00Z",
+      "station_name": "Santa Monica Pier",
+      "raw_data_tag": "scripps_pier",
+      "columns": ["date", "ip", "temperature", "conductivity", "pressure", "fluorometer_v",
+        "salinity", "sensor_date", "sensor_time", "sigmat", "battery", "pump"],
+      "calibration_url": "https://docs.google.com/spreadsheets/d/1099lNMJ3XZQIFv7oSr0Q-5i4fihx7gnvoxMaVhiUhJE/export?format=xlsx&gid=",
+      "chlor_tab": "SM_Fluoro",
+      "chlor_gid": "257249985",
+      "ip": "166.241.175.135"
+    },
+    {
+      "set_id": "sm-ctd-2018",
+      "description": "Santa Monica redeployed and writing to a new directory",
+      "start_date": "2018-10-03T00:00:00Z",
       "end_date": null,
       "station_name": "Santa Monica Pier",
       "raw_data_tag": "santa_monica_pier",
@@ -65,15 +128,54 @@
       "calibration_url": "https://docs.google.com/spreadsheets/d/1099lNMJ3XZQIFv7oSr0Q-5i4fihx7gnvoxMaVhiUhJE/export?format=xlsx&gid=",
       "chlor_tab": "SM_Fluoro",
       "chlor_gid": "257249985",
-      "o2_tab": null,
-      "o2_gid": null,
-      "ph_tab": null,
-      "ph_gid": null,
-      "ph_salinity_set": null
+      "ip": "166.241.175.135"
     },
     {
-      "set_id": "sw-ctd-2021",
-      "start_date": "2014-03-25T00:00:00Z",
+      "set_id": "sw-ctd-2013",
+      "description": "Stearns Wharf original deployment written to files with other stations",
+      "start_date": "2013-11-14T00:00:00Z",
+      "end_date": "2014-03-25T17:00:00Z",
+      "station_name": "Stearns Wharf",
+      "raw_data_tag": "scripps_pier",
+      "columns": ["date", "ip", "temperature", "conductivity", "pressure", "V1", "V3",
+        "fluorometer_v", "V4", "salinity", "sensor_date", "sensor_time", "sigmat", "battery", "pump"],
+      "calibration_url": "https://docs.google.com/spreadsheets/d/1099lNMJ3XZQIFv7oSr0Q-5i4fihx7gnvoxMaVhiUhJE/export?format=xlsx&gid=",
+      "chlor_tab": null,
+      "chlor_gid": null,
+      "ip": "166.148.81.45"
+    },
+    {
+      "set_id": "sw-ctd-2014",
+      "description": "Stearns Wharf order of the auxiliary channels changed",
+      "start_date": "2014-03-25T20:00:00Z",
+      "end_date": "2016-03-02T23:59:59Z",
+      "station_name": "Stearns Wharf",
+      "raw_data_tag": "scripps_pier",
+      "columns": ["date", "ip", "temperature", "conductivity", "pressure", "fluorometer_v",
+        "V3", "V1", "V4", "salinity", "sensor_date", "sensor_time", "sigmat", "battery", "pump"],
+      "calibration_url": "https://docs.google.com/spreadsheets/d/1099lNMJ3XZQIFv7oSr0Q-5i4fihx7gnvoxMaVhiUhJE/export?format=xlsx&gid=",
+      "chlor_tab": null,
+      "chlor_gid": null,
+      "ip": "166.148.81.45"
+    },
+    {
+      "set_id": "sw-ctd-2016",
+      "description": "changed from data and time as separate columns to combined into single column",
+      "start_date": "2016-03-04T23:59:59Z",
+      "end_date": "2018-02-21T23:59:59Z",
+      "station_name": "Stearns Wharf",
+      "raw_data_tag": "scripps_pier",
+      "columns": ["date", "ip", "temperature", "conductivity", "pressure", "fluorometer_v",
+        "V3", "V1", "V4", "salinity", "sensor_time", "sigmat", "battery", "pump"],
+      "calibration_url": "https://docs.google.com/spreadsheets/d/1099lNMJ3XZQIFv7oSr0Q-5i4fihx7gnvoxMaVhiUhJE/export?format=xlsx&gid=",
+      "chlor_tab": null,
+      "chlor_gid": null,
+      "ip": "166.148.81.45"
+    },
+    {
+      "set_id": "sw-ctd-2018",
+      "description": "Stearns Wharf writing to a new directory",
+      "start_date": "2018-02-26T00:00:00Z",
       "end_date": null,
       "station_name": "Stearns Wharf",
       "raw_data_tag": "stearns_wharf",
@@ -82,20 +184,18 @@
       "calibration_url": "https://docs.google.com/spreadsheets/d/1099lNMJ3XZQIFv7oSr0Q-5i4fihx7gnvoxMaVhiUhJE/export?format=xlsx&gid=",
       "chlor_tab": null,
       "chlor_gid": null,
-      "o2_tab": null,
-      "o2_gid": null,
-      "ph_tab": null,
-      "ph_gid": null,
-      "ph_salinity_set": null
-    },
+      "ip": "166.148.81.45"
+    }
+  ],
+  "template": [
     {
-      "set_id": "sio-ctd-2013",
+      "set_id": "site-instr-yyyy",
+      "description": "a short description. This one has all possible fields",
       "start_date": "2013-01-01T00:00:00Z",
       "end_date": "2016-03-02T00:00:00Z",
-      "station_name": "Scripps Pier",
-      "raw_data_tag": "scripps_pier",
-      "columns": ["server_time", "ip", "temperature", "conductivity", "pressure", "V0", "V1",
-        "fluorometer_v", "V3", "salinity", "sensor_date", "sensor_time", "sigmat", "battery", "pump"],
+      "station_name": "English Name",
+      "raw_data_tag": "directory_name",
+      "columns": ["server_time", "ip", "column", "header", "names"],
       "calibration_url": "https://docs.google.com/spreadsheets/d/1099lNMJ3XZQIFv7oSr0Q-5i4fihx7gnvoxMaVhiUhJE/export?format=xlsx&gid=",
       "chlor_tab": "SIO_Fluoro",
       "chlor_gid": "1622349468",
@@ -103,7 +203,8 @@
       "o2_gid": null,
       "ph_tab": null,
       "ph_gid": null,
-      "ph_salinity_set": null
+      "ph_salinity_set": null,
+      "ip": "132.239.117.226"
     }
   ]
 }
