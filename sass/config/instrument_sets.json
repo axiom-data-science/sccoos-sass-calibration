@@ -90,7 +90,8 @@
       "ip": "166.140.102.113"
     },
     {
-      "set_id": "np-ph-2021",
+      "set_id": "np-ph-2020",
+      "description": "Earlier pH data not reliable, so start processing in Dec 2020",
       "start_date": "2020-12-17T23:00:00Z",
       "end_date": null,
       "station_name": "Newport Pier",
@@ -100,7 +101,8 @@
       "calibration_url": "https://docs.google.com/spreadsheets/d/1099lNMJ3XZQIFv7oSr0Q-5i4fihx7gnvoxMaVhiUhJE/export?format=xlsx&gid=",
       "ph_tab": "NB_SeaFET_Coeffs",
       "ph_gid": "980013806",
-      "ph_salinity_set": "np-ctd-2021"
+      "ph_salinity_set": "np-ctd-2021",
+      "ip": "166.140.102.113"
     },
     {
       "set_id": "sm-ctd-2013",

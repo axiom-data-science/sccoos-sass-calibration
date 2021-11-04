@@ -19,7 +19,16 @@ def sio_set():
     """Create an InstrumentSet from JSON file defined above."""
     path = here.joinpath(instrument_set_filename)
     instrument_sets = load_configs(path)
-    this_set = [s for s in instrument_sets if s.station_name == 'Scripps Pier']
+    this_set = [s for s in instrument_sets if s.set_id == 'sio-ctd-2016']
+    return this_set[0]
+
+
+@pytest.fixture
+def np_set_old():
+    """Create an InstrumentSet from JSON file defined above."""
+    path = here.joinpath(instrument_set_filename)
+    instrument_sets = load_configs(path)
+    this_set = [s for s in instrument_sets if s.set_id == 'np-ctd-2013']
     return this_set[0]
 
 
@@ -28,7 +37,16 @@ def np_set():
     """Create an InstrumentSet from JSON file defined above."""
     path = here.joinpath(instrument_set_filename)
     instrument_sets = load_configs(path)
-    this_set = [s for s in instrument_sets if s.set_id == 'np-ctd-2021']
+    this_set = [s for s in instrument_sets if s.set_id == 'np-ctd-2016b']
+    return this_set[0]
+
+
+@pytest.fixture
+def sw_set():
+    """Create an InstrumentSet from JSON file defined above."""
+    path = here.joinpath(instrument_set_filename)
+    instrument_sets = load_configs(path)
+    this_set = [s for s in instrument_sets if s.set_id == 'sw-ctd-2018']
     return this_set[0]
 
 
@@ -37,7 +55,7 @@ def np_ph_set():
     """Create an InstrumentSet from JSON file defined above."""
     path = here.joinpath(instrument_set_filename)
     instrument_sets = load_configs(path)
-    this_set = [s for s in instrument_sets if s.set_id == 'np-ph-2021']
+    this_set = [s for s in instrument_sets if s.set_id == 'np-ph-2020']
     return this_set[0]
 
 
@@ -86,7 +104,23 @@ def test_retrieve_observations(sio_set):
     assert data.iloc[0, -1] == parse_datetime("2021-08-26T03:02:18")
 
 
-def test_retrieve_corrupt_observations(sio_set):
+def test_retrieve_old_observations(np_set_old):
+    """Verify reading raw data correctly.
+
+    :param np_set_old: a pre-filled InstrumentSet for a file when all are together
+    :return:
+    """
+    # instead of making GET request to the HTTP server, we are going to read a local file
+    path = here.joinpath('resources/raw_data/data-20131115_trimmed.dat')
+
+    data = np_set_old.retrieve_and_parse_raw_data(path)
+    assert len(data) == 4
+    assert data.iloc[0, 2] == 18.3637  # temperature
+    # time was added as the last column
+    assert data.iloc[0, -1] == parse_datetime("2013-11-15T00:01:29")
+
+
+def test_retrieve_corrupt_observations(sw_set):
     """Verify correct reading of raw data even when data are corrupted.
 
     The corrupted file is real, but I added a empty temperature fields to duplicate another
@@ -99,13 +133,13 @@ def test_retrieve_corrupt_observations(sio_set):
     # instead of making GET request to the HTTP server, we are going to read a local file
     path = here.joinpath('resources/raw_data/stearns_data-20210720_corrupt.dat')
 
-    data = sio_set.retrieve_and_parse_raw_data(path)
+    data = sw_set.retrieve_and_parse_raw_data(path)
     assert len(data) == 78  # 83 lines with 5 corrupt
     assert data['temperature'].iloc[77] == 16.2690
     assert data['time'].iloc[77] == parse_datetime("2021-07-20T07:41:04")
 
 
-def test_retrieve_superbad_observations(sio_set):
+def test_retrieve_superbad_observations(sw_set):
     """Verify correct reading of raw data even when data are corrupted.
 
     This corrupted file is real - no alterations.  Just super gross.
@@ -116,14 +150,14 @@ def test_retrieve_superbad_observations(sio_set):
     # instead of making GET request to the HTTP server, we are going to read a local file
     path = here.joinpath('resources/raw_data/stearns_data-20211014_superbad.dat')
 
-    data = sio_set.retrieve_and_parse_raw_data(path)
+    data = sw_set.retrieve_and_parse_raw_data(path)
     # this file started with 323 lines but only 90 are good.  Told you it was appalling.
     assert len(data) == 90
 
     # This one is even worse! and it has gibberish in an otherwise fine temperature entry
     path = here.joinpath('resources/raw_data/stearns_data-20211010_superbad.dat')
 
-    data = sio_set.retrieve_and_parse_raw_data(path)
+    data = sw_set.retrieve_and_parse_raw_data(path)
     # this file started with 358 lines but only 43 are good. One more removed because I
     # can't be sure temperature in a corrupted filed is good.
     assert len(data) == 42

@@ -22,7 +22,7 @@ class InstrumentSet:
                  station_name=None, raw_data_tag=None, columns=[], calibration_url='',
                  chlor_tab=None, chlor_gid=None,
                  o2_tab=None, o2_gid=None,
-                 ph_tab=None, ph_gid=None, ph_salinity_set=None, **kwargs):
+                 ph_tab=None, ph_gid=None, ph_salinity_set=None, ip=None, **kwargs):
         """Fills an InstrumentSet with information read from a JSON config file.
 
         :param set_id: unique identifier of the set (string)
@@ -39,6 +39,7 @@ class InstrumentSet:
         :param ph_tab: Google sheet tab name for the SeaFET (string)
         :param ph_gid: Google sheet id code for the SeaFET (string)
         :param ph_salinity_set: set_id of the instrument set that will provide salinity
+        :param ip: IP address connects the instrument to each line in the data file (string)
         :param kwargs:
         """
         self.set_id = set_id
@@ -72,6 +73,8 @@ class InstrumentSet:
         for key, value in self.cal_gids.items():
             if value:
                 self.parameters.append(key)
+
+        self.ip = ip
 
     def __repr__(self):
         """Returns a printable string."""
@@ -135,6 +138,9 @@ class InstrumentSet:
         data = data.loc[~data.iloc[:, 2].str.strip(normal).astype(bool)]
         # remove completely empty lines
         data.dropna(axis=0, subset=['temperature'], inplace=True)
+
+        # some incoming files have data from multiple instruments, so filter to just one
+        data = data.loc[data['ip'] == self.ip]
 
         if start_column == 'temperature':  # I think CTD files always start with temperature
             # all remaining lines should have a hash mark

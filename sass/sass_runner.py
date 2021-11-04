@@ -29,12 +29,8 @@ def load_configs(path_to_file, set=None):
         configs.append(instrument_set.InstrumentSet(**config))
 
     if set:  # take a subset
-        try:
-            configs = [s for s in configs if s.set_id == set]
-        except StopIteration:
-            logger.error(f'****  {set} is not defined in instrument_set.json ****')
-            logger.error('Job failed.')
-            return [None]
+        configs = [s for s in configs if s.set_id == set]
+
     return configs
 
 
@@ -54,6 +50,8 @@ class SassCalibrationRunner:
         path = here.joinpath(instrument_set_filename)
         configs = load_configs(path, set=set_id)
         if len(configs) == 0:
+            logger.error(f'****  {set_id} is not defined in instrument_set.json ****')
+            logger.error('Job failed.')
             return 1
         else:
             this_set = configs[0]
