@@ -130,24 +130,27 @@ class InstrumentSet:
             # No column headers at all here
             data = pd.read_csv(StringIO(raw_dataset), names=names, na_values=[-9.999, -0.999])
 
-        # superbad = not even the ip address is right. remove those right away.
-        data = data.loc[data['ip'] != '0.0.0.0']
-        # bad data is non-ascii characters. These are what might reasonably be in a line
-        normal = string.digits + string.ascii_letters + string.punctuation + string.whitespace
-        # remove those, and if there is anything left, it's gibberish and a bad line so drop it.
-        data = data.loc[~data.iloc[:, 2].str.strip(normal).astype(bool)]
-        # remove completely empty lines
-        data.dropna(axis=0, subset=['temperature'], inplace=True)
-
         # some incoming files have data from multiple instruments, so filter to just one
         data = data.loc[data['ip'] == self.ip]
 
-        if start_column == 'temperature':  # I think CTD files always start with temperature
-            # all remaining lines should have a hash mark
-            data = data.loc[data['temperature'].str.contains('#'), :]
-            # The only take the numbers in that column - no hash, no gibberish
-            data[start_column].replace(regex=True, inplace=True,
-                                       to_replace=r'[^0-9.\-]', value=r'')
+        # bad data is non-ascii characters. These are what might reasonably be in a line
+        normal = string.digits + string.ascii_letters + string.punctuation + string.whitespace
+        try:
+            # remove those, and if there is anything left, it's gibberish and a bad line so drop it.
+            data = data.loc[~data.iloc[:, 2].str.strip(normal).astype(bool)]
+
+            # remove completely empty lines
+            data.dropna(axis=0, subset=['temperature'], inplace=True)
+
+            if start_column == 'temperature':  # I think CTD files always start with temperature
+                # all remaining lines should have a hash mark
+                data = data.loc[data['temperature'].str.contains('#'), :]
+                # The only take the numbers in that column - no hash, no gibberish
+                data[start_column].replace(regex=True, inplace=True,
+                                           to_replace=r'[^0-9.\-]', value=r'')
+        except AttributeError:
+            # there are a couple files that have good data but no hash marks anywhere
+            pass
 
         # a variation might be to have date and time in separate columns
         if 'sensor_date' in data.columns and 'sensor_time' in data.columns:

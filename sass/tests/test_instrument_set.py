@@ -120,6 +120,22 @@ def test_retrieve_old_observations(np_set_old):
     assert data.iloc[0, -1] == parse_datetime("2013-11-15T00:01:29")
 
 
+def test_retrieve_no_hash(sio_set):
+    """Verify reading raw data correctly.
+
+    :param sio_set: a pre-filled InstrumentSet
+    :return:
+    """
+    # instead of making GET request to the HTTP server, we are going to read a local file
+    path = here.joinpath('resources/raw_data/data-20170117_no_hash.dat')
+
+    data = sio_set.retrieve_and_parse_raw_data(path)
+    assert len(data) == 5
+    assert data.iloc[0, 2] == 15.0347  # temperature
+    # time was added as the last column
+    assert data.iloc[0, -1] == parse_datetime("2017-01-27T00:00:06")
+
+
 def test_retrieve_corrupt_observations(sw_set):
     """Verify correct reading of raw data even when data are corrupted.
 
