@@ -134,7 +134,8 @@ class SassCalibrationRunner:
                     data['corrected_ph'] = get_ph(data, df_cal, ctd_data)
 
             # write it out - whether successfully created calibrated values or not
-            path = here.joinpath(outgoing + file)
+            outfile = file.replace(this_set.raw_data_tag, this_set.proc_data_tag)
+            path = here.joinpath(outgoing + outfile)
             logger.debug(f'Writing to {str(path)}')
             if not path.parents[0].exists():
                 path.parents[0].mkdir(parents=True)

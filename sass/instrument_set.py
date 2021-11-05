@@ -19,8 +19,8 @@ from . import utilities
 class InstrumentSet:
     """Collects the information associated with a set of instrumentation installed at a site."""
     def __init__(self, set_id=None, start_date=None, end_date=None,
-                 station_name=None, raw_data_tag=None, columns=[], calibration_url='',
-                 chlor_tab=None, chlor_gid=None,
+                 station_name=None, raw_data_tag=None, proc_data_tag=None, columns=[],
+                 calibration_url='', chlor_tab=None, chlor_gid=None,
                  o2_tab=None, o2_gid=None,
                  ph_tab=None, ph_gid=None, ph_salinity_set=None, ip=None, **kwargs):
         """Fills an InstrumentSet with information read from a JSON config file.
@@ -30,6 +30,7 @@ class InstrumentSet:
         :param end_date: when the instrumentation was removed (ISO string)
         :param station_id:  where the InstrumentSet was installed (string)
         :param raw_data_tag: indentifier of where data for the InstrumentSet is stored (string)
+        :param proc_data_tag: where data will be written, if different (string)
         :param columns: the column header for the raw data (list of strings)
         :param calibration_url: dictionary of Google Sheet url and tab name/uid
         :param chlor_tab: Google sheet tab name for the Fluorometer (string)
@@ -42,7 +43,10 @@ class InstrumentSet:
         :param ip: IP address connects the instrument to each line in the data file (string)
         :param kwargs:
         """
+        # basic info like where and when
         self.set_id = set_id
+        self.station_name = station_name
+        self.ip = ip
         if start_date:
             self.start_date = utilities.parse_datetime(start_date)
         else:
@@ -54,8 +58,14 @@ class InstrumentSet:
             # if instrument set hasn't ended, it's going right now
             self.end_date = utilities.parse_datetime(datetime.datetime.now())
 
-        self.station_name = station_name
+        # where reading and writing data - for early years, they are different
         self.raw_data_tag = raw_data_tag
+        if proc_data_tag:
+            self.proc_data_tag = proc_data_tag
+        else:
+            self.proc_data_tag = raw_data_tag
+
+        # where to get calibration coefficients
         self.data_columns = columns
         self.calibration_url = calibration_url
         self.cal_tabs = {
@@ -73,8 +83,6 @@ class InstrumentSet:
         for key, value in self.cal_gids.items():
             if value:
                 self.parameters.append(key)
-
-        self.ip = ip
 
     def __repr__(self):
         """Returns a printable string."""
