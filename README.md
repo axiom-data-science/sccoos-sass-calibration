@@ -82,7 +82,7 @@ Running with Docker
 -------------------
 
 ```
-docker run --rm --mount type=bind,source=/mnt/store/data/sensors/import/sccoos/sass,destination=/opt/sccoos-sass-calibration/data registry.axiom/sccoos-sass-calibration:latest ./call_sass.py --set np-ctd-2021
+docker run --rm --mount type=bind,source=/mnt/store/data/sensors/import/sccoos/sass,destination=/opt/sccoos-sass-calibration/data registry.axiom/sccoos-sass-calibration:latest ./call_sass.py --set np-ctd-2016b
 ```
 
 ## Contributors

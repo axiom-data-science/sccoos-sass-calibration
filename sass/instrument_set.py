@@ -9,6 +9,7 @@ import datetime
 import string
 
 import pandas as pd
+import numpy as np
 from requests.exceptions import HTTPError
 from dateutil.relativedelta import relativedelta
 
@@ -139,14 +140,13 @@ class InstrumentSet:
             data = pd.read_csv(StringIO(raw_dataset), names=names, na_values=[-9.999, -0.999])
 
         # some incoming files have data from multiple instruments, so filter to just one
-        data = data.loc[data['ip'] == self.ip]
+        data = data.loc[data['ip'] == self.ip]  # also filters out 0.0.0.0
 
         # bad data is non-ascii characters. These are what might reasonably be in a line
         normal = string.digits + string.ascii_letters + string.punctuation + string.whitespace
         try:
             # remove those, and if there is anything left, it's gibberish and a bad line so drop it.
             data = data.loc[~data.iloc[:, 2].str.strip(normal).astype(bool)]
-
             # remove completely empty lines
             data.dropna(axis=0, subset=['temperature'], inplace=True)
 
@@ -158,7 +158,12 @@ class InstrumentSet:
                                            to_replace=r'[^0-9.\-]', value=r'')
         except AttributeError:
             # there are a couple files that have good data but no hash marks anywhere
+            # so the temperature column is parsed as a float. No need to convert.
             pass
+
+        # some lines are empty after the ip (and hash mark)
+        data.replace('', np.nan, inplace=True)
+        data.dropna(axis=0, subset=['temperature'], inplace=True)
 
         # a variation might be to have date and time in separate columns
         if 'sensor_date' in data.columns and 'sensor_time' in data.columns:
