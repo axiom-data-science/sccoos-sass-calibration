@@ -146,9 +146,10 @@ class InstrumentSet:
         normal = string.digits + string.ascii_letters + string.punctuation + string.whitespace
         try:
             # remove those, and if there is anything left, it's gibberish and a bad line so drop it.
-            data = data.loc[~data.iloc[:, 2].str.strip(normal).astype(bool)]
-            # remove completely empty lines
-            data.dropna(axis=0, subset=['temperature'], inplace=True)
+            # gibberish can be in any data cell, so have to test all the columns at once
+            cols = data.select_dtypes(object)
+            mask = cols.apply(lambda x: ~x.str.strip(normal).astype(bool))
+            data = data[mask.all(axis=1)]
 
             if start_column == 'temperature':  # I think CTD files always start with temperature
                 # all remaining lines should have a hash mark

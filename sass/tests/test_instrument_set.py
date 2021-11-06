@@ -143,6 +143,7 @@ def test_retrieve_corrupt_observations(sw_set):
     error I got later.  That's ",," in the temperature field that was causing the check for
     "#" to balk.
     Also, created a line with only # to mimic lines seen in data/2013-04/data-20130410.dat
+    And copied a line in from stearns_wharf/2018-08/data-20180811.dat
 
     :param sio_set: a pre-filled InstrumentSet
     :return:
