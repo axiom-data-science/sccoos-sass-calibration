@@ -191,7 +191,8 @@ class InstrumentSet:
                  'ph_ext', 'ph_int', 'v_ext', 'v_int']
         names = list(set(names) & set(data.columns))
         cols = data[names].select_dtypes(object)
-        cols = cols.apply(lambda x: x.str.strip(string.ascii_letters))
+        to_strip = string.ascii_letters + string.punctuation.replace('.', '').replace('-', '')
+        cols = cols.apply(lambda x: x.str.strip(to_strip))
         data[cols.columns] = cols.apply(lambda x: x.astype(float))
 
         # clean-up missing O2 values
