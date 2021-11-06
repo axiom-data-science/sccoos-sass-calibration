@@ -175,8 +175,14 @@ class InstrumentSet:
             data.drop(columns=['sensor_date'], inplace=True)
 
         # It's important there is a value for time and that it look like time
-        data = data.loc[data['sensor_time'].notna()]
+        # (sometimes commas/columns get dropped so this is also a check for that)
         data = data.loc[data['sensor_time'].str.contains(':')]
+
+        data["time"] = pd.to_datetime(data["sensor_time"], utc=True, errors='coerce')
+        data.dropna(axis=0, subset=['time'], inplace=True)
+        # for the merge with calibration coefficients, make sure data are sorted by time
+        data = data.sort_values(by=['time'])
+        data.reset_index(drop=True, inplace=True)
 
         # It's important that these columns are floats
         cols = ['temperature', 'salinity', 'pressure',
@@ -185,11 +191,6 @@ class InstrumentSet:
         cols = list(set(cols) & set(data.columns))
         for col in cols:
             data[col] = data[col].astype(float)
-
-        data["time"] = pd.to_datetime(data["sensor_time"], utc=True)
-        # for the merge with calibration coefficients, make sure data are sorted by time
-        data = data.sort_values(by=['time'])
-        data.reset_index(drop=True, inplace=True)
 
         return data
 

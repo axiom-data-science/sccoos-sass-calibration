@@ -144,6 +144,7 @@ def test_retrieve_corrupt_observations(sw_set):
     "#" to balk.
     Also, created a line with only # to mimic lines seen in data/2013-04/data-20130410.dat
     And copied a line in from stearns_wharf/2018-08/data-20180811.dat
+    Also added a character to date string like stearns_wharf/2018-11/data-20181101.dat
 
     :param sio_set: a pre-filled InstrumentSet
     :return:
@@ -152,9 +153,9 @@ def test_retrieve_corrupt_observations(sw_set):
     path = here.joinpath('resources/raw_data/stearns_data-20210720_corrupt.dat')
 
     data = sw_set.retrieve_and_parse_raw_data(path)
-    assert len(data) == 77  # 83 lines with 5 corrupt
-    assert data['temperature'].iloc[76] == 16.2690
-    assert data['time'].iloc[76] == parse_datetime("2021-07-20T07:41:04")
+    assert len(data) == 76  # 83 lines with 5 corrupt
+    assert data['temperature'].iloc[75] == 16.2690
+    assert data['time'].iloc[75] == parse_datetime("2021-07-20T07:41:04")
 
 
 def test_retrieve_superbad_observations(sw_set):
