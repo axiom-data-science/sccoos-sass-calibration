@@ -3,17 +3,18 @@
 
 """Descriptions of instrument sets."""
 
-from io import StringIO
+import string
 import pathlib
 import datetime
-import string
+from io import StringIO
 
-import pandas as pd
 import numpy as np
+import pandas as pd
 from requests.exceptions import HTTPError
 from dateutil.relativedelta import relativedelta
 
 from sass import logger
+
 from . import utilities
 
 
@@ -124,8 +125,7 @@ class InstrumentSet:
         start_column = names[2]  # skipping fields server time and ip
         if type(url) is pathlib.PosixPath:
             try:
-                data = pd.read_csv(url, names=names, na_values=[-9.999, -0.999],
-                                   encoding="ISO-8859-1")
+                data = pd.read_csv(url, names=names, encoding="ISO-8859-1")
             except FileNotFoundError:
                 logger.warn(f"No data found at {url}")  # hopefully runner will catch before this
                 return pd.DataFrame({})
@@ -137,7 +137,7 @@ class InstrumentSet:
                 return pd.DataFrame({})
 
             # No column headers at all here
-            data = pd.read_csv(StringIO(raw_dataset), names=names, na_values=[-9.999, -0.999])
+            data = pd.read_csv(StringIO(raw_dataset), names=names)
 
         # some incoming files have data from multiple instruments, so filter to just one
         data = data.loc[data['ip'] == self.ip]  # also filters out 0.0.0.0
@@ -185,12 +185,18 @@ class InstrumentSet:
         data.reset_index(drop=True, inplace=True)
 
         # It's important that these columns are floats
-        cols = ['temperature', 'salinity', 'pressure',
-                'O2_raw_voltage', 'O2_phase_delay', 'fluorometer_v',
-                'ph_ext', 'ph_int', 'v_ext', 'v_int']
-        cols = list(set(cols) & set(data.columns))
-        for col in cols:
-            data[col] = data[col].astype(float)
+        # There might be some residual letters hanging around
+        names = ['temperature', 'salinity', 'pressure',
+                 'O2_raw_voltage', 'O2_phase_delay', 'fluorometer_v',
+                 'ph_ext', 'ph_int', 'v_ext', 'v_int']
+        names = list(set(names) & set(data.columns))
+        cols = data[names].select_dtypes(object)
+        cols = cols.apply(lambda x: x.str.strip(string.ascii_letters))
+        data[cols.columns] = cols.apply(lambda x: x.astype(float))
+
+        # clean-up missing O2 values
+        data = data.where(data != -9.999)
+        data = data.where(data != -0.999)
 
         return data
 

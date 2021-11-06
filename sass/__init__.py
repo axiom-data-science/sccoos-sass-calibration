@@ -5,9 +5,9 @@
 __all__ = ['utilities', 'instrument_set', 'logger']
 
 import logging
-import pkg_resources
-
 import logging.config
+
+import pkg_resources
 
 
 def setup_logging(name):

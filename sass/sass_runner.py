@@ -7,7 +7,8 @@ import json
 from pathlib import Path
 
 from sass import logger, instrument_set
-from .calibrations import get_o2, get_chlor, get_ph
+
+from .calibrations import get_o2, get_ph, get_chlor
 
 here = Path(__file__).parent
 instrument_set_filename = 'config/instrument_sets.json'

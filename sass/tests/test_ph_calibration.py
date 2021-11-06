@@ -7,9 +7,10 @@ from pathlib import Path
 
 import pandas as pd
 
+from sass import logger
+
 from ..seafet_ph import calibrate_ph
 from ..utilities import proper_rounding
-from sass import logger
 
 here = Path(__file__).parent
 

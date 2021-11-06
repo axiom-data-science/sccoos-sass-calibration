@@ -7,8 +7,8 @@ from pathlib import Path
 
 import pytest
 
-from ..sass_runner import SassCalibrationRunner, load_configs
 from ..utilities import parse_datetime
+from ..sass_runner import load_configs, SassCalibrationRunner
 
 here = Path(__file__).parent
 instrument_set_filename = '../config/instrument_sets.json'

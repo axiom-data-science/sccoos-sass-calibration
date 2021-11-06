@@ -6,9 +6,10 @@
 import pandas as pd
 
 from sass import logger
+
+from .sbe63_o2 import calibrate_oxygen, calibrate_temperature
 from .seafet_ph import calibrate_ph
 from .ctd_chlorophyll import calibrate_chlorophyll
-from .sbe63_o2 import calibrate_oxygen, calibrate_temperature
 
 
 def get_chlor(data, cals):

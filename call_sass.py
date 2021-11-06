@@ -5,12 +5,12 @@
 
 import argparse
 from pathlib import Path
-
-from dateutil.relativedelta import relativedelta
 from datetime import datetime
 
-from sass.sass_runner import SassCalibrationRunner, load_configs
+from dateutil.relativedelta import relativedelta
+
 from sass import logger, utilities
+from sass.sass_runner import load_configs, SassCalibrationRunner
 
 here = Path(__file__).parent
 instrument_set_filename = 'sass/config/instrument_sets.json'

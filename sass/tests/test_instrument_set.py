@@ -5,10 +5,11 @@
 
 from pathlib import Path
 
+import numpy as np
 import pytest
 
-from ..sass_runner import load_configs
 from ..utilities import parse_datetime
+from ..sass_runner import load_configs
 
 here = Path(__file__).parent
 instrument_set_filename = '../config/instrument_sets.json'
@@ -186,6 +187,7 @@ def test_retrieve_superbad_withhash(np_set):
     """Verify correct reading of raw data even when data are corrupted.
 
     These corrupted files are real - no alterations.  Just super gross.
+    ... Well, I did add some missing values so I could test those
 
     :param np_set: a pre-filled InstrumentSet
     :return:
@@ -196,6 +198,9 @@ def test_retrieve_superbad_withhash(np_set):
     data = np_set.retrieve_and_parse_raw_data(path)
     # again very few have useable data.
     assert len(data) == 5
+    assert np.isnan(data.loc[0, "O2_phase_delay"])
+    assert np.isnan(data.loc[0, "O2_raw_voltage"])
+    assert np.isfinite(data.loc[1, "O2_raw_voltage"])
 
     # This one is all gibberish
     path = here.joinpath('resources/raw_data/newport_data-20210227_worst.dat')
