@@ -9,3 +9,13 @@ Basic project characteristics:
 - CI Builds
 - Linter
 - Unit Tests
+
+
+1.0
+------
+
+Code runs successfully with all files presently available and calculates
+
+- chlorophyll
+- O2
+- salinity corrected pH

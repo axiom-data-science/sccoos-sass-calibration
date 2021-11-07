@@ -2,14 +2,16 @@
 
 # sccoos-sass-calibration
 
-Applies calibration coefficients to the output of SCCOOS automated shore side instruments and writes out new files.
+Applies calibration coefficients to the output of SCCOOS automated shore side instruments and 
+writes out new files.
 
-sccoos-sass-calibration is a tool written in Python that will to convert raw voltages from SCCOOS's automated shore 
-stations into oxygen, pH, and chlorophyll.
+sccoos-sass-calibration is a tool written in Python that will to convert raw voltages from SCCOOS's 
+automated shore stations into oxygen and chlorophyll, and corrects pH using salinity.
 
-The raw data are posted online by Scripps. The equations for the calibrations are provided by the manufacturers of the
-sensors. The calibration coefficients are posted by SCCOOS in a Google Sheet. After calibration, the data will be
-posted `/mnt/store/data/sensors/import/sccoos/sass/calibrated/` for ingestion into the Axiom's sensor system and posting on ERDDAP.
+The raw data are posted online by Scripps. The equations for the calibrations are provided by the 
+manufacturers of the sensors. The calibration coefficients are posted by SCCOOS in a Google Sheet. 
+After calibration, the data will be posted `/mnt/store/data/sensors/import/sccoos/sass/calibrated/` 
+for ingestion into the Axiom's sensor system and posting on ERDDAP.
 
 ## Installing SASS
 
@@ -22,7 +24,7 @@ This project relies on conda for installation and managing of the project depend
 
 2. Clone this project with `git`.
 
-3.  Once conda is available build the environment for this project with:
+3. Once conda is available, build the environment for this project with:
 
     ```sh
     conda env create -f environment.yml
@@ -31,7 +33,8 @@ This project relies on conda for installation and managing of the project depend
     The above command creates a new conda environment titled `sass_env` with the necessary project
     dependencies.
 
-4. An Additional environment file is present for testing and development environments. The additional developer dependencies can be installed with
+4. An Additional environment file is present for testing and development environments. 
+The additional developer dependencies can be installed with
 :
 
    ```sh
@@ -43,8 +46,8 @@ This project relies on conda for installation and managing of the project depend
 To use SASS, follow these steps:
 1. Configure the instrument set in `sass/config/instrument_set.json`
 2. Put the data to process in `sass/data/incoming`.  Note this can be a link to another directory. 
- The directories `data/calibrated` and `data/incoming/cals` should already exist, because they are referenced
- in the code by not created by it.
+ The directories `data/calibrated` and `data/incoming/cals` should already exist, because they are 
+ referenced in the code by not created by it.
 3.
 
 ```
@@ -53,7 +56,8 @@ To use SASS, follow these steps:
 Arguments include:
 * start date (optional. If omitted, do the most recent 5 days)
 * end date (optional.  If omitted, do a single day determined by start)
-* set code (required.  Must match an entry in `instrument_set.json` or be "all" to do all active instrument sets.)
+* set code (required.  Must match an entry in `instrument_set.json` or be "all" to do all 
+active instrument sets.)
 
 Running Tests
 -------------
@@ -73,8 +77,10 @@ To build the docker container:
 DOCKER_BUILDKIT=1 docker build -t sccoos-sass-calibration .
 ```
 
-or have docker [BuildKit enabled by default](https://docs.docker.com/develop/develop-images/build_enhancements/).
-To do that, set docker's daemon configuration in /etc/docker/daemon.json feature to true and restart the daemon:
+or have docker [BuildKit enabled by default](https://docs.docker.com/develop/develop-images/
+build_enhancements/).
+To do that, set docker's daemon configuration in /etc/docker/daemon.json feature to true and 
+restart the daemon:
 > { "features": { "buildkit": true } }
 
 

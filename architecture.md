@@ -10,6 +10,12 @@ This project was designed with these assumptions
 installing them at the sites.
 * The end goal is for this system to be running automatically in real-time.
 * Calibrations will also have to be done for times past to correct errors.
+* Output data must be easily readable by packrat
+  * different sites in different files
+  * each record has a time record that can be parsed
+  * all garbage characters stripped out
+    * especially from columns used in calculations
+    * and columns read in by packrat
 
 Table of Contents:
 
@@ -27,6 +33,8 @@ The InstrumentSet defines what collection of instruments is installed at a site.
   However, those files don't have column headers, so they need to be tracked.
 3. The calibration coefficients are stored in a tab on a Google Sheet. There 
 is no rhyme or reason to the tab names, so those need to be tracked also.
+4. During early years, data from multiple instruments were written to the same file,
+so IP address is used to differentiate them.
 
 The type of instruments installed at a site might change so a station will 
 have multiple instrument sets in time. However, the installation of a 
@@ -35,17 +43,21 @@ to be relevant beyond identifying the correct calibrations to use in
 processing.
 
 InstrumentType attributes include:
-* id (sio1)
-* station code/id (location)
-* start date
-* end date
-* raw data url
+* id = combination of siteid, ctd/ph, and year it starts like: sio-ctd-2013
+* description = why is this one different from all others (ignored by code)
+* start date = when it takes effect
+* end date = when it was replaced by another
+* station name = English name for the site
+* raw data tag = unique identifier for directory where data will be found
+* proc data tag = where data will be written
 * columns headers to be used in pd.read_csv(url) [temperature, pressure, salinity, ... ]
+    * must include sensor_time
 * calibration location
   * Google Sheet url (in case that changes)
-  * ~~tab names {"oxygen": "SIO O2"}~~ = It's nice to track human readable 
-  names, but the code does not use them.
+  * tab names {"oxygen": "SIO O2"} = Code doesn't use them, but it's nice to track human readable 
+  names
   * tab gids - the identifiers that Google uses in the URLs
+* IP address of that instrument set
 
 
 ## Usage of Instrument Set
@@ -53,7 +65,7 @@ InstrumentType attributes include:
 How to calibrate a station that's only had one set-up:
 
 1. Instrument set (and dates) are specified in the call of sass
-2. Using the URL in the InstrumentSet, read the raw data
+2. After building a file path from info in the InstrumentSet, read the raw data
 3. For each parameter to calibrate\
   a. read the calibration coefficients from the tab on the Sheet\
   b. merge the data with the calibrations\

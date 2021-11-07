@@ -185,8 +185,8 @@ class InstrumentSet:
         data.reset_index(drop=True, inplace=True)
 
         # It's important that these columns are floats
-        # There might be some residual letters hanging around
-        names = ['temperature', 'salinity', 'pressure', 'sigmat',
+        # There might be some residual letters hanging around, and sets those cells to NoN
+        names = ['temperature', 'salinity', 'pressure', 'sigmat', 'conductivity',
                  'O2_raw_voltage', 'O2_phase_delay', 'fluorometer_v',
                  'ph_ext', 'ph_int', 'v_ext', 'v_int']
         names = list(set(names) & set(data.columns))
