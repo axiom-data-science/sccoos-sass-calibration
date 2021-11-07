@@ -186,14 +186,12 @@ class InstrumentSet:
 
         # It's important that these columns are floats
         # There might be some residual letters hanging around
-        names = ['temperature', 'salinity', 'pressure',
+        names = ['temperature', 'salinity', 'pressure', 'sigmat',
                  'O2_raw_voltage', 'O2_phase_delay', 'fluorometer_v',
                  'ph_ext', 'ph_int', 'v_ext', 'v_int']
         names = list(set(names) & set(data.columns))
         cols = data[names].select_dtypes(object)
-        to_strip = string.ascii_letters + string.punctuation.replace('.', '').replace('-', '')
-        cols = cols.apply(lambda x: x.str.strip(to_strip))
-        data[cols.columns] = cols.apply(lambda x: x.astype(float))
+        data[cols.columns] = cols.apply(lambda x: pd.to_numeric(x, errors='coerce'))
 
         # clean-up missing O2 values
         data = data.where(data != -9.999)

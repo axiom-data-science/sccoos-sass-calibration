@@ -146,6 +146,7 @@ def test_retrieve_corrupt_observations(sw_set):
     Also, created a line with only # to mimic lines seen in data/2013-04/data-20130410.dat
     And copied a line in from stearns_wharf/2018-08/data-20180811.dat
     Also added a character to date string like stearns_wharf/2018-11/data-20181101.dat
+    And to salinity like stearns_wharf/2018-11/data-20181116.dat
 
     :param sio_set: a pre-filled InstrumentSet
     :return:
@@ -157,6 +158,9 @@ def test_retrieve_corrupt_observations(sw_set):
     assert len(data) == 76  # 83 lines with 5 corrupt
     assert data['temperature'].iloc[75] == 16.2690
     assert data['time'].iloc[75] == parse_datetime("2021-07-20T07:41:04")
+    assert np.isnan(data.loc[1, "pressure"])
+    assert np.isnan(data.loc[1, "salinity"])
+    assert np.isfinite(data.loc[2, "salinity"])
 
 
 def test_retrieve_superbad_observations(sw_set):
