@@ -103,7 +103,7 @@
       "calibration_url": "https://docs.google.com/spreadsheets/d/1099lNMJ3XZQIFv7oSr0Q-5i4fihx7gnvoxMaVhiUhJE/export?format=xlsx&gid=",
       "ph_tab": "NB_SeaFET_Coeffs",
       "ph_gid": "980013806",
-      "ph_salinity_set": "np-ctd-2021",
+      "ph_salinity_set": "np-ctd-2016b",
       "ip": "166.140.102.113"
     },
     {
