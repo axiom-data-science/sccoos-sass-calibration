@@ -72,7 +72,7 @@ def get_ph(data, cals, ctd_data):
     data_all.rename(columns={'v_ext': 'voltage'}, inplace=True)
 
     # transfer those calibration coefficients into data
-    cal = cals.loc[cals['Sensor'].astype(int) == instrument]
+    cal = cals.loc[cals['SERIAL NUMBER'].astype(int) == instrument]
     data_all['k0'] = cal['Kext0'].values[0]
     data_all['k2'] = cal['Kext2'].values[0]
 

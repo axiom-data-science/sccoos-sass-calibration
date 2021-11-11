@@ -207,19 +207,10 @@ class InstrumentSet:
         url = self.calibration_url + self.cal_gids[parameter]
         df = pd.read_excel(url)
 
-        if parameter == 'chlor':
-            # df['time'] = df['START TIME (UTC)'].apply(
-            #     lambda x: datetime.time.strftime(x, '%H:%M:%S'))
-            # df['time'] = df['START DATE'].dt.strftime('%m/%d/%Y') + ' ' + df['time']
-            # df['time'] = pd.to_datetime(df['time'], utc=True)
-            try:
-                df['time'] = pd.to_datetime(df['START TIME'], utc=True)
-            except KeyError:
-                df['time'] = pd.to_datetime(df['START TIME UTC'], utc=True)
-        elif parameter == 'o2':
-            df['time'] = pd.to_datetime(df['START TIME'], utc=True)
+        if parameter == 'chlor' or parameter == 'o2':
+            df['time'] = pd.to_datetime(df['START TIME UTC'], utc=True)
         else:
-            pass  # no times in pH calibrations
+            pass  # no times in pH calibrations (yet?)
 
         if 'time' in df.columns:
             df = df.sort_values(by=['time'])
