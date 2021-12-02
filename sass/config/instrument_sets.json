@@ -154,7 +154,7 @@
       "set_id": "sw-ctd-2014",
       "description": "Stearns Wharf order of the auxiliary channels changed",
       "start_date": "2014-03-25T20:00:00Z",
-      "end_date": "2016-03-02T23:59:59Z",
+      "end_date": "2015-10-19T23:59:59Z",
       "station_name": "Stearns Wharf",
       "raw_data_tag": "scripps_pier",
       "proc_data_tag": "stearns_wharf",
@@ -166,9 +166,9 @@
       "ip": "166.148.81.45"
     },
     {
-      "set_id": "sw-ctd-2016",
-      "description": "changed from data and time as separate columns to combined into single column",
-      "start_date": "2016-03-04T23:59:59Z",
+      "set_id": "sw-ctd-2015",
+      "description": "changed from data and time as separate columns to combined into single column (diff from other stns)",
+      "start_date": "2015-10-20T00:00:00Z",
       "end_date": "2018-02-21T23:59:59Z",
       "station_name": "Stearns Wharf",
       "raw_data_tag": "scripps_pier",
