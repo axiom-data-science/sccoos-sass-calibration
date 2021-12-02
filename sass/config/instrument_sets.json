@@ -64,7 +64,7 @@
       "set_id": "np-ctd-2016a",
       "description": "changed from data and time as separate columns to combined into single column and new IP",
       "start_date": "2016-05-12T00:00:00Z",
-      "end_date": "2016-03-02T23:59:59Z",
+      "end_date": "2016-10-11T23:59:59Z",
       "station_name": "Newport Pier",
       "raw_data_tag": "scripps_pier",
       "proc_data_tag": "newport_pier",
