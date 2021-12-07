@@ -19,9 +19,9 @@
     },
     {
       "set_id": "sio-ctd-2014",
-      "description": "the IP address changed from the original one",
+      "description": "IP address changed from the original one",
       "start_date": "2014-10-21T00:00:00Z",
-      "end_date": "2016-03-02T23:59:59Z",
+      "end_date": "2015-12-01T23:59:59Z",
       "station_name": "Scripps Pier",
       "raw_data_tag": "scripps_pier",
       "columns": ["server_time", "ip", "temperature", "conductivity", "pressure", "V0", "V1",
@@ -32,8 +32,22 @@
       "ip": "172.16.117.233"
     },
     {
+      "set_id": "sio-ctd-2015",
+      "description": "Changed from data and time as separate columns to combined into single column (after SW and before NP)",
+      "start_date": "2015-12-18T00:00:00Z",
+      "end_date": "2016-03-02T23:59:59Z",
+      "station_name": "Scripps Pier",
+      "raw_data_tag": "scripps_pier",
+      "columns": ["server_time", "ip", "temperature", "conductivity", "pressure", "V0", "V1",
+        "fluorometer_v", "V3", "salinity", "sensor_time", "sigmat", "battery", "pump", "foo"],
+      "calibration_url": "https://docs.google.com/spreadsheets/d/1WFuGiMkwkFA62gbAmAvmkREyZjo_fGrCZGu4847EpAk/export?format=xlsx&gid=",
+      "chlor_tab": "Fluorometer_Coefficients",
+      "chlor_gid": "1341614907",
+      "ip": "172.16.117.233"
+    },
+    {
       "set_id": "sio-ctd-2016",
-      "description": "changed from data and time as separate columns to combined into single column",
+      "description": "Now all stations have data and time as single columns, so can remove the fake columns at the end.",
       "start_date": "2016-03-03T00:00:00Z",
       "end_date": null,
       "station_name": "Scripps Pier",
@@ -62,7 +76,7 @@
     },
     {
       "set_id": "np-ctd-2016a",
-      "description": "after gap, changed from data and time as separate columns to combined into single column and new IP",
+      "description": "After a gap, changed from data and time as separate columns to combined into single column and new IP",
       "start_date": "2016-05-12T00:00:00Z",
       "end_date": "2016-10-11T23:59:59Z",
       "station_name": "Newport Pier",
@@ -167,7 +181,7 @@
     },
     {
       "set_id": "sw-ctd-2015",
-      "description": "changed from data and time as separate columns to combined into single column (diff from other stns)",
+      "description": "Changed from data and time as separate columns to combined into single column (before NP and SIO)",
       "start_date": "2015-10-20T00:00:00Z",
       "end_date": "2016-03-02T23:59:59Z",
       "station_name": "Stearns Wharf",
@@ -182,7 +196,7 @@
     },
     {
       "set_id": "sw-ctd-2016",
-      "description": "now all stations have data and time as single columns, so can remove the fake columns at the end.",
+      "description": "Now all stations have data and time as single columns, so can remove the fake columns at the end.",
       "start_date": "2016-03-03T00:00:00Z",
       "end_date": "2018-02-21T23:59:59Z",
       "station_name": "Stearns Wharf",
