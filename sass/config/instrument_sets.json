@@ -161,7 +161,7 @@
         "fluorometer_v", "V4", "salinity", "sensor_date", "sensor_time", "sigmat", "battery", "pump"],
       "calibration_url": "https://docs.google.com/spreadsheets/d/1Qd8HyFLYcxZVEGNzqAjb2fio7I7KpnvvM9DXo_SZusY/export?format=xlsx&gid=",
       "chlor_tab": "Fluorometer_Coefficients",
-      "chlor_gid": null,
+      "chlor_gid": "1669287619",
       "ip": "166.148.81.45"
     },
     {
@@ -176,7 +176,7 @@
         "V3", "V1", "V4", "salinity", "sensor_date", "sensor_time", "sigmat", "battery", "pump"],
       "calibration_url": "https://docs.google.com/spreadsheets/d/1Qd8HyFLYcxZVEGNzqAjb2fio7I7KpnvvM9DXo_SZusY/export?format=xlsx&gid=",
       "chlor_tab": "Fluorometer_Coefficients",
-      "chlor_gid": null,
+      "chlor_gid": "1669287619",
       "ip": "166.148.81.45"
     },
     {
@@ -191,7 +191,7 @@
         "V3", "V1", "V4", "salinity", "sensor_time", "sigmat", "battery", "pump", "foo"],
       "calibration_url": "https://docs.google.com/spreadsheets/d/1Qd8HyFLYcxZVEGNzqAjb2fio7I7KpnvvM9DXo_SZusY/export?format=xlsx&gid=",
       "chlor_tab": "Fluorometer_Coefficients",
-      "chlor_gid": null,
+      "chlor_gid": "1669287619",
       "ip": "166.148.81.45"
     },
     {
@@ -206,7 +206,7 @@
         "V3", "V1", "V4", "salinity", "sensor_time", "sigmat", "battery", "pump"],
       "calibration_url": "https://docs.google.com/spreadsheets/d/1Qd8HyFLYcxZVEGNzqAjb2fio7I7KpnvvM9DXo_SZusY/export?format=xlsx&gid=",
       "chlor_tab": "Fluorometer_Coefficients",
-      "chlor_gid": null,
+      "chlor_gid": "1669287619",
       "ip": "166.148.81.45"
     },
     {
@@ -220,7 +220,7 @@
         "V3", "V1", "V4", "salinity", "sensor_time", "sigmat", "battery", "pump"],
       "calibration_url": "https://docs.google.com/spreadsheets/d/1Qd8HyFLYcxZVEGNzqAjb2fio7I7KpnvvM9DXo_SZusY/export?format=xlsx&gid=",
       "chlor_tab": "Fluorometer_Coefficients",
-      "chlor_gid": null,
+      "chlor_gid": "1669287619",
       "ip": "166.148.81.45"
     }
   ],
