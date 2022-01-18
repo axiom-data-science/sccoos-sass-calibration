@@ -141,6 +141,8 @@ class InstrumentSet:
 
         # some incoming files have data from multiple instruments, so filter to just one
         data = data.loc[data['ip'] == self.ip]  # also filters out 0.0.0.0
+        if len(data) == 0:
+            return pd.DataFrame({})
 
         # bad data is non-ascii characters. These are what might reasonably be in a line
         normal = string.digits + string.ascii_letters + string.punctuation + string.whitespace
@@ -165,6 +167,8 @@ class InstrumentSet:
         # some lines are empty after the ip (and hash mark)
         data.replace('', np.nan, inplace=True)
         data.dropna(axis=0, subset=['temperature'], inplace=True)
+        if len(data) == 0:
+            return pd.DataFrame({})
 
         # a variation might be to have date and time in separate columns
         if 'sensor_date' in data.columns and 'sensor_time' in data.columns:
@@ -177,9 +181,13 @@ class InstrumentSet:
         # It's important there is a value for time and that it look like time
         # (sometimes commas/columns get dropped so this is also a check for that)
         data = data.loc[data['sensor_time'].str.contains(':')]
+        if len(data) == 0:
+            return pd.DataFrame({})
 
         data["time"] = pd.to_datetime(data["sensor_time"], utc=True, errors='coerce')
         data.dropna(axis=0, subset=['time'], inplace=True)
+        if len(data) == 0:
+            return pd.DataFrame({})
         # for the merge with calibration coefficients, make sure data are sorted by time
         data = data.sort_values(by=['time'])
         data.reset_index(drop=True, inplace=True)
