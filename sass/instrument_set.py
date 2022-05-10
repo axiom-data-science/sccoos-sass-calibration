@@ -114,7 +114,8 @@ class InstrumentSet:
     def retrieve_and_parse_raw_data(self, url) -> pd.DataFrame:
         """Read raw SASS data from URL and convert it to a DataFrame with headers.
 
-        sio scs is whitespace delim but others are comma delim.  should be able to sense but it doesn't
+        sio scs is whitespace delim but others are comma delim.  pandas should be able to
+        sense that difference but it doesn't. had to add a manual check.
 
         See README.md for notes on how bad data is filtered out.
 
@@ -128,13 +129,16 @@ class InstrumentSet:
         if type(url) is pathlib.PosixPath:
             try:
                 delim_whitespace = False
-                with open(url, encoding="ISO-8859-1") as f:  # adding this check for SIO Self-calibrating seafet
+                # adding this check for SIO Self-calibrating SeapHOx
+                with open(url, encoding="ISO-8859-1") as f:
                     line = f.readline()
-                    if not ',' in line:
+                    if ',' not in line:
                         delim_whitespace = True
-                data = pd.read_csv(url, names=names, encoding="ISO-8859-1", delim_whitespace=delim_whitespace)
+                data = pd.read_csv(url, names=names, encoding="ISO-8859-1",
+                                   delim_whitespace=delim_whitespace)
             except FileNotFoundError:
-                logger.warn(f"No data found at {url}")  # hopefully runner will catch before this
+                # hopefully runner will catch before this
+                logger.warn(f"No data found at {url}")
                 return pd.DataFrame({})
         else:
             try:
@@ -147,7 +151,8 @@ class InstrumentSet:
             data = pd.read_csv(StringIO(raw_dataset), names=names)
 
         # some incoming files have data from multiple instruments, so filter to just one
-        data = data.loc[data['ip'] == self.ip]  # also filters out 0.0.0.0 unless SIO SCS which has ip 0.0.0.0
+        # also filters out 0.0.0.0 except SIO SCS which has ip 0.0.0.0 in its instrument set
+        data = data.loc[data['ip'] == self.ip]
         if len(data) == 0:
             return pd.DataFrame({})
 

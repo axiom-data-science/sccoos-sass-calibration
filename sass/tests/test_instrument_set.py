@@ -240,7 +240,7 @@ def test_retrieve_bad_ph(np_ph_set):
 
 
 def test_retrieve_spacedelim(sio_scs_set):
-    """Verify reading raw data correctly for the new SCS files which are whitespace delim
+    """Verify reading raw data correctly for the new SCS files which are whitespace delim.
 
     :param sio_scs_set: a pre-filled InstrumentSet
     :return:
