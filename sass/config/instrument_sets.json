@@ -222,6 +222,29 @@
       "chlor_tab": "Fluorometer_Coefficients",
       "chlor_gid": "1669287619",
       "ip": "166.148.81.45"
+    },
+    {
+      "set_id": "sio-scs-2022",
+      "description": "The self-calibrating SeaFET operated by Todd at Scripps",
+      "start_date": "2022-04-01T00:00:00Z",
+      "end_date": null,
+      "station_name": "SIO SeaFET",
+      "raw_data_tag": "scripps_pier_scs",
+      "proc_data_tag": "scripps_pier_scs",
+      "columns": ["date", "ip", "sensor_name", "samp_type", "samp_num", "calib_num", "calib_rep",
+            "sensor_date", "sensor_time", "vbatt", "vtherm", "v_int", "v_ext", "isobatt", "contemp", "pHtemp", "press",
+            "ph_int", "ph_ext", "O2_MN", "O2_SN", "O2con", "O2sat", "O2temp",
+            "Dphase", "Bphase", "Rphase", "Bamp", "Bpot", "Ramp", "Raw_Temp",
+            "temperature", "conductivity", "salinity", "SBEday", "SBEmon", "SBEyear", "SBEtime"],
+      "calibration_url": null,
+      "chlor_tab": null,
+      "chlor_gid": null,
+      "o2_tab": null,
+      "o2_gid": null,
+      "ph_tab": null,
+      "ph_gid": null,
+      "ph_salinity_set": null,
+      "ip": "0.0.0.0"
     }
   ],
   "template": [

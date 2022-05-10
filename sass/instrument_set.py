@@ -114,6 +114,8 @@ class InstrumentSet:
     def retrieve_and_parse_raw_data(self, url) -> pd.DataFrame:
         """Read raw SASS data from URL and convert it to a DataFrame with headers.
 
+        sio scs is whitespace delim but others are comma delim.  should be able to sense but it doesn't
+
         See README.md for notes on how bad data is filtered out.
 
         :param url: name of a file to process. Was once a URL also.
@@ -125,7 +127,12 @@ class InstrumentSet:
         start_column = names[2]  # skipping fields server time and ip
         if type(url) is pathlib.PosixPath:
             try:
-                data = pd.read_csv(url, names=names, encoding="ISO-8859-1")
+                delim_whitespace = False
+                with open(url, encoding="ISO-8859-1") as f:  # adding this check for SIO Self-calibrating seafet
+                    line = f.readline()
+                    if not ',' in line:
+                        delim_whitespace = True
+                data = pd.read_csv(url, names=names, encoding="ISO-8859-1", delim_whitespace=delim_whitespace)
             except FileNotFoundError:
                 logger.warn(f"No data found at {url}")  # hopefully runner will catch before this
                 return pd.DataFrame({})
@@ -140,7 +147,7 @@ class InstrumentSet:
             data = pd.read_csv(StringIO(raw_dataset), names=names)
 
         # some incoming files have data from multiple instruments, so filter to just one
-        data = data.loc[data['ip'] == self.ip]  # also filters out 0.0.0.0
+        data = data.loc[data['ip'] == self.ip]  # also filters out 0.0.0.0 unless SIO SCS which has ip 0.0.0.0
         if len(data) == 0:
             return pd.DataFrame({})
 
@@ -175,6 +182,10 @@ class InstrumentSet:
             # but if it is, it had better not have times in the date column
             # like SIO "19 Oct 2015 21:50:40"
             data = data.loc[~data['sensor_date'].str.contains(':')]
+            # and SIO SCS has its dates like "2022/04/30" so convert that first
+            if data['sensor_date'].str.contains('/').all():
+                data['tmp_date'] = pd.to_datetime(data['sensor_date'], format="%Y/%m/%d")
+                data['sensor_date'] = data['tmp_date'].dt.strftime("%d %b %Y ")
             data['sensor_time'] = data['sensor_date'] + data['sensor_time']
             data.drop(columns=['sensor_date'], inplace=True)
 

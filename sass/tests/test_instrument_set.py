@@ -60,6 +60,15 @@ def np_ph_set():
     return this_set[0]
 
 
+@pytest.fixture
+def sio_scs_set():
+    """Create an InstrumentSet from JSON file defined above."""
+    path = here.joinpath(instrument_set_filename)
+    instrument_sets = load_configs(path)
+    this_set = [s for s in instrument_sets if s.set_id == 'sio-scs-2022']
+    return this_set[0]
+
+
 def test_file_list(sio_set):
     """Verify that the collector asks for all the files we need.
 
@@ -228,3 +237,23 @@ def test_retrieve_bad_ph(np_ph_set):
     data = np_ph_set.retrieve_and_parse_raw_data(path)
     # 2 bad lines - one with garbage and the other truncated before time.
     assert len(data) == 33
+
+
+def test_retrieve_spacedelim(sio_scs_set):
+    """Verify reading raw data correctly for the new SCS files which are whitespace delim
+
+    :param sio_scs_set: a pre-filled InstrumentSet
+    :return:
+    """
+    # instead of making GET request to the HTTP server, we are going to read a local file
+    path = here.joinpath('resources/raw_data/sio_scs_data_20220430.dat')
+
+    start = parse_datetime("2022-04-30T00:00:00Z")
+    end = parse_datetime("2022-04-30T01:00:00Z")
+
+    data = sio_scs_set.retrieve_and_parse_raw_data(path)
+    data = data[(data['time'] >= start) & (data['time'] <= end)]  # check that time makes sense
+    assert len(data) == 5
+    assert data.loc[0, 'temperature'] == 16.219  # temperature
+    # time was added as the last column
+    assert data.iloc[0, -1] == parse_datetime("2022-04-30T00:00:10")
