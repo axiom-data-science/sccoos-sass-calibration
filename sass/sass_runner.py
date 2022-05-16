@@ -136,6 +136,8 @@ class SassCalibrationRunner:
 
             # write it out - whether successfully created calibrated values or not
             outfile = file.replace(this_set.raw_data_tag, this_set.proc_data_tag)
+            # reset sio-scs-2022 weird filename to what all the others are
+            outfile = outfile.replace("data_", "data-")
             path = here.joinpath(outgoing + outfile)
             logger.debug(f'Writing to {str(path)}')
             if not path.parents[0].exists():

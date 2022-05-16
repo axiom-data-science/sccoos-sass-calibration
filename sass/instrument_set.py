@@ -60,12 +60,18 @@ class InstrumentSet:
             # if instrument set hasn't ended, it's going right now
             self.end_date = utilities.parse_datetime(datetime.datetime.now())
 
-        # where reading and writing data - for early years, they are different
+        # directory name where reading and writing data - for early years, they are different
         self.raw_data_tag = raw_data_tag
         if proc_data_tag:
             self.proc_data_tag = proc_data_tag
         else:
             self.proc_data_tag = raw_data_tag
+
+        # most files are "data-" but 2022 SCS at SIO is "data_"
+        if set_id == "sio-scs-2022":
+            self.file_base = "data_"
+        else:
+            self.file_base = "data-"
 
         # where to get calibration coefficients
         self.data_columns = columns
@@ -106,7 +112,8 @@ class InstrumentSet:
         while date <= end.date():
             file_tag = date.strftime('%Y%m%d')
             dir_tag = date.strftime('%Y-%m')
-            files.append(f"{self.raw_data_tag}/{dir_tag}/data-{file_tag}.dat")
+            file_base = self.file_base
+            files.append(f"{self.raw_data_tag}/{dir_tag}/{file_base}{file_tag}.dat")
             date += relativedelta(days=1)
 
         return files

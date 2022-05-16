@@ -129,3 +129,20 @@ For those early years, this code identifies data from a site by the IP address. 
 * Scripps Pier from 132.239.117.226 to 172.16.117.233 (after a gap of ~1 day)
 
 These changes don't result in missing data.  Just thought I'd mention it.
+
+## SIO SCS 2022 - The Ultimate Special Case
+
+The Self-Calibrating SeaPhOx installed at Scripps Pier in 2022 is its own thing.  Here are the ways
+it is different from the others
+
+* Data files are whitespace delimited rather than comma delimited. Taylor said "It is 
+straightforward to update the SCS firmware from tab-delimited to csv. Unfortunately, I can only do 
+it with the sensor in hand and opening it up to flash the main controller. I can do this for all 
+future deployments to keep the formats the same between all shore stations if that makes data 
+ingestion and processing easier." But then Todd immediately contradicted him and told me to change
+my code instead. I do not know if they plan to change the format in the future, so the code can
+read both
+* Files are called "data_" instead of "data-". There is a yucky catch based on the instrument set 
+sio-scs-2022 now, but that will break when the deployment changes.
+* IP address is 0.0.0.0.  I had been using that to catch bad data, so that isn't possible now.
+* Lots more parameters in the file.
