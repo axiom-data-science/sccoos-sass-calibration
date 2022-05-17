@@ -133,7 +133,7 @@ These changes don't result in missing data.  Just thought I'd mention it.
 ## SIO SCS 2022 - The Ultimate Special Case
 
 The Self-Calibrating SeaPhOx installed at Scripps Pier in 2022 is its own thing.  Here are the ways
-it is different from the others
+it is different from the others:
 
 * Data files are whitespace delimited rather than comma delimited. Taylor said "It is 
 straightforward to update the SCS firmware from tab-delimited to csv. Unfortunately, I can only do 
@@ -141,8 +141,12 @@ it with the sensor in hand and opening it up to flash the main controller. I can
 future deployments to keep the formats the same between all shore stations if that makes data 
 ingestion and processing easier." But then Todd immediately contradicted him and told me to change
 my code instead. I do not know if they plan to change the format in the future, so the code can
-read both
+read both.
 * Files are called "data_" instead of "data-". There is a yucky catch based on the instrument set 
-sio-scs-2022 now, but that will break when the deployment changes.
+sio-scs-2022 now, but that will break when the deployment changes. Output files are converted to 
+"data-" to be consistent with others.
+* Data files don't have a # to mark the beginning of data.
 * IP address is 0.0.0.0.  I had been using that to catch bad data, so that isn't possible now.
-* Lots more parameters in the file.
+* Lots more parameters in the file. In fact, the SeaBird and pH data are in the same file, instead 
+of having to be merged together.  This will require a special case of get_ph.
+
