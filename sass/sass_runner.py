@@ -8,7 +8,7 @@ from pathlib import Path
 
 from sass import logger, instrument_set
 
-from .calibrations import get_o2, get_ph, get_chlor
+from .calibrations import get_o2, get_ph, get_chlor, get_scs_o2
 
 here = Path(__file__).parent
 instrument_set_filename = 'config/instrument_sets.json'
@@ -93,6 +93,7 @@ class SassCalibrationRunner:
 
         # read and stash the calibration coeffs
         # TODO maybe switch to reading local, pre-grabbed coeffs?
+        # Note: SCS O2 doesn't have coefficients in a Google Sheet, but still needs correction
         cals = {}
         for parameter in this_set.parameters:
             logger.info(f'Getting calibration coefficients for {parameter}')
@@ -118,7 +119,10 @@ class SassCalibrationRunner:
                 if parameter == 'chlor':
                     data['chlor'] = get_chlor(data, df_cal)
                 if parameter == 'o2':
-                    data['o2'] = get_o2(data, df_cal)
+                    if len(df_cal) == 0:  # SCS/Aanderaa
+                        data['O2_uM'] = get_scs_o2(data)
+                    else:
+                        data['o2'] = get_o2(data, df_cal)
                 if parameter == 'ph':
                     # also read the accompanying CTD file for salinity
                     ctd_file = file.replace(this_set.raw_data_tag, salinity_set.raw_data_tag)

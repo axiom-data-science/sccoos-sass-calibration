@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-""" Define the equations that calibrate O2 from Aanderaa Optode.
+"""Define the equations that calibrate O2 from Aanderaa Optode.
 
 The self calibrating SeapHOx installed at the Scripps Pier in 2022 includes an
 Aanderaa instrument for measuring Oxygen. The model number is 5730.
@@ -50,7 +50,6 @@ def salinity_correction(salinity, temperature, salinity_property):
     B3 = -4.29155e-3
     C0 = -3.11680e-7
     """
-
     # Coefficients from manual
     B0 = -0.00624097
     B1 = -0.00693498
@@ -85,7 +84,6 @@ def pressure_correction(pressure):
     O2 is the measured O2 concentration in either µM or %.
     The unit of the compensated O2 concentration, O2c, depends on the unit of the O2 input
     """
-
     Pcorr = 0.032
 
     return 1 + abs(pressure) / 1000 * Pcorr
@@ -93,7 +91,8 @@ def pressure_correction(pressure):
 
 def correct_oxygen(O2_uM, temperature, salinity=0, pressure=0,
                    salinity_property=0, **kwargs):
-    """ Apply Salinity and Pressure corrections to Oxygen
+    """Apply Salinity and Pressure corrections to Oxygen.
+
     Inputs
         O2_uM (µM): Dissolved oxygen recorded by Aanderaa with no salinity compensation applied
         temperature (ºC): Temperature measured by Aanderaa or auxiliary thermometer
@@ -101,7 +100,6 @@ def correct_oxygen(O2_uM, temperature, salinity=0, pressure=0,
         salinity (PSU): Salinity measured by auxiliary salinity/conductivity sensor
         salinity_property (PSU): Salinity input into Aanderaa pre-deployment, usually 0
     """
-
     Scorr = salinity_correction(salinity, temperature, salinity_property)
     Pcorr = pressure_correction(pressure)
 

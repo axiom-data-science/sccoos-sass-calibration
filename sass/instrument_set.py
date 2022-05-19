@@ -198,6 +198,7 @@ class InstrumentSet:
             if data['sensor_date'].str.contains('/').all():
                 data['tmp_date'] = pd.to_datetime(data['sensor_date'], format="%Y/%m/%d")
                 data['sensor_date'] = data['tmp_date'].dt.strftime("%d %b %Y ")
+                data.drop(labels=['tmp_date'], inplace=True, axis=1)
             data['sensor_time'] = data['sensor_date'] + data['sensor_time']
             data.drop(columns=['sensor_date'], inplace=True)
 
@@ -235,6 +236,10 @@ class InstrumentSet:
 
         For the merge with data, make sure they are sorted by time
         """
+        if self.cal_gids[parameter] == 1:
+            # Short circuit for SCS O2, which has corrections but coefficients are hardcoded
+            return pd.DataFrame({})
+
         url = self.calibration_url + self.cal_gids[parameter]
         df = pd.read_excel(url)
 

@@ -8,6 +8,7 @@ import pandas as pd
 from sass import logger
 
 from .sbe63_o2 import calibrate_oxygen, calibrate_temperature
+from .aanderaa_o2 import correct_oxygen
 from .seafet_ph import calibrate_ph
 from .ctd_chlorophyll import calibrate_chlorophyll
 
@@ -89,3 +90,22 @@ def get_ph(data, cals, ctd_data):
 
     data_all['calc_ph'] = data_all.apply(lambda x: calibrate_ph(**x, external=True), axis=1)
     return data_all['calc_ph'].round(2)
+
+
+def get_scs_o2(data):
+    """Correct the oxygen from the SCS (2022).
+
+    The SCS installed at Scripps Pier in 2020 has a different instrument set installed.
+    The O2 sensor is an Aanderaa medel 5730, and reported Oxygen instead of raw
+    instrument voltage.  Salinity and temperature are included in the same file.
+    Units are uM instead of mg/L.
+
+    Which is to say that this correction ends up being done differently
+    """
+    data_all = data.copy()
+    data_all.rename(columns={'O2con': 'O2_uM'}, inplace=True)
+    # and gotta switch the temperature (from O2 sensor not SBE)
+    data_all['temperature'] = data_all['O2temp']
+    data_all['oxygen_calc'] = data_all.apply(lambda x: correct_oxygen(**x), axis=1)
+
+    return data_all['oxygen_calc'].round(4)
